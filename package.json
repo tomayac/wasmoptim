@@ -1,0 +1,22 @@
+{
+  "name": "wasm-clamp",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "vite preview & vite build --watch",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "fix": "prettier --write ."
+  },
+  "devDependencies": {
+    "prettier": "^3.0.3",
+    "vite": "^4.4.5"
+  },
+  "dependencies": {
+    "binaryen": "^116.0.0",
+    "browser-fs-access": "^0.35.0",
+    "pretty-bytes": "^6.1.1"
+  }
+}
