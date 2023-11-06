@@ -14,13 +14,20 @@
       width="160"
       height="160"
     />
+    <div>
+      <button id="load-wasm" type="button">
+        Open <code>.wasm</code> file(s)
+      </button>
+    </div>
     <div id="drop-area">Drop <code>.wasm</code> file(s) here</div>
-    <button id="load-wasm" type="button">
-      Open <code>.wasm</code> file(s)
-    </button>
-    Before: <span id="before-size"></span>
-    After: <span id="after-size"></span>
-    Delta: <span id="delta-size"></span>
+    <div id="results-area"></div>
+    <template id="stats-template">
+      <div>
+        <code class="file-name"></code>
+        Before: <span class="before-size"></span> After:
+        <span class="after-size"></span> Delta: <span class="delta-size"></span>
+      </div>
+    </template>
     <script type="module" src="/main.js"></script>
   </body>
 </html>

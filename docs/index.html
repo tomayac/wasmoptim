@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wasm Clamp</title>
+    <script type="module" crossorigin src="/assets/index-415bbb93.js"></script>
+    <link rel="stylesheet" href="/assets/index-a2462f8d.css">
+  </head>
+  <body>
+    <h1>Wasm Clamp</h1>
+    <img
+      src="/icon.png"
+      alt="Wasm Clamp logo consisting of a clamp that compresses the WebAssembly icon."
+      width="160"
+      height="160"
+    />
+    <div>
+      <button id="load-wasm" type="button">
+        Open <code>.wasm</code> file(s)
+      </button>
+    </div>
+    <div id="drop-area">Drop <code>.wasm</code> file(s) here</div>
+    <div id="results-area"></div>
+    <template id="stats-template">
+      <div>
+        <code class="file-name"></code>
+        Before: <span class="before-size"></span> After:
+        <span class="after-size"></span> Delta: <span class="delta-size"></span>
+      </div>
+    </template>
+    
+  </body>
+</html>
