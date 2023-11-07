@@ -11,7 +11,7 @@ export default defineConfig({
       include: ['node_modules/binaryen/**/*'],
     }),
   ],
-  base: '/wasm-opt/',
+  base: '/wasm-clamp/',
   build: {
     outDir: 'docs',
     target: 'esnext',
