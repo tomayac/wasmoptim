@@ -1,4 +1,5 @@
-import './style.css';
+import '/style.css';
+import spinner from '/spinner.svg';
 
 import { fileOpen } from 'browser-fs-access';
 import prettyBytes from 'pretty-bytes';
@@ -65,6 +66,8 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
     const beforeSizeLabel = stats.querySelector('.before-size');
     const afterSizeLabel = stats.querySelector('.after-size');
     const deltaSizeLabel = stats.querySelector('.delta-size');
+    const spinnerImage = stats.querySelector('.spinner');
+    spinnerImage.src = spinner;
     fileNameLabel.textContent = wasmFileBefore.name;
     beforeSizeLabel.textContent = prettyBytes(wasmFileBefore.size);
     resultsArea.append(stats);

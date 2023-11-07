@@ -8,7 +8,7 @@ import dynamicImportVars from '@rollup/plugin-dynamic-import-vars';
 export default defineConfig({
   plugins: [
     dynamicImportVars({
-      include: ['node_modules/binaryen/**/*'],
+      include: ['./third_party/*'],
     }),
   ],
   base: '/wasm-clamp/',
