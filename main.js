@@ -9,15 +9,22 @@ const supportsFileSystemAccessAPI =
   'getAsFileSystemHandle' in DataTransferItem.prototype;
 
 loadWasmButton.addEventListener('click', async () => {
-  const wasmFilesBefore = await fileOpen({
-    mimeTypes: ['application/wasm'],
-    extensions: ['.wasm'],
-    multiple: true,
-  });
-  if (!wasmFilesBefore || !wasmFilesBefore.length) {
-    return;
+  try {
+    const wasmFilesBefore = await fileOpen({
+      mimeTypes: ['application/wasm'],
+      extensions: ['.wasm'],
+      multiple: true,
+    });
+    if (!wasmFilesBefore || !wasmFilesBefore.length) {
+      return;
+    }
+    optimizeWasmFiles(wasmFilesBefore);
+  } catch (error) {
+    if (error.name === 'AbortError') {
+      return;
+    }
+    console.error(error.name, error.message);
   }
-  optimizeWasmFiles(wasmFilesBefore);
 });
 
 dropArea.addEventListener('dragover', (e) => {
@@ -78,7 +85,16 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
           type: 'module',
         });
         worker.addEventListener('message', (event) => {
-          const { wasmFileAfter } = event.data;
+          worker.terminate();
+          const { wasmFileAfter, error } = event.data;
+          if (error) {
+            reject(error);
+            afterSizeLabel.classList.add('error');
+            deltaSizeLabel.classList.add('error');
+            afterSizeLabel.textContent = error.name;
+            deltaSizeLabel.textContent = error.message;
+            return;
+          }
           afterSizeLabel.textContent = prettyBytes(wasmFileAfter.size);
           const deltaSize = wasmFileAfter.size - wasmFileBefore.size;
           deltaSizeLabel.textContent = `${(
@@ -90,12 +106,16 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
           } else if (deltaSize >= 0) {
             deltaSizeLabel.classList.add('size-larger');
           }
-          worker.terminate();
           resolve();
         });
         worker.postMessage({ wasmFileBefore });
       });
     });
   }
-  await limit(tasks, 3);
+  await limit(
+    tasks,
+    'hardwareConcurrency' in navigator
+      ? Math.floor(navigator.hardwareConcurrency / 2)
+      : 4,
+  );
 };

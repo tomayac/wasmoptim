@@ -74,3 +74,8 @@ td {
 .size-larger {
   color: red;
 }
+
+.error {
+  font-family: ui-monospace, monospace;
+  color: red;
+}
