@@ -20,13 +20,24 @@
       </button>
     </div>
     <div id="drop-area">Drop <code>.wasm</code> file(s) here</div>
-    <div id="results-area"></div>
+    <table>
+      <thead>
+        <tr>
+          <th>File</th>
+          <th>Before</th>
+          <th>After</th>
+          <th>Savings</th>
+        </tr>
+      </thead>
+      <tbody id="results-area"></tbody>
+    </table>
     <template id="stats-template">
-      <div>
-        <code class="file-name"></code>
-        Before: <span class="before-size"></span> After:
-        <span class="after-size"></span> Delta: <span class="delta-size"></span>
-      </div>
+      <tr>
+        <td><code class="file-name"></code></td>
+        <td class="before-size"></td>
+        <td class="after-size"></td>
+        <td class="delta-size"><img class="spinner" src="/spinner.svg"></td>
+      </tr>
     </template>
     <script type="module" src="/main.js"></script>
   </body>
