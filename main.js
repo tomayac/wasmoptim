@@ -1,16 +1,16 @@
-import "./style.css";
+import './style.css';
 
-import { fileOpen } from "browser-fs-access";
-import prettyBytes from "pretty-bytes";
-import { loadWasmButton, dropArea, resultsArea, statsTemplate } from "./dom.js";
-import limit from "./limit.js";
+import { fileOpen } from 'browser-fs-access';
+import prettyBytes from 'pretty-bytes';
+import { loadWasmButton, dropArea, resultsArea, statsTemplate } from './dom.js';
+import limit from './limit.js';
 const supportsFileSystemAccessAPI =
-  "getAsFileSystemHandle" in DataTransferItem.prototype;
+  'getAsFileSystemHandle' in DataTransferItem.prototype;
 
-loadWasmButton.addEventListener("click", async () => {
+loadWasmButton.addEventListener('click', async () => {
   const wasmFilesBefore = await fileOpen({
-    mimeTypes: ["application/wasm"],
-    extensions: [".wasm"],
+    mimeTypes: ['application/wasm'],
+    extensions: ['.wasm'],
     multiple: true,
   });
   if (!wasmFilesBefore || !wasmFilesBefore.length) {
@@ -19,23 +19,23 @@ loadWasmButton.addEventListener("click", async () => {
   optimizeWasmFiles(wasmFilesBefore);
 });
 
-dropArea.addEventListener("dragover", (e) => {
+dropArea.addEventListener('dragover', (e) => {
   e.preventDefault();
 });
 
-dropArea.addEventListener("dragenter", (e) => {
-  dropArea.style.outline = "solid red 1px";
+dropArea.addEventListener('dragenter', (e) => {
+  dropArea.style.outline = 'solid red 1px';
 });
 
-dropArea.addEventListener("dragleave", (e) => {
-  dropArea.style.outline = "";
+dropArea.addEventListener('dragleave', (e) => {
+  dropArea.style.outline = '';
 });
 
-dropArea.addEventListener("drop", async (e) => {
+dropArea.addEventListener('drop', async (e) => {
   e.preventDefault();
-  dropArea.style.outline = "";
+  dropArea.style.outline = '';
   const fileHandlesPromises = [...e.dataTransfer.items]
-    .filter((item) => item.kind === "file")
+    .filter((item) => item.kind === 'file')
     .map((item) =>
       supportsFileSystemAccessAPI
         ? item.getAsFileSystemHandle()
@@ -44,10 +44,10 @@ dropArea.addEventListener("drop", async (e) => {
   const wasmFilesBefore = [];
   for await (const handle of fileHandlesPromises) {
     let file = handle;
-    if (handle.kind === "file") {
+    if (handle.kind === 'file') {
       file = await handle.getFile();
     }
-    if (file.type !== "application/wasm") {
+    if (file.type !== 'application/wasm') {
       continue;
     }
     wasmFilesBefore.push(file);
@@ -56,33 +56,36 @@ dropArea.addEventListener("drop", async (e) => {
 });
 
 const optimizeWasmFiles = async (wasmFilesBefore) => {
-  resultsArea.innerHTML = "";
+  resultsArea.innerHTML = '';
   const tasks = [];
 
   for (const wasmFileBefore of wasmFilesBefore) {
     const stats = statsTemplate.content.cloneNode(true);
-    const fileNameLabel = stats.querySelector(".file-name");
-    const beforeSizeLabel = stats.querySelector(".before-size");
-    const afterSizeLabel = stats.querySelector(".after-size");
-    const deltaSizeLabel = stats.querySelector(".delta-size");
+    const fileNameLabel = stats.querySelector('.file-name');
+    const beforeSizeLabel = stats.querySelector('.before-size');
+    const afterSizeLabel = stats.querySelector('.after-size');
+    const deltaSizeLabel = stats.querySelector('.delta-size');
     fileNameLabel.textContent = wasmFileBefore.name;
     beforeSizeLabel.textContent = prettyBytes(wasmFileBefore.size);
     resultsArea.append(stats);
 
     tasks.push(() => {
       return new Promise((resolve, reject) => {
-        const worker = new Worker(new URL("./worker.js", import.meta.url), {
-          type: "module",
+        const worker = new Worker(new URL('./worker.js', import.meta.url), {
+          type: 'module',
         });
-        worker.addEventListener("message", (event) => {
+        worker.addEventListener('message', (event) => {
           const { wasmFileAfter } = event.data;
           afterSizeLabel.textContent = prettyBytes(wasmFileAfter.size);
           const deltaSize = wasmFileAfter.size - wasmFileBefore.size;
-          deltaSizeLabel.textContent = `${(100 - wasmFileAfter.size / wasmFileBefore.size * 100).toFixed(2)}%`;
+          deltaSizeLabel.textContent = `${(
+            100 -
+            (wasmFileAfter.size / wasmFileBefore.size) * 100
+          ).toFixed(2)}%`;
           if (deltaSize < 0) {
-            deltaSizeLabel.classList.add("size-smaller");
+            deltaSizeLabel.classList.add('size-smaller');
           } else if (deltaSize >= 0) {
-            deltaSizeLabel.classList.add("size-larger");
+            deltaSizeLabel.classList.add('size-larger');
           }
           worker.terminate();
           resolve();
