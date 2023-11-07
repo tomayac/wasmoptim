@@ -11,10 +11,10 @@ export default defineConfig({
       include: ['node_modules/binaryen/**/*'],
     }),
   ],
+  base: '/wasm-opt/',
   build: {
     outDir: 'docs',
     target: 'esnext',
-    base: '/wasm-opt/',
   },
   worker: {
     format: 'es',
