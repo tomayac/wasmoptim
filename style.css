@@ -110,6 +110,11 @@ tbody tr:hover {
   outline-offset: -0.1rem;
 }
 
+.file-name:hover:not(.error):not([data-processing]) {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .file-name:before {
   background-image: url("/wasm-icon.svg");
   background-size: 1rem 1rem;
