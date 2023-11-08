@@ -1,11 +1,22 @@
 import '/style.css';
 import spinner from '/spinner.svg';
 
-import { fileOpen } from 'browser-fs-access';
+import {
+  fileOpen,
+  supported as supportsFileSystemAccess,
+} from 'browser-fs-access';
 import prettyBytes from 'pretty-bytes';
-import { loadWasmButton, dropArea, resultsArea, statsTemplate } from './dom.js';
+import {
+  loadWasmButton,
+  dropArea,
+  resultsArea,
+  statsTemplate,
+  statsHeader,
+  overwriteCheckbox,
+} from './dom.js';
 import limit from './limit.js';
-const supportsFileSystemAccessAPI =
+
+const supportsFileHandleDragAndDrop =
   'getAsFileSystemHandle' in DataTransferItem.prototype;
 
 loadWasmButton.addEventListener('click', async () => {
@@ -32,20 +43,20 @@ dropArea.addEventListener('dragover', (e) => {
 });
 
 dropArea.addEventListener('dragenter', (e) => {
-  dropArea.style.outline = 'solid red 1px';
+  dropArea.classList.add('drag-hover');
 });
 
 dropArea.addEventListener('dragleave', (e) => {
-  dropArea.style.outline = '';
+  dropArea.classList.remove('drag-hover');
 });
 
 dropArea.addEventListener('drop', async (e) => {
   e.preventDefault();
-  dropArea.style.outline = '';
+  dropArea.classList.remove('drag-hover');
   const fileHandlesPromises = [...e.dataTransfer.items]
     .filter((item) => item.kind === 'file')
     .map((item) =>
-      supportsFileSystemAccessAPI
+      supportsFileHandleDragAndDrop
         ? item.getAsFileSystemHandle()
         : item.getAsFile(),
     );
@@ -58,13 +69,14 @@ dropArea.addEventListener('drop', async (e) => {
     if (file.type !== 'application/wasm') {
       continue;
     }
+    file.handle = handle;
     wasmFilesBefore.push(file);
   }
   optimizeWasmFiles(wasmFilesBefore);
 });
 
 const optimizeWasmFiles = async (wasmFilesBefore) => {
-  resultsArea.innerHTML = '';
+  statsHeader.hidden = false;
   const tasks = [];
 
   for (const wasmFileBefore of wasmFilesBefore) {
@@ -84,7 +96,7 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
         const worker = new Worker(new URL('./worker.js', import.meta.url), {
           type: 'module',
         });
-        worker.addEventListener('message', (event) => {
+        worker.addEventListener('message', async (event) => {
           worker.terminate();
           const { wasmFileAfter, error } = event.data;
           if (error) {
@@ -105,6 +117,17 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
             deltaSizeLabel.classList.add('size-smaller');
           } else if (deltaSize >= 0) {
             deltaSizeLabel.classList.add('size-larger');
+          }
+          if (
+            deltaSize < 0 &&
+            supportsFileHandleDragAndDrop &&
+            supportsFileSystemAccess &&
+            overwriteCheckbox.checked
+          ) {
+            await wasmFileBefore.handle.createWritable().then((writable) => {
+              writable.write(wasmFileAfter);
+              writable.close();
+            });
           }
           resolve();
         });

@@ -5,8 +5,8 @@
     <link rel="icon" type="image/svg+xml" href="/wasm-clamp/icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Wasm Clamp</title>
-    <script type="module" crossorigin src="/wasm-clamp/assets/index-5a3304fe.js"></script>
-    <link rel="stylesheet" href="/wasm-clamp/assets/index-84caddee.css">
+    <script type="module" crossorigin src="/wasm-clamp/assets/index-8e94ac87.js"></script>
+    <link rel="stylesheet" href="/wasm-clamp/assets/index-e3065ba4.css">
   </head>
   <body>
     <h1>Wasm Clamp</h1>
@@ -22,8 +22,17 @@
       </button>
     </div>
     <div id="drop-area">Drop <code>.wasm</code> file(s) here</div>
+    <details>
+      <summary>Settings</summary>
+      <div>
+        <label>
+          <input type="checkbox" id="overwrite-checkbox" checked />
+          Overwrite original file(s) with optimized version
+        </label>
+      </div>
+    </details>
     <table>
-      <thead>
+      <thead id="stats-header" hidden>
         <tr>
           <th>File</th>
           <th>Before</th>
@@ -33,6 +42,7 @@
       </thead>
       <tbody id="results-area"></tbody>
     </table>
+
     <template id="stats-template">
       <tr>
         <td><code class="file-name"></code></td>
