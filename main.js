@@ -14,27 +14,75 @@ import {
   statsTemplate,
   statsHeader,
   overwriteCheckbox,
+  examplesList,
+  exampleTemplate,
 } from './dom.js';
 import limit from './limit.js';
+
+const EXAMPLE_URLS = [
+  'https://unpkg.com/@mediapipe/tasks-vision@0.10.7/wasm/vision_wasm_internal.wasm',
+  'https://unpkg.com/@sqlite.org/sqlite-wasm@3.44.0-build1/sqlite-wasm/jswasm/sqlite3.wasm',
+  'https://unpkg.com/@tensorflow/tfjs-backend-wasm@4.13.0/wasm-out/tfjs-backend-wasm.wasm',
+];
 
 const supportsFileHandleDragAndDrop =
   'getAsFileSystemHandle' in DataTransferItem.prototype;
 
 const uuidToFile = new Map();
 
-if (supportsFileHandleDragAndDrop && supportsFileSystemAccess) {
-  overwriteCheckbox.parentNode.hidden = false;
+(() => {
+  if (supportsFileHandleDragAndDrop && supportsFileSystemAccess) {
+    overwriteCheckbox.parentNode.hidden = false;
 
-  overwriteCheckbox.addEventListener('change', () => {
-    localStorage.setItem('overwrite', overwriteCheckbox.checked);
-  });
+    overwriteCheckbox.addEventListener('change', () => {
+      localStorage.setItem('overwrite', overwriteCheckbox.checked);
+    });
 
-  if (localStorage.getItem('overwrite') !== 'true') {
-    overwriteCheckbox.checked = false;
-  } else {
-    overwriteCheckbox.checked = true;
+    if (localStorage.getItem('overwrite') !== 'true') {
+      overwriteCheckbox.checked = false;
+    } else {
+      overwriteCheckbox.checked = true;
+    }
   }
-}
+
+  EXAMPLE_URLS.forEach((url) => {
+    const example = exampleTemplate.content.cloneNode(true);
+    const code = example.querySelector('code');
+    const anchor = example.querySelector('a');
+    code.textContent = url
+      .replace('https://unpkg.com/', '')
+      .replace(/@\d+(\.\d+)*/g, '');
+    anchor.href = url;
+    examplesList.append(example);
+  });
+})();
+
+examplesList.addEventListener('click', async (e) => {
+  if (!e.target.nodeName.toLowerCase() === 'code') {
+    return;
+  }
+  e.preventDefault();
+  const anchor = e.target.closest('a');
+  const wasmFileURL = anchor.href;
+  const downloading = anchor.parentNode.querySelector('.downloading');
+  downloading.hidden = false;
+  const spinnerImg = anchor.parentNode.querySelector('img');
+  spinnerImg.src = spinner;
+  const wasmBlobBefore = await fetch(wasmFileURL).then((response) =>
+    response.blob(),
+  );
+  spinnerImg.src = '';
+  downloading.hidden = true;
+  const wasmFileBefore = new File(
+    [wasmBlobBefore],
+    wasmFileURL.split('/').pop(),
+    {
+      type: 'application/wasm',
+    },
+  );
+  wasmFileBefore.handle = false;
+  optimizeWasmFiles([wasmFileBefore]);
+});
 
 resultsArea.addEventListener('click', async (e) => {
   console.log(e.target);
@@ -144,8 +192,8 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
     const beforeSizeLabel = stats.querySelector('.before-size');
     const afterSizeLabel = stats.querySelector('.after-size');
     const deltaSizeLabel = stats.querySelector('.delta-size');
-    const spinnerImage = stats.querySelector('.spinner');
-    spinnerImage.src = spinner;
+    const spinnerImg = stats.querySelector('.spinner');
+    spinnerImg.src = spinner;
     fileNameLabel.textContent = wasmFileBefore.name;
     fileNameLabel.dataset.processing = true;
     beforeSizeLabel.textContent = prettyBytes(wasmFileBefore.size);
@@ -168,7 +216,16 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
           }
           afterSizeLabel.textContent = prettyBytes(wasmFileAfter.size);
           const deltaSize = wasmFileAfter.size - wasmFileBefore.size;
-          console.log(wasmFileBefore.size, wasmFileAfter.size, deltaSize);
+          console.log(
+            wasmFileBefore.name,
+            '→',
+            'Before:',
+            wasmFileBefore.size,
+            'After:',
+            wasmFileAfter.size,
+            'Delta:',
+            deltaSize,
+          );
           deltaSizeLabel.textContent = `${Math.abs(
             100 - (wasmFileAfter.size / wasmFileBefore.size) * 100,
           ).toFixed(2)}% ${deltaSize < 0 ? 'smaller' : 'larger'}`;
@@ -185,7 +242,8 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
             if (
               supportsFileHandleDragAndDrop &&
               supportsFileSystemAccess &&
-              overwriteCheckbox.checked
+              overwriteCheckbox.checked &&
+              wasmFileBefore.handle
             ) {
               await wasmFileBefore.handle.createWritable().then((writable) => {
                 writable.write(wasmFileAfter);

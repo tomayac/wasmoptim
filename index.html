@@ -19,7 +19,12 @@
         Open <code>.wasm</code> file(s)
       </button>
     </div>
-    <div id="drop-area">Drop <code>.wasm</code> file(s) here</div>
+    <div id="drop-area">
+      <p>Drop <code>.wasm</code> file(s) here…</p>
+      <p>…or try one of the examples:</p>
+      <ul id="examples-list"></ul>
+    </div>
+
     <details>
       <summary>Settings</summary>
       <div>
@@ -49,6 +54,15 @@
         <td class="delta-size"><img class="spinner" /></td>
       </tr>
     </template>
+
+    <template id="example-template">
+      <li>
+        <a href><code></code></a>
+        <span hidden class="downloading">Downloading…</span>
+        <img class="spinner" />
+      </li>
+    </template>
+
     <script type="module" src="/main.js"></script>
   </body>
 </html>
