@@ -11,7 +11,7 @@
     "fix": "prettier --write .",
     "lint": "",
     "binaryen": "shx cp ./node_modules/binaryen/index.js ./third-party/binaryen.js",
-    "deploy": "npm run fix && npm run lint && npm run build && git commit -a && git push",
+    "deploy": "npm run fix && npm run lint && npm run build && git add . && git commit -a && git push",
     "prepare": "npm run binaryen && npm run build"
   },
   "devDependencies": {

@@ -7,6 +7,8 @@
   --deepest-pink: deeppink;
   --deepest-green: lime;
   --blue: #654ff0;
+
+  accent-color: var(--blue);
 }
 
 html {
@@ -38,6 +40,23 @@ html {
 
 body {
   font-family: system-ui, sans-serif;
+  margin: 1rem;
+}
+
+main {
+  max-width: 50rem;
+}
+
+footer {
+  margin-block-start: 2rem;
+  border-top: solid 0.1rem var(--blue);
+  font-size: 0.75rem;
+  padding: 0.5rem;
+  width: 100%;
+}
+
+footer a {
+  color: var(--deepest-pink);
 }
 
 button {

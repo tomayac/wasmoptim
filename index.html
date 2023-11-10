@@ -7,53 +7,62 @@
     <title>Wasm Clamp</title>
   </head>
   <body>
-    <h1>Wasm Clamp</h1>
-    <p>Optimize your <code>.wasm</code> files for size.</p>
-    <img
-      src="/icon.png"
-      alt="Wasm Clamp logo consisting of a clamp that compresses the WebAssembly icon."
-      width="160"
-      height="160"
-    />
-    <div>
-      <button id="load-wasm" type="button">
-        Open <code>.wasm</code> file(s)
-      </button>
-      <p>
-        …or paste <code>.wasm</code> file(s) by pressing <kbd>Cmd ⌘</kbd>+<kbd
-          >v</kbd
-        >
-        or <kbd>Ctrl</kbd>+<kbd>v</kbd>
-      </p>
-    </div>
-    <div id="drop-area">
-      <p>…or drop <code>.wasm</code> file(s) here</p>
-    </div>
-    <div>
-      <p>…or try one of the examples:</p>
-      <ul id="examples-list"></ul>
-    </div>
-
-    <details>
-      <summary>Settings</summary>
+    <main>
+      <h1>Wasm Clamp</h1>
+      <p>Optimize your <code>.wasm</code> files for size.</p>
+      <img
+        src="/icon.png"
+        alt="Wasm Clamp logo consisting of a clamp that compresses the WebAssembly icon."
+        width="160"
+        height="160"
+      />
       <div>
-        <label hidden>
-          <input type="checkbox" id="overwrite-checkbox" checked />
-          Overwrite original file(s) with optimized version
-        </label>
+        <button id="load-wasm" type="button">
+          Open <code>.wasm</code> file(s)
+        </button>
+        <p>
+          …or paste <code>.wasm</code> file(s) by pressing <kbd>Cmd ⌘</kbd>+<kbd
+            >v</kbd
+          >
+          or <kbd>Ctrl</kbd>+<kbd>v</kbd>
+        </p>
       </div>
-    </details>
-    <table hidden>
-      <thead id="stats-header" hidden>
-        <tr>
-          <th>File</th>
-          <th>Before</th>
-          <th>After</th>
-          <th>Savings</th>
-        </tr>
-      </thead>
-      <tbody id="results-area"></tbody>
-    </table>
+      <div id="drop-area">
+        <p>…or drop <code>.wasm</code> file(s) here</p>
+      </div>
+      <div>
+        <p>…or try one of the examples:</p>
+        <ul id="examples-list"></ul>
+      </div>
+
+      <details>
+        <summary>Settings</summary>
+        <div>
+          <label hidden>
+            <input type="checkbox" id="overwrite-checkbox" checked />
+            Overwrite original file(s) with optimized version
+          </label>
+        </div>
+      </details>
+      <table hidden>
+        <thead id="stats-header" hidden>
+          <tr>
+            <th>File</th>
+            <th>Before</th>
+            <th>After</th>
+            <th>Savings</th>
+          </tr>
+        </thead>
+        <tbody id="results-area"></tbody>
+      </table>
+    </main>
+    <footer>
+      <p>
+        Powered by
+        <a href="https://github.com/AssemblyScript/binaryen.js">binaryen.js</a>.
+        Developed by <a href="https://blog.tomayac.com/">Thomas Steiner</a>.
+      </p>
+    </footer>
 
     <template id="stats-template">
       <tr>

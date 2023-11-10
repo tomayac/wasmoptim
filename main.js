@@ -55,6 +55,38 @@ const uuidToFile = new Map();
     anchor.href = url;
     examplesList.append(example);
   });
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', async () => {
+      try {
+        await navigator.serviceWorker.register('./sharetargetsw.js', {
+          scope: '/share-target/',
+        });
+      } catch (err) {
+        console.error(err.name, err.message);
+      }
+
+      if (location.search.includes('share-target')) {
+        const keys = await caches.keys();
+        const mediaCache = await caches.open(
+          keys.filter((key) => key.startsWith('media'))[0],
+        );
+        const wasmFilesBefore = await mediaCache.match('shared-wasm-files');
+        if (wasmFilesBefore) {
+          wasmFilesBefore.handle = false;
+          optimizeWasmFiles([wasmFilesBefore]);
+        }
+      }
+    });
+  }
+
+  const updateSW = registerSW({
+    onOfflineReady() {},
+    onNeedRefresh() {
+      location.reload();
+    },
+  });
+  updateSW();
 })();
 
 document.addEventListener('paste', (e) => {
