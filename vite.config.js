@@ -10,7 +10,7 @@ import webmanifest from './manifest.json';
 export default defineConfig({
   plugins: [
     dynamicImportVars({
-      include: ['./third_party/*'],
+      include: ['./third-party/*'],
     }),
     vitePWA({
       registerType: 'autoUpdate',

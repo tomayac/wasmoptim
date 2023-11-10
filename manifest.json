@@ -32,9 +32,9 @@
   ],
   "icons": [
     {
-      "src": "icon.png",
+      "src": "maskable-icon.png",
       "type": "image/png",
-      "sizes": "160x160",
+      "sizes": "192x192",
       "purpose": "maskable"
     },
     {
