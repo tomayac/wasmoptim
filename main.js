@@ -57,6 +57,20 @@ const uuidToFile = new Map();
   });
 })();
 
+document.addEventListener('paste', (e) => {
+  try {
+    if (!e.clipboardData.files.length) {
+      return;
+    }
+    const wasmFilesBefore = Array.from(e.clipboardData.files).filter(
+      (file) => file.type === 'application/wasm' || file.name.endsWith('.wasm'),
+    );
+    optimizeWasmFiles(wasmFilesBefore);
+  } catch (err) {
+    console.error(err.name, err.message);
+  }
+});
+
 examplesList.addEventListener('click', async (e) => {
   if (!e.target.nodeName.toLowerCase() === 'code') {
     return;
@@ -85,14 +99,18 @@ examplesList.addEventListener('click', async (e) => {
 });
 
 resultsArea.addEventListener('click', async (e) => {
-  console.log(e.target);
-  if (!e.target.classList.contains('file-name')) {
+  if (!e.target.nodeName.toLowerCase() === 'code') {
     return;
   }
-  if (e.target.dataset.processing) {
+  const anchor = e.target.closest('a');
+  if (!anchor.classList.contains('file-name')) {
     return;
   }
-  const uuid = e.target.dataset.uuid;
+  if (anchor.dataset.processing) {
+    return;
+  }
+  e.preventDefault();
+  const uuid = anchor.dataset.uuid;
   const file = uuidToFile.get(uuid);
   try {
     await fileSave(file, {
@@ -184,6 +202,7 @@ const checkForAndPossiblyAskForPermissions = async (wasmFilesBefore) => {
 
 const optimizeWasmFiles = async (wasmFilesBefore) => {
   statsHeader.hidden = false;
+  resultsArea.closest('table').hidden = false;
   const tasks = [];
 
   for (const wasmFileBefore of wasmFilesBefore) {
@@ -194,7 +213,7 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
     const deltaSizeLabel = stats.querySelector('.delta-size');
     const spinnerImg = stats.querySelector('.spinner');
     spinnerImg.src = spinner;
-    fileNameLabel.textContent = wasmFileBefore.name;
+    fileNameLabel.querySelector('code').textContent = wasmFileBefore.name;
     fileNameLabel.dataset.processing = true;
     beforeSizeLabel.textContent = prettyBytes(wasmFileBefore.size);
     resultsArea.append(stats);

@@ -67,6 +67,14 @@ code {
   color: var(--deepest-pink);
 }
 
+kbd {
+  font-family: ui-monospace, monospace;
+  border: 0.1rem solid var(--blue);
+  border-bottom: 0.25rem solid var(--blue);
+  border-radius: 0.25rem;
+  padding: 0.1rem 0.4rem;
+}
+
 details {
   margin-block: 1rem;
 }
@@ -78,6 +86,12 @@ details > * {
 summary {
   cursor: pointer;
   width: max-content;
+}
+
+summary::before {
+  content: "⚙️" / "";
+  display: inline-block;
+  margin-inline-end: 0.5rem;
 }
 
 table {
@@ -124,11 +138,6 @@ li {
   height: 1rem;
 }
 
-.file-name:hover:not(.error):not([data-processing]) {
-  text-decoration: underline;
-  cursor: pointer;
-}
-
 .file-name:before {
   background-image: url("/wasm-icon.svg");
   background-size: 1rem 1rem;
@@ -141,7 +150,7 @@ li {
 
 #drop-area {
   width: 100%;
-  height: 50dvh;
+  height: 25dvh;
   outline: solid 0.25rem var(--blue);
   outline-offset: -0.25rem;
   padding: 0.5rem;
@@ -161,22 +170,28 @@ li {
   margin-inline-end: 0.25rem;
 }
 
-#examples-list a {
+#examples-list a,
+#results-area a {
   text-decoration: none;
   color: var(--deepest-pink);
 }
 
-#examples-list a:hover {
+#examples-list a:hover,
+#results-area a:hover:not(.error):not([data-processing]) {
   text-decoration: underline;
 }
 
+#results-area a[data-processing]:hover {
+  cursor: wait;
+}
+
 .size-smaller::before {
-  content: "✔️";
+  content: "✔️" / "";
   background-color: var(--deepest-green);
 }
 
 .size-larger::before {
-  content: "×";
+  content: "×" / "";
   font-size: 2.5rem;
   background-color: gray;
   vertical-align: sub;

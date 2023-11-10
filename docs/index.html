@@ -5,11 +5,12 @@
     <link rel="icon" type="image/svg+xml" href="/wasm-clamp/icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Wasm Clamp</title>
-    <script type="module" crossorigin src="/wasm-clamp/assets/index-67e7947a.js"></script>
-    <link rel="stylesheet" href="/wasm-clamp/assets/index-63e6062b.css">
+    <script type="module" crossorigin src="/wasm-clamp/assets/index-8a93bb9b.js"></script>
+    <link rel="stylesheet" href="/wasm-clamp/assets/index-c5f12847.css">
   </head>
   <body>
     <h1>Wasm Clamp</h1>
+    <p>Optimize your <code>.wasm</code> files for size.</p>
     <img
       src="/wasm-clamp/icon.png"
       alt="Wasm Clamp logo consisting of a clamp that compresses the WebAssembly icon."
@@ -20,9 +21,17 @@
       <button id="load-wasm" type="button">
         Open <code>.wasm</code> file(s)
       </button>
+      <p>
+        …or paste <code>.wasm</code> file(s) by pressing <kbd>Cmd ⌘</kbd>+<kbd
+          >v</kbd
+        >
+        or <kbd>Ctrl</kbd>+<kbd>v</kbd>
+      </p>
     </div>
     <div id="drop-area">
-      <p>Drop <code>.wasm</code> file(s) here…</p>
+      <p>…or drop <code>.wasm</code> file(s) here</p>
+    </div>
+    <div>
       <p>…or try one of the examples:</p>
       <ul id="examples-list"></ul>
     </div>
@@ -36,7 +45,7 @@
         </label>
       </div>
     </details>
-    <table>
+    <table hidden>
       <thead id="stats-header" hidden>
         <tr>
           <th>File</th>
@@ -50,18 +59,20 @@
 
     <template id="stats-template">
       <tr>
-        <td><code class="file-name"></code></td>
+        <td>
+          <a href="#" class="file-name"><code></code></a>
+        </td>
         <td class="before-size"></td>
         <td class="after-size"></td>
-        <td class="delta-size"><img class="spinner" /></td>
+        <td class="delta-size"><img class="spinner" alt="Optimizing…" /></td>
       </tr>
     </template>
 
     <template id="example-template">
       <li>
-        <a href><code></code></a>
+        <a><code></code></a>
         <span hidden class="downloading">Downloading…</span>
-        <img class="spinner" />
+        <img class="spinner" alt="" />
       </li>
     </template>
 
