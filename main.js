@@ -21,10 +21,13 @@ import {
 import limit from './limit.js';
 
 const EXAMPLE_URLS = [
-  'https://unpkg.com/@mediapipe/tasks-vision@0.10.7/wasm/vision_wasm_internal.wasm',
+  'https://unpkg.com/canvaskit-wasm@0.39.1/bin/canvaskit.wasm',
+  'https://unpkg.com/zxing-wasm@1.0.0-rc.4/dist/full/zxing_full.wasm',
   'https://unpkg.com/@sqlite.org/sqlite-wasm@3.44.0-build1/sqlite-wasm/jswasm/sqlite3.wasm',
   'https://unpkg.com/@tensorflow/tfjs-backend-wasm@4.13.0/wasm-out/tfjs-backend-wasm.wasm',
 ];
+const SEMVER_REGEX =
+  /@(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?/;
 
 const supportsFileHandleDragAndDrop =
   'getAsFileSystemHandle' in DataTransferItem.prototype;
@@ -32,6 +35,19 @@ const supportsFileHandleDragAndDrop =
 const uuidToFile = new Map();
 
 (() => {
+  const colorSchemeChange = (e) => {
+    const metaThemeColor = document.querySelector('meta[name=theme-color]');
+    if (e.matches) {
+      metaThemeColor.content = 'Canvas';
+      return;
+    }
+  };
+  matchMedia('(prefers-color-scheme: dark)').addEventListener(
+    'change',
+    colorSchemeChange,
+  );
+  colorSchemeChange(matchMedia('(prefers-color-scheme: dark)'));
+
   if (supportsFileHandleDragAndDrop && supportsFileSystemAccess) {
     overwriteCheckbox.parentNode.hidden = false;
 
@@ -52,7 +68,7 @@ const uuidToFile = new Map();
     const anchor = example.querySelector('a');
     code.textContent = url
       .replace('https://unpkg.com/', '')
-      .replace(/@\d+(\.\d+)*/g, '');
+      .replace(SEMVER_REGEX, '');
     anchor.href = url;
     examplesList.append(example);
   });

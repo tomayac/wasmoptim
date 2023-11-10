@@ -66,6 +66,7 @@ footer {
   font-size: 0.75rem;
   padding: 0.5rem;
   width: 100%;
+  max-width: 50rem;
 }
 
 footer a {
