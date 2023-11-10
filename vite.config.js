@@ -4,11 +4,18 @@
 
 import { defineConfig } from 'vite';
 import dynamicImportVars from '@rollup/plugin-dynamic-import-vars';
+import { VitePWA as vitePWA } from 'vite-plugin-pwa';
+import webmanifest from './manifest.json';
 
 export default defineConfig({
   plugins: [
     dynamicImportVars({
       include: ['./third_party/*'],
+    }),
+    vitePWA({
+      registerType: 'autoUpdate',
+      injectRegister: 'auto',
+      manifest: webmanifest,
     }),
   ],
   base: '/wasm-clamp/',
