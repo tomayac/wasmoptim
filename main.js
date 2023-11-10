@@ -192,6 +192,34 @@ dropArea.addEventListener('drop', async (e) => {
   optimizeWasmFiles(wasmFilesBefore);
 });
 
+if ('launchQueue' in window && 'files' in LaunchParams.prototype) {
+  launchQueue.setConsumer(async (launchParams) => {
+    if (!launchParams.files.length) {
+      return;
+    }
+    const wasmFilesBefore = [];
+    for (const handle of launchParams.files) {
+      const file = await handle.getFile();
+      file.handle = handle;
+      if (
+        (file.type && file.type !== 'application/wasm') ||
+        !file.name.endsWith('.wasm')
+      ) {
+        continue;
+      }
+      wasmFilesBefore.push(file);
+    }
+    if (
+      supportsFileSystemAccess &&
+      supportsFileSystemAccess &&
+      overwriteCheckbox.checked
+    ) {
+      await checkForAndPossiblyAskForPermissions(wasmFilesBefore);
+    }
+    optimizeWasmFiles(wasmFilesBefore);
+  });
+}
+
 const checkForAndPossiblyAskForPermissions = async (wasmFilesBefore) => {
   for (const wasmFileBefore of wasmFilesBefore) {
     const state = await wasmFileBefore.handle.requestPermission({
