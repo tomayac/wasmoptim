@@ -45,6 +45,7 @@ body {
 }
 
 #titlebar {
+  display: none;
   background-color: Canvas;
   -webkit-app-region: drag;
   app-region: drag;
@@ -53,6 +54,12 @@ body {
   width: env(titlebar-area-width, 100%);
   height: env(titlebar-area-height, 33px);
   position: fixed;
+}
+
+@media (display-mode: window-controls-overlay) {
+  #titlebar {
+    display: block;
+  }
 }
 
 main {
@@ -128,6 +135,7 @@ summary {
 }
 
 summary::before {
+  content: "⚙️";
   content: "⚙️" / "";
   display: inline-block;
   margin-inline-end: 0.5rem;
@@ -225,11 +233,13 @@ li {
 }
 
 .size-smaller::before {
+  content: "✔️";
   content: "✔️" / "";
   background-color: var(--deepest-green);
 }
 
 .size-larger::before {
+  content: "×";
   content: "×" / "";
   font-size: 2.5rem;
   background-color: gray;
