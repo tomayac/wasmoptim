@@ -105,7 +105,7 @@ document.addEventListener('paste', (e) => {
 });
 
 examplesList.addEventListener('click', async (e) => {
-  if (!e.target.nodeName.toLowerCase() === 'code') {
+  if (e.target.nodeName.toLowerCase() !== 'code') {
     return;
   }
   e.preventDefault();
@@ -132,7 +132,7 @@ examplesList.addEventListener('click', async (e) => {
 });
 
 resultsArea.addEventListener('click', async (e) => {
-  if (!e.target.nodeName.toLowerCase() === 'code') {
+  if (e.target.nodeName.toLowerCase() !== 'code') {
     return;
   }
   const anchor = e.target.closest('a');
