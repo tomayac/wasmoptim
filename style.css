@@ -59,6 +59,10 @@ footer a {
   color: var(--deepest-pink);
 }
 
+img:not([src]) {
+  display: none;
+}
+
 button {
   background-color: var(--blue);
   display: inline-block;

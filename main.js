@@ -73,6 +73,7 @@ const uuidToFile = new Map();
           keys.filter((key) => key.startsWith('media'))[0],
         );
         const wasmFilesBefore = await mediaCache.match('shared-wasm-files');
+        console.log('main', wasmFilesBefore);
         if (wasmFilesBefore) {
           wasmFilesBefore.handle = false;
           optimizeWasmFiles([wasmFilesBefore]);

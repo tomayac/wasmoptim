@@ -35,6 +35,7 @@ self.addEventListener('fetch', (fetchEvent) => {
       (async () => {
         const formData = await fetchEvent.request.formData();
         const wasmFiles = formData.get('wasm-files');
+        console.log('Share Target SW', wasmFiles);
         const keys = await caches.keys();
         const mediaCache = await caches.open(
           keys.filter((key) => key.startsWith('media'))[0],
