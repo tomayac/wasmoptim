@@ -59,7 +59,7 @@
     "params": {
       "files": [
         {
-          "name": "wasm-files",
+          "name": "wasm-file",
           "accept": ["application/wasm"]
         }
       ]

@@ -68,15 +68,23 @@ const uuidToFile = new Map();
       }
 
       if (location.search.includes('share-target')) {
-        const keys = await caches.keys();
-        const mediaCache = await caches.open(
-          keys.filter((key) => key.startsWith('media'))[0],
-        );
-        const wasmFilesBefore = await mediaCache.match('shared-wasm-files');
-        console.log('main', wasmFilesBefore);
-        if (wasmFilesBefore) {
-          wasmFilesBefore.handle = false;
-          optimizeWasmFiles([wasmFilesBefore]);
+        try {
+          const urlSearchParams = new URLSearchParams(location.search);
+          const fileName = urlSearchParams.get('share-target');
+          const keys = await caches.keys();
+          const mediaCache = await caches.open(
+            keys.filter((key) => key.startsWith('media'))[0],
+          );
+          const wasmResponse = await mediaCache.match('shared-wasm-file');
+          await mediaCache.delete('shared-wasm-file');
+          const wasmBlob = await wasmResponse.blob();
+          const wasmFileBefore = new File([wasmBlob], fileName, {
+            type: 'application/wasm',
+          });
+          wasmFileBefore.handle = false;
+          optimizeWasmFiles([wasmFileBefore]);
+        } catch (err) {
+          console.error(err.name, err.message);
         }
       }
     });

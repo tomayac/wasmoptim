@@ -34,14 +34,13 @@ self.addEventListener('fetch', (fetchEvent) => {
     return fetchEvent.respondWith(
       (async () => {
         const formData = await fetchEvent.request.formData();
-        const wasmFiles = formData.get('wasm-files');
-        console.log('Share Target SW', wasmFiles);
+        const wasmFile = formData.get('wasm-file');
         const keys = await caches.keys();
         const mediaCache = await caches.open(
           keys.filter((key) => key.startsWith('media'))[0],
         );
-        await mediaCache.put('shared-wasm-files', new Response(wasmFiles));
-        return Response.redirect('./?share-target', 303);
+        await mediaCache.put('shared-wasm-file', new Response(wasmFile));
+        return Response.redirect(`./?share-target=${wasmFile.name}`, 303);
       })(),
     );
   }
