@@ -143,7 +143,7 @@ examplesList.addEventListener('click', async (e) => {
   const wasmBlobBefore = await fetch(wasmFileURL).then((response) =>
     response.blob(),
   );
-  spinnerImg.src = '';
+  spinnerImg.removeAttribute('src');
   downloading.hidden = true;
   const wasmFileBefore = new File(
     [wasmBlobBefore],
