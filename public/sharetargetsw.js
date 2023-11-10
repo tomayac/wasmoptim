@@ -39,7 +39,7 @@ self.addEventListener('fetch', (fetchEvent) => {
         const mediaCache = await caches.open(
           keys.filter((key) => key.startsWith('media'))[0],
         );
-        await mediaCache.put('shared-wasm-files', new Response(image));
+        await mediaCache.put('shared-wasm-files', new Response(wasmFiles));
         return Response.redirect('./?share-target', 303);
       })(),
     );
