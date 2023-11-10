@@ -13,6 +13,9 @@ export default defineConfig({
       include: ['./third-party/*'],
     }),
     vitePWA({
+      devOptions: {
+        enabled: true,
+      },
       registerType: 'autoUpdate',
       injectRegister: 'auto',
       manifest: webmanifest,

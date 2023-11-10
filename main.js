@@ -1,4 +1,5 @@
 import '/style.css';
+import { registerSW } from 'virtual:pwa-register';
 import spinner from '/spinner.svg';
 
 import {
@@ -60,7 +61,7 @@ const uuidToFile = new Map();
     window.addEventListener('load', async () => {
       try {
         await navigator.serviceWorker.register('./sharetargetsw.js', {
-          scope: '/share-target/',
+          scope: './share-target/',
         });
       } catch (err) {
         console.error(err.name, err.message);
