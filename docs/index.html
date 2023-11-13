@@ -7,7 +7,7 @@
     <meta name="theme-color" />
     <meta name="color-scheme" content="dark light" />
     <title>Wasm Clamp</title>
-    <script type="module" crossorigin src="/wasm-clamp/assets/index-ccaadcd0.js"></script>
+    <script type="module" crossorigin src="/wasm-clamp/assets/index-80b74619.js"></script>
     <link rel="stylesheet" href="/wasm-clamp/assets/index-5e1ffe44.css">
   <link rel="manifest" href="/wasm-clamp/manifest.webmanifest"></head>
   <body>
@@ -24,6 +24,10 @@
       <div>
         <button id="load-wasm" type="button">
           Open <code>.wasm</code> file(s)
+        </button>
+        …or
+        <button id="load-directory" type="button">
+          Open directory with <code>.wasm</code> files
         </button>
         <p>
           …or paste <code>.wasm</code> file(s) by pressing <kbd>Cmd ⌘</kbd>+<kbd
@@ -45,7 +49,13 @@
         <div>
           <label hidden>
             <input type="checkbox" id="overwrite-checkbox" checked />
-            Overwrite original file(s) with optimized version
+            Overwrite original file(s) with optimized version.
+          </label>
+        </div>
+        <div>
+          <label hidden>
+            <input type="checkbox" id="observe-changes-checkbox" checked />
+            Watch open files for changes and re-optimize.
           </label>
         </div>
       </details>

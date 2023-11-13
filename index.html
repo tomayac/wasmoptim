@@ -23,6 +23,10 @@
         <button id="load-wasm" type="button">
           Open <code>.wasm</code> file(s)
         </button>
+        …or
+        <button id="load-directory" type="button">
+          Open directory with <code>.wasm</code> files
+        </button>
         <p>
           …or paste <code>.wasm</code> file(s) by pressing <kbd>Cmd ⌘</kbd>+<kbd
             >v</kbd
@@ -43,7 +47,13 @@
         <div>
           <label hidden>
             <input type="checkbox" id="overwrite-checkbox" checked />
-            Overwrite original file(s) with optimized version
+            Overwrite original file(s) with optimized version.
+          </label>
+        </div>
+        <div>
+          <label hidden>
+            <input type="checkbox" id="observe-changes-checkbox" checked />
+            Watch open files for changes and re-optimize.
           </label>
         </div>
       </details>

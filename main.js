@@ -4,6 +4,7 @@ import spinner from '/spinner.svg';
 
 import {
   fileOpen,
+  directoryOpen,
   fileSave,
   supported as supportsFileSystemAccess,
 } from 'browser-fs-access';
@@ -15,8 +16,10 @@ import {
   statsTemplate,
   statsHeader,
   overwriteCheckbox,
+  observeChangesCheckbox,
   examplesList,
   exampleTemplate,
+  loadDirectoryButton,
 } from './dom.js';
 import limit from './limit.js';
 
@@ -31,8 +34,22 @@ const SEMVER_REGEX =
 
 const supportsFileHandleDragAndDrop =
   'getAsFileSystemHandle' in DataTransferItem.prototype;
+const supportsFileSystemObserver = 'FileSystemObserver' in window;
 
 const uuidToFile = new Map();
+
+let fileSystemChangeObserver = null;
+
+const fileSystemChangeCallback = (changes) => {
+  console.log(changes);
+};
+
+const getFileSystemChangeObserver = () => {
+  if (!fileSystemChangeObserver) {
+    fileSystemChangeObserver = new FileSystemObserver(fileSystemChangeCallback);
+  }
+  return fileSystemChangeObserver;
+};
 
 (() => {
   const colorSchemeChange = (e) => {
@@ -47,6 +64,35 @@ const uuidToFile = new Map();
     colorSchemeChange,
   );
   colorSchemeChange(matchMedia('(prefers-color-scheme: dark)'));
+
+  if (supportsFileSystemObserver) {
+    observeChangesCheckbox.parentNode.hidden = false;
+    observeChangesCheckbox.addEventListener('change', () => {
+      localStorage.setItem('observe-changes', observeChangesCheckbox.checked);
+
+      if (observeChangesCheckbox.checked) {
+        getFileSystemChangeObserver();
+        for (const [, file] of uuidToFile.entries()) {
+          if (!file.handle) {
+            continue;
+          }
+          console.log(`Observing ${file.name} for changes.`);
+          fileSystemChangeObserver.observe(file.handle);
+        }
+        return;
+      }
+      if (fileSystemChangeObserver) {
+        fileSystemChangeObserver.disconnect();
+        fileSystemChangeObserver = null;
+      }
+    });
+
+    if (localStorage.getItem('observe-changes') !== 'true') {
+      observeChangesCheckbox.checked = false;
+    } else {
+      observeChangesCheckbox.checked = true;
+    }
+  }
 
   if (supportsFileHandleDragAndDrop && supportsFileSystemAccess) {
     overwriteCheckbox.parentNode.hidden = false;
@@ -184,6 +230,24 @@ resultsArea.addEventListener('click', async (e) => {
   }
 });
 
+loadDirectoryButton.addEventListener('click', async () => {
+  try {
+    const files = await directoryOpen({
+      recursive: true,
+      mode: 'readwrite',
+    });
+    const wasmFilesBefore = files.filter(
+      (file) => file.type === 'application/wasm' || file.name.endsWith('.wasm'),
+    );
+    optimizeWasmFiles(wasmFilesBefore);
+  } catch (error) {
+    if (error.name === 'AbortError') {
+      return;
+    }
+    console.error(error.name, error.message);
+  }
+});
+
 loadWasmButton.addEventListener('click', async () => {
   try {
     const wasmFilesBefore = await fileOpen({
@@ -309,6 +373,7 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
         const worker = new Worker(new URL('./worker.js', import.meta.url));
         worker.addEventListener('message', async (event) => {
           worker.terminate();
+          delete fileNameLabel.dataset.processing;
           const { wasmFileAfter, error } = event.data;
           if (error) {
             reject(error);
@@ -331,19 +396,19 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
             'Delta:',
             deltaSize,
           );
-          deltaSizeLabel.textContent = `${Math.abs(
-            100 - (wasmFileAfter.size / wasmFileBefore.size) * 100,
-          ).toFixed(2)}% ${deltaSize < 0 ? 'smaller' : 'larger'}`;
+          deltaSizeLabel.textContent =
+            deltaSize === 0
+              ? 'no change'
+              : `${Math.abs(
+                  100 - (wasmFileAfter.size / wasmFileBefore.size) * 100,
+                ).toFixed(2)}% ${deltaSize < 0 ? 'smaller' : 'larger'}`;
+          deltaSizeLabel.classList.add(
+            deltaSize < 0 ? 'size-smaller' : 'size-larger',
+          );
+          const uuid = crypto.randomUUID();
+          fileNameLabel.dataset.uuid = uuid;
+          uuidToFile.set(uuid, wasmFileAfter);
           if (deltaSize < 0) {
-            deltaSizeLabel.classList.add('size-smaller');
-          } else if (deltaSize >= 0) {
-            deltaSizeLabel.classList.add('size-larger');
-          }
-          if (deltaSize < 0) {
-            const uuid = crypto.randomUUID();
-            fileNameLabel.dataset.uuid = uuid;
-            delete fileNameLabel.dataset.processing;
-            uuidToFile.set(uuid, wasmFileAfter);
             if (
               supportsFileHandleDragAndDrop &&
               supportsFileSystemAccess &&
@@ -354,7 +419,13 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
                 writable.write(wasmFileAfter);
                 writable.close();
               });
+              uuidToFile.set(uuid, wasmFileBefore);
             }
+          }
+          if (observeChangesCheckbox.checked) {
+            getFileSystemChangeObserver();
+            console.log(`Observing ${wasmFileBefore.name} for changes.`);
+            fileSystemChangeObserver.observe(wasmFileBefore.handle);
           }
           resolve();
         });
