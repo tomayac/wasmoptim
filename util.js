@@ -1,4 +1,4 @@
-export default async function limit(tasks, concurrency) {
+const limit = async (tasks, concurrency) => {
   const results = [];
 
   async function runTasks(tasksIterator) {
@@ -15,4 +15,18 @@ export default async function limit(tasks, concurrency) {
   await Promise.allSettled(workers);
 
   return results;
-}
+};
+
+const debounce = (func, wait) => {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+};
+
+export { limit, debounce };

@@ -1,5 +1,5 @@
 self.addEventListener('message', async (event) => {
-  const binaryen = (await import('./third-party/binaryen.js')).default;
+  const { default: binaryen } = await import('./third-party/binaryen.js');
   const { wasmFileBefore } = event.data;
   try {
     const wasmBufferBefore = await wasmFileBefore.arrayBuffer();
