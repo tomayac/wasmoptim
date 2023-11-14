@@ -66,7 +66,11 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
               ? 'no change'
               : `${deltaSizePercent}% ${deltaSize < 0 ? 'smaller' : 'larger'}`;
           deltaSizeLabel.classList.add(
-            deltaSize < 0 ? 'size-smaller' : 'size-larger',
+            Number(deltaSizePercent) === 0
+              ? 'size-larger'
+              : deltaSize < 0
+              ? 'size-smaller'
+              : 'size-larger',
           );
           const uniqueId =
             supportsGetUniqueId && wasmFileBefore.handle
@@ -114,7 +118,7 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
   await limit(
     tasks,
     'hardwareConcurrency' in navigator
-      ? Math.floor(navigator.hardwareConcurrency / 2)
+      ? Math.floor(navigator.hardwareConcurrency)
       : 4,
   );
 };
