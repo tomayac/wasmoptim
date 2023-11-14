@@ -67,6 +67,15 @@ main {
   max-width: 50rem;
 }
 
+h1 {
+  font-size: 1.5rem;
+}
+
+h2 {
+  font-size: 1.25rem;
+  text-wrap: pretty;
+}
+
 img {
   float: right;
 }
