@@ -55,7 +55,7 @@ body {
 
 #titlebar {
   display: none;
-  background-color: Canvas;
+  background-color: var(--canvas-color);
   -webkit-app-region: drag;
   app-region: drag;
   left: env(titlebar-area-x, 0);
