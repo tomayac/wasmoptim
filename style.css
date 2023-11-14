@@ -228,7 +228,7 @@ li {
 }
 
 #examples-list a:hover,
-#results-area a:hover:not(.error):not([data-processing]) {
+#results-area a:hover:not(.error):not(.processing) {
   text-decoration: underline;
 }
 
@@ -236,7 +236,7 @@ li {
   cursor: not-allowed;
 }
 
-#results-area a[data-processing]:hover {
+#results-area a.processing:hover {
   cursor: wait;
 }
 

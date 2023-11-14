@@ -1,5 +1,4 @@
 import '/style.css';
-
 import { supported as supportsFileSystemAccess } from 'browser-fs-access';
 import './ui.js';
 import './wasm-optimize.js';

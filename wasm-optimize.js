@@ -5,7 +5,7 @@ import {
   supportsFileSystemObserver,
 } from './main.js';
 import { supported as supportsFileSystemAccess } from 'browser-fs-access';
-
+import { supportsGetUniqueId } from './file-system-change-observer.js';
 import {
   statsTemplate,
   statsHeader,
@@ -13,7 +13,6 @@ import {
   observeChangesCheckbox,
   overwriteCheckbox,
 } from './dom.js';
-
 import { limit } from './util.js';
 
 const uuidToFile = new Map();
@@ -32,7 +31,7 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
     const spinnerImg = stats.querySelector('.spinner');
     spinnerImg.src = spinner;
     fileNameLabel.querySelector('code').textContent = wasmFileBefore.name;
-    fileNameLabel.dataset.processing = true;
+    fileNameLabel.classList.add('processing');
     beforeSizeLabel.textContent = prettyBytes(wasmFileBefore.size);
     resultsArea.append(stats);
 
@@ -43,7 +42,7 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
         );
         worker.addEventListener('message', async (event) => {
           worker.terminate();
-          delete fileNameLabel.dataset.processing;
+          fileNameLabel.classList.remove('processing');
           const { wasmFileAfter, error } = event.data;
           if (error) {
             reject(error);
@@ -57,28 +56,24 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
           afterSizeLabel.textContent = prettyBytes(wasmFileAfter.size);
           const deltaSize = wasmFileAfter.size - wasmFileBefore.size;
           console.log(
-            wasmFileBefore.name,
-            '→',
-            'Before:',
-            wasmFileBefore.size,
-            'After:',
-            wasmFileAfter.size,
-            'Delta:',
-            deltaSize,
+            `${wasmFileBefore.name} processed → Before: ${wasmFileBefore.size} After: ${wasmFileAfter.size} Delta: ${deltaSize}`,
           );
+          const deltaSizePercent = Math.abs(
+            100 - (wasmFileAfter.size / wasmFileBefore.size) * 100,
+          ).toFixed(2);
           deltaSizeLabel.textContent =
-            deltaSize === 0
+            Number(deltaSizePercent) === 0
               ? 'no change'
-              : `${Math.abs(
-                  100 - (wasmFileAfter.size / wasmFileBefore.size) * 100,
-                ).toFixed(2)}% ${deltaSize < 0 ? 'smaller' : 'larger'}`;
+              : `${deltaSizePercent}% ${deltaSize < 0 ? 'smaller' : 'larger'}`;
           deltaSizeLabel.classList.add(
             deltaSize < 0 ? 'size-smaller' : 'size-larger',
           );
-          // ToDo: Pending implementation of https://github.com/whatwg/fs/pull/46.
-          const fakeUUID = wasmFileBefore.name;
-          fileNameLabel.dataset.uuid = fakeUUID;
-          uuidToFile.set(fakeUUID, {
+          const uniqueId =
+            supportsGetUniqueId && wasmFileBefore.handle
+              ? await wasmFileBefore.handle.getUniqueId()
+              : wasmFileBefore.name;
+          fileNameLabel.dataset.uuid = uniqueId;
+          uuidToFile.set(uniqueId, {
             file: wasmFileAfter,
             handle: wasmFileBefore.handle,
           });
@@ -108,6 +103,7 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
             );
             const fileSystemChangeObserver = getFileSystemChangeObserver();
             fileSystemChangeObserver.observe(wasmFileBefore.handle);
+            console.log(`${wasmFileBefore.name} → Observing changes`);
           }
           resolve();
         });

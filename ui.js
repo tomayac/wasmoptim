@@ -1,16 +1,12 @@
 import spinner from '/spinner.svg';
-import { uuidToFile } from './wasm-optimize.js';
+import { optimizeWasmFiles, uuidToFile } from './wasm-optimize.js';
 import { supportsFileHandleDragAndDrop } from './main.js';
-
 import {
   fileOpen,
   directoryOpen,
   fileSave,
   supported as supportsFileSystemAccess,
 } from 'browser-fs-access';
-
-import { optimizeWasmFiles } from './wasm-optimize.js';
-
 import {
   loadWasmButton,
   dropArea,
@@ -96,17 +92,17 @@ resultsArea.addEventListener('click', async (e) => {
   if (e.target.nodeName.toLowerCase() !== 'code') {
     return;
   }
-  const anchor = e.target.closest('a');
+  const fileNameLabel = e.target.closest('a');
   if (
-    !anchor.classList.contains('file-name') ||
-    anchor.classList.contains('error')
+    !fileNameLabel.classList.contains('file-name') ||
+    fileNameLabel.classList.contains('error')
   ) {
     return;
   }
-  if (anchor.dataset.processing) {
+  if (fileNameLabel.classList.contains('processing')) {
     return;
   }
-  const uuid = anchor.dataset.uuid;
+  const uuid = fileNameLabel.dataset.uuid;
   const { file } = uuidToFile.get(uuid);
   try {
     await fileSave(file, {
@@ -179,14 +175,40 @@ dropArea.addEventListener('drop', async (e) => {
     .map((item) =>
       supportsFileHandleDragAndDrop
         ? item.getAsFileSystemHandle()
-        : item.getAsFile(),
+        : item.webkitGetAsEntry(),
     );
   const wasmFilesBefore = [];
   for await (const handle of fileHandlesPromises) {
-    let file = handle;
+    if (handle.kind === 'directory') {
+      const { readDirectory } = await import('./util.js');
+      let entries = await readDirectory(handle, true);
+      entries = entries.filter(
+        (entry) =>
+          entry.type === 'application/wasm' || entry.name.endsWith('.wasm'),
+      );
+      wasmFilesBefore.push(...entries);
+      continue;
+    } else if (handle.isDirectory) {
+      const { readDirectoryLegacy } = await import('./util.js');
+      let entries = await readDirectoryLegacy(handle);
+      entries = entries.filter((entry) => entry.name.endsWith('.wasm'));
+      wasmFilesBefore.push(
+        ...(await Promise.all(
+          entries.map(
+            async (entry) => new Promise((resolve) => entry.file(resolve)),
+          ),
+        )),
+      );
+      continue;
+    }
+    let file;
     if (handle.kind === 'file') {
       file = await handle.getFile();
       file.handle = handle;
+    } else if (handle.isFile) {
+      file = await new Promise((resolve) =>
+        handle.file((file) => resolve(file)),
+      );
     }
     if (
       (file.type && file.type !== 'application/wasm') ||

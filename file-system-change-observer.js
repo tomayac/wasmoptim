@@ -4,20 +4,23 @@ import { optimizeWasmFiles } from './wasm-optimize.js';
 import { debounce } from './util.js';
 
 let fileSystemChangeObserver = null;
+const supportsGetUniqueId = 'getUniqueId' in FileSystemHandle.prototype;
 
 const fileSystemChangeCallback = async (changes) => {
   const wasmFilesBefore = [];
   for (const change of changes) {
     if (change.type === 'modified') {
       const changedFile = await change.changedHandle.getFile();
-      console.log(`File modified, re-optimizing ${changedFile.name}.`);
+      console.log(`${changedFile.name} modified → Re-optimizing`);
       changedFile.handle = change.changedHandle;
-      const changedUniqueId =
-        (await change.changedHandle?.getUniqueId()) ||
-        change.changedHandle.name;
+      const changedUniqueId = supportsGetUniqueId
+        ? await change.changedHandle.getUniqueId()
+        : change.changedHandle.name;
       wasmFilesBefore.push(changedFile);
       for (const [uuid, { handle }] of uuidToFile.entries()) {
-        const uniqueId = (await handle?.getUniqueId()) || handle.name;
+        const uniqueId = supportsGetUniqueId
+          ? await handle.getUniqueId()
+          : handle.name;
         if (uniqueId === changedUniqueId) {
           document
             .querySelector(`[data-uuid="${uuid}"]`)
@@ -67,4 +70,4 @@ if (localStorage.getItem('observe-changes') !== 'true') {
   observeChangesCheckbox.checked = true;
 }
 
-export { getFileSystemChangeObserver };
+export { getFileSystemChangeObserver, supportsGetUniqueId };
