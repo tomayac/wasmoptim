@@ -16,7 +16,10 @@ self.addEventListener('activate', (activateEvent) => {
       const cacheKeys = await caches.keys();
       await Promise.all(
         cacheKeys.map(async (cacheKey) => {
-          if (!ALL_CACHES.includes(cacheKey)) {
+          if (
+            !ALL_CACHES.includes(cacheKey) &&
+            !cacheKey.startsWith('workbox-precache:')
+          ) {
             await caches.delete(cacheKey);
           }
         }),

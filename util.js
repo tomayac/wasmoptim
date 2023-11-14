@@ -1,3 +1,5 @@
+const supportsGetUniqueId = 'getUniqueId' in FileSystemHandle.prototype;
+
 const limit = async (tasks, concurrency) => {
   const results = [];
 
@@ -83,4 +85,10 @@ const readDirectory = async (
   return [...(await Promise.all(dirs)).flat(), ...(await Promise.all(files))];
 };
 
-export { limit, debounce, readDirectory, readDirectoryLegacy };
+export {
+  limit,
+  debounce,
+  readDirectory,
+  readDirectoryLegacy,
+  supportsGetUniqueId,
+};

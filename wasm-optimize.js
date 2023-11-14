@@ -5,7 +5,7 @@ import {
   supportsFileSystemObserver,
 } from './main.js';
 import { supported as supportsFileSystemAccess } from 'browser-fs-access';
-import { supportsGetUniqueId } from './file-system-change-observer.js';
+import { supportsGetUniqueId } from './util.js';
 import {
   statsTemplate,
   statsHeader,
@@ -99,7 +99,7 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
             wasmFileBefore.handle
           ) {
             const { getFileSystemChangeObserver } = await import(
-              './file-system-change-observer.js'
+              './file-system-observer.js'
             );
             const fileSystemChangeObserver = getFileSystemChangeObserver();
             fileSystemChangeObserver.observe(wasmFileBefore.handle);

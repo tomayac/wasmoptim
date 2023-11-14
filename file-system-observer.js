@@ -1,10 +1,9 @@
 import { observeChangesCheckbox } from './dom.js';
 import { uuidToFile } from './wasm-optimize.js';
 import { optimizeWasmFiles } from './wasm-optimize.js';
-import { debounce } from './util.js';
+import { debounce, supportsGetUniqueId } from './util.js';
 
 let fileSystemChangeObserver = null;
-const supportsGetUniqueId = 'getUniqueId' in FileSystemHandle.prototype;
 
 const fileSystemChangeCallback = async (changes) => {
   const wasmFilesBefore = [];
@@ -70,4 +69,4 @@ if (localStorage.getItem('observe-changes') !== 'true') {
   observeChangesCheckbox.checked = true;
 }
 
-export { getFileSystemChangeObserver, supportsGetUniqueId };
+export { getFileSystemChangeObserver };

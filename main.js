@@ -9,11 +9,11 @@ const supportsFileSystemObserver = 'FileSystemObserver' in window;
 
 (async () => {
   if (supportsFileSystemObserver) {
-    import('./file-system-change-observer.js');
+    import('./file-system-observer.js');
   }
 
   if (supportsFileHandleDragAndDrop && supportsFileSystemAccess) {
-    import('./file-handle-drag-and-drop.js');
+    import('./drag-and-drop.js');
   }
 
   if ('launchQueue' in window && 'files' in LaunchParams.prototype) {
