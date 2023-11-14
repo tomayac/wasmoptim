@@ -1,6 +1,12 @@
 :root {
   color-scheme: dark light;
 
+  --canvas-text-color: #000;
+  --canvas-color: #fff;
+
+  background-color: var(--canvas-color);
+  color: var(--canvas-text-color);
+
   --table-row-odd-background-color: #eee;
   --table-row-even-background-color: #ddd;
 
@@ -29,6 +35,9 @@ html {
 
 @media (prefers-color-scheme: dark) {
   :root {
+    --canvas-text-color: #fff;
+    --canvas-color: rgb(32, 33, 36);
+
     --table-row-odd-background-color: #333;
     --table-row-even-background-color: #222;
   }

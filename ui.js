@@ -231,9 +231,10 @@ dropArea.addEventListener('drop', async (e) => {
 const colorSchemeChange = (e) => {
   const metaThemeColor = document.querySelector('meta[name=theme-color]');
   if (e.matches) {
-    metaThemeColor.content = 'Canvas';
+    metaThemeColor.content = 'rgb(32, 33, 36)';
     return;
   }
+  metaThemeColor.content = '#fff';
 };
 matchMedia('(prefers-color-scheme: dark)').addEventListener(
   'change',
