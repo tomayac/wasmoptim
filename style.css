@@ -51,6 +51,9 @@ body {
   font-family: system-ui, sans-serif;
   line-height: 1.5;
   margin: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 #titlebar {
