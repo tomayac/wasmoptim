@@ -3,7 +3,7 @@ const supportsGetUniqueId = 'getUniqueId' in FileSystemHandle.prototype;
 const limit = async (tasks, concurrency) => {
   const results = [];
 
-  async function runTasks(tasksIterator) {
+  const runTasks = async (tasksIterator) => {
     for (const [index, task] of tasksIterator) {
       try {
         results[index] = await task();
@@ -11,7 +11,7 @@ const limit = async (tasks, concurrency) => {
         results[index] = new Error(`Failed with: ${error.message}`);
       }
     }
-  }
+  };
 
   const workers = new Array(concurrency).fill(tasks.entries()).map(runTasks);
   await Promise.allSettled(workers);
@@ -34,7 +34,7 @@ const debounce = (func, wait) => {
 const readDirectoryLegacy = async (directoryEntry) => {
   const files = [];
 
-  async function readEntries(directoryReader) {
+  const readEntries = async (directoryReader) => {
     const entries = await new Promise((resolve) =>
       directoryReader.readEntries(resolve),
     );
@@ -48,7 +48,7 @@ const readDirectoryLegacy = async (directoryEntry) => {
         }
       }),
     );
-  }
+  };
 
   const directoryReader = directoryEntry.createReader();
   await readEntries(directoryReader);

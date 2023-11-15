@@ -49,7 +49,7 @@ observeChangesCheckbox.addEventListener('change', () => {
 
   if (observeChangesCheckbox.checked) {
     getFileSystemChangeObserver();
-    for (const [, { handle, file }] of uuidToFile.entries()) {
+    for (const [, { handle }] of uuidToFile.entries()) {
       if (!handle) {
         continue;
       }

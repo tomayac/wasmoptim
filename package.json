@@ -9,21 +9,42 @@
     "build": "vite build && touch docs/.nojekyll && git add docs/",
     "preview": "vite preview",
     "fix": "prettier --write .",
-    "lint": "",
+    "lint:js": "npx eslint . --ext .js,.mjs --fix --ignore-pattern docs/ --ignore-pattern third-party/ --ignore-pattern dev-dist/ && npx find-unused-exports",
+    "lint:css": "npx stylelint \"**/*.css\" --fix",
+    "lint": "npm run lint:js && npm run lint:css",
     "binaryen": "shx cp ./node_modules/binaryen/index.js ./third-party/binaryen.js",
     "deploy": "npm run fix && npm run lint && npm run build && git add . && git commit -a && git push",
     "prepare": "npm run binaryen && npm run build"
   },
   "devDependencies": {
     "@rollup/plugin-dynamic-import-vars": "^2.1.0",
-    "prettier": "^3.0.3",
+    "prettier": "^3.1.0",
     "shx": "^0.3.4",
     "vite": "^4.5.0",
-    "vite-plugin-pwa": "^0.16.7"
+    "vite-plugin-pwa": "^0.16.7",
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-prettier": "^9.0.0",
+    "find-unused-exports": "^5.0.0",
+    "stylelint": "^15.11.0",
+    "stylelint-config-standard": "^34.0.0",
+    "stylelint-order": "^6.0.3"
   },
   "dependencies": {
     "binaryen": "^116.0.0",
     "browser-fs-access": "^0.35.0",
     "pretty-bytes": "^6.1.1"
+  },
+  "eslintConfig": {
+    "parserOptions": {
+      "ecmaVersion": 2020,
+      "sourceType": "module"
+    },
+    "extends": [
+      "google",
+      "prettier"
+    ],
+    "rules": {
+      "valid-jsdoc": "off"
+    }
   }
 }

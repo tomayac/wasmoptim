@@ -7,6 +7,7 @@ import dynamicImportVars from '@rollup/plugin-dynamic-import-vars';
 import { VitePWA as vitePWA } from 'vite-plugin-pwa';
 import webmanifest from './manifest.json';
 
+// ignore unused exports default
 export default defineConfig({
   plugins: [
     dynamicImportVars({
@@ -19,6 +20,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
       manifest: webmanifest,
+      workbox: {
+        maximumFileSizeToCacheInBytes: 10000000,
+      },
     }),
   ],
   base: '/wasm-clamp/',

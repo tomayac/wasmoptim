@@ -1,4 +1,5 @@
 import spinner from '/spinner.svg';
+import { readDirectory, readDirectoryLegacy } from './util.js';
 import { optimizeWasmFiles, uuidToFile } from './wasm-optimize.js';
 import { supportsFileHandleDragAndDrop } from './main.js';
 import {
@@ -19,7 +20,7 @@ import {
 
 const checkForAndPossiblyAskForPermissions = async (wasmFilesBefore) => {
   for (const wasmFileBefore of wasmFilesBefore) {
-    const state = await wasmFileBefore.handle.requestPermission({
+    await wasmFileBefore.handle.requestPermission({
       mode: 'readwrite',
     });
   }
@@ -180,7 +181,6 @@ dropArea.addEventListener('drop', async (e) => {
   const wasmFilesBefore = [];
   for await (const handle of fileHandlesPromises) {
     if (handle.kind === 'directory') {
-      const { readDirectory } = await import('./util.js');
       let entries = await readDirectory(handle, true);
       entries = entries.filter(
         (entry) =>
@@ -189,7 +189,6 @@ dropArea.addEventListener('drop', async (e) => {
       wasmFilesBefore.push(...entries);
       continue;
     } else if (handle.isDirectory) {
-      const { readDirectoryLegacy } = await import('./util.js');
       let entries = await readDirectoryLegacy(handle);
       entries = entries.filter((entry) => entry.name.endsWith('.wasm'));
       wasmFilesBefore.push(

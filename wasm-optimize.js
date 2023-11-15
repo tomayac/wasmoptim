@@ -69,8 +69,8 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
             Number(deltaSizePercent) === 0
               ? 'size-larger'
               : deltaSize < 0
-              ? 'size-smaller'
-              : 'size-larger',
+                ? 'size-smaller'
+                : 'size-larger',
           );
           const uniqueId =
             supportsGetUniqueId && wasmFileBefore.handle

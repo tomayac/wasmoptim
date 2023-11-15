@@ -1,33 +1,30 @@
 :root {
-  color-scheme: dark light;
-
   --canvas-text-color: #000;
   --canvas-color: #fff;
-
-  background-color: var(--canvas-color);
-  color: var(--canvas-text-color);
-
   --table-row-odd-background-color: #eee;
   --table-row-even-background-color: #ddd;
-
   --deepest-pink: deeppink;
   --deepest-green: lime;
   --blue: #654ff0;
 
+  color-scheme: dark light;
+  background-color: var(--canvas-color);
+  color: var(--canvas-text-color);
   accent-color: var(--blue);
 }
 
 html {
   box-sizing: border-box;
 }
+
 *,
 *::before,
 *::after {
   box-sizing: inherit;
 }
 
-@support (color: color(display-p3 1 1 1)) {
-  root: {
+@supports (color: color(display-p3 1 1 1)) {
+  :root {
     --deepest-pink: color(display-p3 1 0 0.5);
     --deepest-green: color(display-p3 0 1 0);
   }
@@ -36,8 +33,7 @@ html {
 @media (prefers-color-scheme: dark) {
   :root {
     --canvas-text-color: #fff;
-    --canvas-color: rgb(32, 33, 36);
-
+    --canvas-color: rgb(32 33 36);
     --table-row-odd-background-color: #333;
     --table-row-even-background-color: #222;
   }
@@ -210,7 +206,7 @@ li {
   height: 1rem;
 }
 
-.file-name:before {
+.file-name::before {
   background-image: url("/wasm-icon.svg");
   background-size: 1rem 1rem;
   display: inline-block;
@@ -237,7 +233,7 @@ li {
 .size-smaller::before,
 .size-larger::before {
   -webkit-text-fill-color: transparent;
-  -webkit-background-clip: text;
+  background-clip: text;
   display: inline-block;
   margin-inline-end: 0.25rem;
 }
@@ -249,7 +245,7 @@ li {
 }
 
 #examples-list a:hover,
-#results-area a:hover:not(.error):not(.processing) {
+#results-area a:hover:not(.error, .processing) {
   text-decoration: underline;
 }
 
