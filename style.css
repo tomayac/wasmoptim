@@ -233,7 +233,8 @@ li {
 .size-smaller::before,
 .size-larger::before {
   -webkit-text-fill-color: transparent;
-  background-clip: text;
+  /* stylelint-disable-next-line property-no-vendor-prefix */
+  -webkit-background-clip: text;
   display: inline-block;
   margin-inline-end: 0.25rem;
 }
