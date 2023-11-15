@@ -23,17 +23,39 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
   const tasks = [];
 
   for (const wasmFileBefore of wasmFilesBefore) {
-    const stats = statsTemplate.content.cloneNode(true);
-    const fileNameLabel = stats.querySelector('.file-name');
-    const beforeSizeLabel = stats.querySelector('.before-size');
-    const afterSizeLabel = stats.querySelector('.after-size');
-    const deltaSizeLabel = stats.querySelector('.delta-size');
-    const spinnerImg = stats.querySelector('.spinner');
+    const uniqueId =
+      supportsGetUniqueId && wasmFileBefore.handle
+        ? await wasmFileBefore.handle.getUniqueId()
+        : wasmFileBefore.name;
+    let fileNameLabel;
+    let beforeSizeLabel;
+    let afterSizeLabel;
+    let deltaSizeLabel;
+    let spinnerImg;
+    const existingFileName = resultsArea.querySelector(
+      `[data-uuid="${uniqueId}"]`,
+    );
+    if (existingFileName) {
+      const statsRow = existingFileName.closest('tr');
+      fileNameLabel = statsRow.querySelector('.file-name');
+      beforeSizeLabel = statsRow.querySelector('.before-size');
+      afterSizeLabel = statsRow.querySelector('.after-size');
+      deltaSizeLabel = statsRow.querySelector('.delta-size');
+      spinnerImg = statsRow.querySelector('.spinner');
+    } else {
+      const stats = statsTemplate.content.cloneNode(true);
+      fileNameLabel = stats.querySelector('.file-name');
+      beforeSizeLabel = stats.querySelector('.before-size');
+      afterSizeLabel = stats.querySelector('.after-size');
+      deltaSizeLabel = stats.querySelector('.delta-size');
+      spinnerImg = stats.querySelector('.spinner');
+      resultsArea.append(stats);
+    }
     spinnerImg.src = spinner;
     fileNameLabel.querySelector('code').textContent = wasmFileBefore.name;
     fileNameLabel.classList.add('processing');
     beforeSizeLabel.textContent = prettyBytes(wasmFileBefore.size);
-    resultsArea.append(stats);
+    fileNameLabel.dataset.uuid = uniqueId;
 
     tasks.push(() => {
       return new Promise((resolve, reject) => {
@@ -42,6 +64,7 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
         );
         worker.addEventListener('message', async (event) => {
           worker.terminate();
+          spinnerImg.removeAttribute('src');
           fileNameLabel.classList.remove('processing');
           const { wasmFileAfter, error } = event.data;
           if (error) {
@@ -72,11 +95,6 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
                 ? 'size-smaller'
                 : 'size-larger',
           );
-          const uniqueId =
-            supportsGetUniqueId && wasmFileBefore.handle
-              ? await wasmFileBefore.handle.getUniqueId()
-              : wasmFileBefore.name;
-          fileNameLabel.dataset.uuid = uniqueId;
           uuidToFile.set(uniqueId, {
             file: wasmFileAfter,
             handle: wasmFileBefore.handle,
