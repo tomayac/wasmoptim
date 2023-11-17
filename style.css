@@ -35,7 +35,7 @@ html {
     --canvas-text-color: #fff;
     --canvas-color: rgb(32 33 36);
     --table-row-odd-background-color: #333;
-    --table-row-even-background-color: #222;
+    --table-row-even-background-color: #444;
   }
 
   .spinner {
@@ -166,11 +166,17 @@ table {
   width: 100%;
 }
 
-th:first-of-type {
-  text-align: left;
+th {
+  padding-inline: 0.5rem;
+  position: relative;
 }
 
-th:not(:first-of-type) {
+th:nth-child(-n + 2) {
+  text-align: left;
+  min-width: 2.5rem;
+}
+
+th:nth-child(n + 3) {
   text-align: right;
 }
 
@@ -182,6 +188,16 @@ td[class] {
 td {
   margin: 0.5rem;
   padding: 0.5rem;
+  position: relative;
+}
+
+th > label,
+td > label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 tbody tr:nth-child(even) {

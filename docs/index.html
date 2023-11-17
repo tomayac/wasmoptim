@@ -7,8 +7,8 @@
     <meta name="theme-color" />
     <meta name="color-scheme" content="dark light" />
     <title>Wasm Clamp</title>
-    <script type="module" crossorigin src="/wasm-clamp/assets/index-9bb6ddd1.js"></script>
-    <link rel="stylesheet" href="/wasm-clamp/assets/index-05428eaf.css">
+    <script type="module" crossorigin src="/wasm-clamp/assets/index-a41b4370.js"></script>
+    <link rel="stylesheet" href="/wasm-clamp/assets/index-353df2c2.css">
   <link rel="manifest" href="/wasm-clamp/manifest.webmanifest"></head>
   <body>
     <div id="titlebar"></div>
@@ -50,7 +50,7 @@
       </div>
 
       <div>
-        <p>…or try one of the examples:</p>
+        <p>…or try one of the examples</p>
         <ul id="examples-list"></ul>
       </div>
 
@@ -65,7 +65,7 @@
         <div>
           <label hidden>
             <input type="checkbox" id="observe-changes-checkbox" checked />
-            Watch open files for changes and re-optimize.
+            Watch open files for changes and automatically re-optimize.
           </label>
         </div>
       </details>
@@ -73,6 +73,11 @@
       <table hidden>
         <thead id="stats-header" hidden>
           <tr>
+            <th>
+              <label aria-label="Select all for merging"
+                ><input type="checkbox" id="select-all-checkbox"
+              /></label>
+            </th>
             <th>File</th>
             <th>Before</th>
             <th>After</th>
@@ -94,11 +99,16 @@
     <template id="stats-template">
       <tr>
         <td>
+          <label aria-label="Select for merging"
+            ><input type="checkbox"
+          /></label>
+        </td>
+        <td>
           <a href="#" class="file-name"><code></code></a>
         </td>
         <td class="before-size"></td>
         <td class="after-size"></td>
-        <td>
+        <td class="delta">
           <span class="delta-size"></span>
           <img class="spinner" alt="" />
         </td>

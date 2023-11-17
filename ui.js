@@ -12,6 +12,7 @@ import {
   loadWasmButton,
   dropArea,
   resultsArea,
+  selectAllCheckbox,
   overwriteCheckbox,
   examplesList,
   exampleTemplate,
@@ -88,11 +89,21 @@ document.addEventListener('paste', (e) => {
   }
 });
 
+selectAllCheckbox.addEventListener('click', (e) => {
+  resultsArea.querySelectorAll('input').forEach((input) => {
+    input.checked = e.target.checked;
+  });
+});
+
 resultsArea.addEventListener('click', async (e) => {
-  e.preventDefault();
-  if (e.target.nodeName.toLowerCase() !== 'code') {
+  const nodeName = e.target.nodeName.toLowerCase();
+  if (nodeName !== 'code') {
+    if (!e.target.checked) {
+      selectAllCheckbox.checked = false;
+    }
     return;
   }
+  e.preventDefault();
   const fileNameLabel = e.target.closest('a');
   if (
     !fileNameLabel.classList.contains('file-name') ||
