@@ -15,7 +15,11 @@ import {
 } from './dom.js';
 import { limit } from './util.js';
 
+const supportsBadging = 'setAppBadge' in navigator;
+
 const uuidToFile = new Map();
+
+let currentlyProcessing = 0;
 
 const optimizeWasmFiles = async (wasmFilesBefore) => {
   statsHeader.hidden = false;
@@ -54,6 +58,9 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
     spinnerImg.src = spinner;
     fileNameLabel.querySelector('code').textContent = wasmFileBefore.name;
     fileNameLabel.classList.add('processing');
+    if (supportsBadging) {
+      navigator.setAppBadge(++currentlyProcessing);
+    }
     beforeSizeLabel.textContent = prettyBytes(wasmFileBefore.size);
     fileNameLabel.dataset.uuid = uniqueId;
 
@@ -66,6 +73,12 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
           worker.terminate();
           spinnerImg.removeAttribute('src');
           fileNameLabel.classList.remove('processing');
+          if (supportsBadging) {
+            navigator.setAppBadge(--currentlyProcessing);
+            if (currentlyProcessing === 0) {
+              navigator.clearAppBadge();
+            }
+          }
           const { wasmFileAfter, error } = event.data;
           if (error) {
             reject(error);
