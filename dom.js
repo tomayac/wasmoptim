@@ -2,6 +2,7 @@ const loadWasmButton = document.querySelector('#load-wasm');
 const loadDirectoryButton = document.querySelector('#load-directory');
 const dropArea = document.querySelector('#drop-area');
 const resultsArea = document.querySelector('#results-area');
+const totalSavingsSize = document.querySelector('#total-delta-size');
 const statsTemplate = document.querySelector('#stats-template');
 const exampleTemplate = document.querySelector('#example-template');
 const statsHeader = document.querySelector('#stats-header');
@@ -17,6 +18,7 @@ export {
   loadDirectoryButton,
   dropArea,
   resultsArea,
+  totalSavingsSize,
   statsTemplate,
   exampleTemplate,
   statsHeader,

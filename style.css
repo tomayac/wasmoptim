@@ -171,29 +171,42 @@ table {
   width: 100%;
 }
 
+tfoot {
+  display: none;
+}
+
 th {
   padding-inline: 0.5rem;
   position: relative;
-}
-
-th:nth-child(-n + 2) {
-  text-align: left;
-  min-width: 2.5rem;
-}
-
-th:nth-child(n + 3) {
-  text-align: right;
-}
-
-td[class] {
-  font-variant-numeric: tabular-nums;
-  text-align: right;
 }
 
 td {
   margin: 0.5rem;
   padding: 0.5rem;
   position: relative;
+}
+
+tbody:has(tr:nth-child(n + 2)) + tfoot {
+  display: table-footer-group;
+}
+
+tfoot th,
+tfoot td {
+  text-align: right !important;
+}
+
+thead th:nth-child(-n + 2) {
+  text-align: left;
+  min-width: 2.5rem;
+}
+
+thead th:nth-child(n + 3) {
+  text-align: right;
+}
+
+td[class] {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
 }
 
 th > label,

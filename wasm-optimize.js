@@ -12,6 +12,7 @@ import {
   resultsArea,
   observeChangesCheckbox,
   overwriteCheckbox,
+  totalSavingsSize,
 } from './dom.js';
 import { limit } from './util.js';
 
@@ -111,7 +112,21 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
           uuidToFile.set(uniqueId, {
             file: wasmFileAfter,
             handle: wasmFileBefore.handle,
+            savings: deltaSize,
           });
+          const savings = Array.from(uuidToFile.values()).map(
+            (file) => file.savings,
+          );
+          const totalSavings = savings.reduce(
+            (sum, percentage) => sum + percentage,
+            0,
+          );
+          const averageSavings = totalSavings / uuidToFile.size;
+          totalSavingsSize.textContent = `Saved ${prettyBytes(
+            Math.abs(totalSavings),
+          )} in total and ${prettyBytes(
+            Math.abs(averageSavings),
+          )} per file on average.`;
           if (deltaSize < 0) {
             if (
               supportsFileHandleDragAndDrop &&
