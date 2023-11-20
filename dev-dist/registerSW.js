@@ -1,5 +1,5 @@
 if ('serviceWorker' in navigator)
-  navigator.serviceWorker.register('/wasm-clamp/dev-sw.js?dev-sw', {
-    scope: '/wasm-clamp/',
+  navigator.serviceWorker.register('/wasmoptim/dev-sw.js?dev-sw', {
+    scope: '/wasmoptim/',
     type: 'classic',
   });

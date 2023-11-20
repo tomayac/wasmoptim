@@ -1,5 +1,5 @@
 {
-  "name": "wasm-clamp",
+  "name": "WasmOptim",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -20,8 +20,8 @@
     "@rollup/plugin-dynamic-import-vars": "^2.1.0",
     "prettier": "^3.1.0",
     "shx": "^0.3.4",
-    "vite": "^4.5.0",
-    "vite-plugin-pwa": "^0.16.7",
+    "vite": "^5.0.0",
+    "vite-plugin-pwa": "^0.17.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^9.0.0",
     "find-unused-exports": "^5.0.0",

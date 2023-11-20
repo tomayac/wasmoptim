@@ -1,6 +1,6 @@
 {
-  "name": "Wasm Clamp",
-  "short_name": "WasmClamp",
+  "name": "WasmOptim",
+  "short_name": "WasmOptim",
   "start_url": "./",
   "id": "./",
   "description": "Optimize your .wasm files for size.",

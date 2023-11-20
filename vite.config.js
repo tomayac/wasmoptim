@@ -25,7 +25,7 @@ export default defineConfig({
       },
     }),
   ],
-  base: '/wasm-clamp/',
+  base: '/wasmoptim/',
   build: {
     outDir: 'docs',
     target: 'esnext',
