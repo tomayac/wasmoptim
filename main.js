@@ -2,6 +2,7 @@ import '/style.css';
 import { supported as supportsFileSystemAccess } from 'browser-fs-access';
 import './ui.js';
 import './wasm-optimize.js';
+import './wasm-merge.js';
 
 const supportsFileHandleDragAndDrop =
   'getAsFileSystemHandle' in DataTransferItem.prototype;
