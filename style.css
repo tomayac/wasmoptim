@@ -276,7 +276,8 @@ li {
 }
 
 #examples-list a,
-#results-area a {
+#results-area a,
+#merge-area a {
   text-decoration: none;
   color: var(--deepest-pink);
 }
@@ -287,6 +288,7 @@ li {
   word-break: break-word;
 }
 
+#merge-area a:hover,
 #examples-list a:hover,
 #results-area a:hover:not(.error, .processing) {
   text-decoration: underline;

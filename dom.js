@@ -1,5 +1,7 @@
 const loadWasmButton = document.querySelector('#load-wasm');
 const mergeButton = document.querySelector('#merge-button');
+const mergedFileLink = document.querySelector('#merged-file-link');
+const mergedFileStatus = document.querySelector('#merged-file-status');
 const loadDirectoryButton = document.querySelector('#load-directory');
 const dropArea = document.querySelector('#drop-area');
 const resultsArea = document.querySelector('#results-area');
@@ -17,6 +19,8 @@ const examplesList = document.querySelector('#examples-list');
 export {
   loadWasmButton,
   mergeButton,
+  mergedFileLink,
+  mergedFileStatus,
   loadDirectoryButton,
   dropArea,
   resultsArea,

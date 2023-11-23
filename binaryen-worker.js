@@ -10,6 +10,6 @@ self.addEventListener('message', async (event) => {
     });
     self.postMessage({ wasmFileAfter });
   } catch (error) {
-    self.postMessage({ error });
+    self.postMessage({ error: error.message });
   }
 });

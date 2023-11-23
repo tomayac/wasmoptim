@@ -22,7 +22,7 @@ const uuidToFile = new Map();
 
 let currentlyProcessing = 0;
 
-const optimizeWasmFiles = async (wasmFilesBefore) => {
+const optimizeWasmFiles = async (wasmFilesBefore, isMergedFile = false) => {
   statsHeader.hidden = false;
   resultsArea.closest('table').hidden = false;
   const tasks = [];

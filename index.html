@@ -88,8 +88,17 @@
             <th colspan="2" scope="row">Savings Statistics</th>
             <td colspan="3" id="total-delta-size"></td>
           </tr>
-          <tr hidden>
-            <th colspan="5" scope="row">
+          <tr id="merge-area" hidden>
+            <th colspan="3" scope="row">
+              <a hidden href="#" class="file-name" id="merged-file-link"
+                ><code></code
+              ></a>
+            </th>
+            <th id="merged-file-status">
+              <span class="status-message"></span>
+              <img class="spinner" alt="" />
+            </th>
+            <th>
               <button id="merge-button" type="button">Merge selected</button>
             </th>
           </tr>
