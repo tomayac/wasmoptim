@@ -5,8 +5,8 @@ import { optimizeWasmFiles } from './wasm-optimize.js';
     await navigator.serviceWorker.register('./sharetargetsw.js', {
       scope: './share-target/',
     });
-  } catch (err) {
-    console.error(err.name, err.message);
+  } catch (error) {
+    console.error(error.name, error.message);
   }
 
   if (location.search.includes('share-target')) {
@@ -25,8 +25,8 @@ import { optimizeWasmFiles } from './wasm-optimize.js';
       });
       wasmFileBefore.handle = false;
       optimizeWasmFiles([wasmFileBefore]);
-    } catch (err) {
-      console.error(err.name, err.message);
+    } catch (error) {
+      console.error(error.name, error.message);
     }
   }
 })();

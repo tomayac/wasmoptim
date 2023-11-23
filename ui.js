@@ -86,8 +86,8 @@ document.addEventListener('paste', (e) => {
       (file) => file.type === 'application/wasm' || file.name.endsWith('.wasm'),
     );
     optimizeWasmFiles(wasmFilesBefore);
-  } catch (err) {
-    console.error(err.name, err.message);
+  } catch (error) {
+    console.error(error.name, error.message);
   }
 });
 
