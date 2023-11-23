@@ -37,6 +37,7 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
     let afterSizeLabel;
     let deltaSizeLabel;
     let spinnerImg;
+    let mergeCheckbox;
     const existingFileName = resultsArea.querySelector(
       `[data-uuid="${uniqueId}"]`,
     );
@@ -47,6 +48,7 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
       afterSizeLabel = statsRow.querySelector('.after-size');
       deltaSizeLabel = statsRow.querySelector('.delta-size');
       spinnerImg = statsRow.querySelector('.spinner');
+      mergeCheckbox = statsRow.querySelector('.merge-checkbox');
     } else {
       const stats = statsTemplate.content.cloneNode(true);
       fileNameLabel = stats.querySelector('.file-name');
@@ -54,11 +56,14 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
       afterSizeLabel = stats.querySelector('.after-size');
       deltaSizeLabel = stats.querySelector('.delta-size');
       spinnerImg = stats.querySelector('.spinner');
+      mergeCheckbox = stats.querySelector('.merge-checkbox');
       resultsArea.append(stats);
     }
     spinnerImg.src = spinner;
     fileNameLabel.querySelector('code').textContent = wasmFileBefore.name;
     fileNameLabel.classList.add('processing');
+    mergeCheckbox.classList.add('processing');
+    mergeCheckbox.disabled = true;
     if (supportsBadging) {
       navigator.setAppBadge(++currentlyProcessing);
     }
@@ -74,6 +79,8 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
           worker.terminate();
           spinnerImg.removeAttribute('src');
           fileNameLabel.classList.remove('processing');
+          mergeCheckbox.classList.remove('processing');
+          mergeCheckbox.disabled = false;
           if (supportsBadging) {
             navigator.setAppBadge(--currentlyProcessing);
             if (currentlyProcessing === 0) {
@@ -86,6 +93,8 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
             fileNameLabel.classList.add('error');
             afterSizeLabel.classList.add('error');
             deltaSizeLabel.classList.add('error');
+            mergeCheckbox.classList.add('error');
+            mergeCheckbox.disabled = true;
             afterSizeLabel.textContent = error.name;
             deltaSizeLabel.textContent = error.message;
             return;

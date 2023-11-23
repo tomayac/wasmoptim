@@ -88,9 +88,9 @@
             <th colspan="2" scope="row">Savings Statistics</th>
             <td colspan="3" id="total-delta-size"></td>
           </tr>
-          <tr>
+          <tr hidden>
             <th colspan="5" scope="row">
-              <button hidden id="merge-button" type="button">Merge selected</button>
+              <button id="merge-button" type="button">Merge selected</button>
             </th>
           </tr>
         </tfoot>
@@ -109,7 +109,7 @@
       <tr>
         <td>
           <label aria-label="Select for merging"
-            ><input type="checkbox"
+            ><input class="merge-checkbox" type="checkbox"
           /></label>
         </td>
         <td>

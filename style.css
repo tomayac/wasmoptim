@@ -247,6 +247,8 @@ li {
   content: "";
   width: 1rem;
   height: 1rem;
+  vertical-align: middle;
+  padding: auto;
   margin-inline-end: 0.5rem;
 }
 
@@ -279,16 +281,22 @@ li {
   color: var(--deepest-pink);
 }
 
+.error {
+  font-family: ui-monospace, monospace;
+  color: red;
+  word-break: break-word;
+}
+
 #examples-list a:hover,
 #results-area a:hover:not(.error, .processing) {
   text-decoration: underline;
 }
 
-#results-area a.error:hover {
+#results-area .error:hover {
   cursor: not-allowed;
 }
 
-#results-area a.processing:hover {
+#results-area .processing:hover {
   cursor: wait;
 }
 
@@ -304,10 +312,4 @@ li {
   transform: scale(2) translateY(-0.1rem);
   background-color: gray;
   margin-inline-end: 0.5rem;
-}
-
-.error {
-  font-family: ui-monospace, monospace;
-  color: red;
-  word-break: break-word;
 }

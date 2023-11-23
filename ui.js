@@ -17,6 +17,7 @@ import {
   examplesList,
   exampleTemplate,
   loadDirectoryButton,
+  mergeButton,
 } from './dom.js';
 
 const checkForAndPossiblyAskForPermissions = async (wasmFilesBefore) => {
@@ -49,7 +50,8 @@ EXAMPLE_URLS.forEach((url) => {
 });
 
 examplesList.addEventListener('click', async (e) => {
-  if (e.target.nodeName.toLowerCase() !== 'code') {
+  const nodeName = e.target.nodeName.toLowerCase();
+  if (nodeName !== 'a' && nodeName !== 'code') {
     return;
   }
   e.preventDefault();
@@ -89,18 +91,34 @@ document.addEventListener('paste', (e) => {
   }
 });
 
-selectAllCheckbox.addEventListener('click', (e) => {
-  resultsArea.querySelectorAll('input').forEach((input) => {
-    input.checked = e.target.checked;
+const showOrHideMergeButton = () => {
+  const numInputsChecked = resultsArea.querySelectorAll('input:checked').length;
+  mergeButton.closest('tr').hidden = numInputsChecked < 2;
+};
+
+selectAllCheckbox.addEventListener('click', () => {
+  resultsArea.querySelectorAll('input:not(:disabled)').forEach((input) => {
+    input.checked = selectAllCheckbox.checked;
   });
+  showOrHideMergeButton();
 });
 
 resultsArea.addEventListener('click', async (e) => {
   const nodeName = e.target.nodeName.toLowerCase();
-  if (nodeName !== 'code') {
+  if (nodeName === 'input' || nodeName === 'label') {
+    if (
+      e.target.classList.contains('error') ||
+      e.target.classList.contains('processing')
+    ) {
+      return;
+    }
     if (!e.target.checked) {
       selectAllCheckbox.checked = false;
     }
+    showOrHideMergeButton();
+    return;
+  }
+  if (nodeName !== 'a' && nodeName !== 'code') {
     return;
   }
   e.preventDefault();
