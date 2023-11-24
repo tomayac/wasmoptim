@@ -3,9 +3,54 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/icon.png" />
+    <link rel="preload" href="/main.js" as="script" />
+    <link
+      rel="preload"
+      href="/third-party/binaryen.js"
+      as="script"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/third-party/wasm-merge.js"
+      as="script"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/third-party/wasm-merge.wasm"
+      as="fetch"
+      crossorigin
+    />
+    <link rel="preload" href="/wasm-icon.svg" as="image" />
+    <link rel="preload" href="/spinner.svg" as="image" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" />
     <meta name="color-scheme" content="dark light" />
+
+    <meta name="og:title" content="WasmOptim" />
+    <meta name="og:description" content="Optimize your .wasm files for size." />
+    <meta name="og:image" content="/icon.png" />
+    <meta name="og:image:width" content="160" />
+    <meta name="og:image:height" content="160" />
+    <meta name="og:url" content="https://tomayac.github.io/wasmoptim/" />
+    <meta name="og:type" content="website" />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@tomayac" />
+    <meta name="twitter:creator" content="@tomayac" />
+    <meta name="twitter:title" content="WasmOptim" />
+    <meta
+      name="twitter:description"
+      content="Optimize your .wasm files for size."
+    />
+    <meta name="twitter:image" content="/icon.png" />
+    <meta
+      name="twitter:image:alt"
+      content="WasmOptim logo consisting of a clamp that compresses the WebAssembly icon."
+    />
+    <meta name="twitter:url" content="https://tomayac.github.io/wasmoptim/" />
+
     <title>WasmOptim</title>
   </head>
   <body>
