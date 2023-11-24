@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npm run dev",
     "dev": "vite",
-    "build": "vite build && touch docs/.nojekyll && git add docs/",
+    "build": "vite build && touch docs/.nojekyll && git add docs/ -f",
     "preview": "vite preview",
     "fix": "prettier --write .",
     "lint:js": "npx eslint . --ext .js,.mjs --fix --ignore-pattern docs/ --ignore-pattern third-party/ --ignore-pattern dev-dist/ && npx find-unused-exports",
