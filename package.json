@@ -7,19 +7,26 @@
     "start": "npm run dev",
     "dev": "vite",
     "build": "vite build && touch docs/.nojekyll && git add docs/ -f",
+    "install": "napa",
+    "binaryen": "shx mv node_modules/googletest node_modules/binaryen/third_party && cd node_modules/binaryen && emcmake cmake -DBUILD_FOR_BROWSER=ON . && emmake make",
     "preview": "vite preview",
     "fix": "prettier --write .",
     "lint:js": "npx eslint . --ext .js,.mjs --fix --ignore-pattern docs/ --ignore-pattern third-party/ --ignore-pattern dev-dist/ && npx find-unused-exports",
     "lint:css": "npx stylelint \"**/*.css\" --fix",
     "lint": "npm run lint:js && npm run lint:css",
     "deploy": "npm run fix && npm run lint && npm run build && git add . && git commit -a && git push",
-    "prepare": "npm run build"
+    "prepare": "npm run binaryen && npm run build"
+  },
+  "napa": {
+    "binaryen": "https://github.com/WebAssembly/binaryen/archive/refs/heads/main.zip",
+    "googletest": "https://github.com/google/googletest/archive/refs/heads/main.zip"
   },
   "devDependencies": {
     "@rollup/plugin-dynamic-import-vars": "^2.1.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^9.0.0",
     "find-unused-exports": "^5.0.0",
+    "napa": "^3.0.0",
     "prettier": "^3.1.0",
     "shx": "^0.3.4",
     "stylelint": "^15.11.0",
