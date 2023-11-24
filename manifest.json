@@ -48,7 +48,8 @@
     {
       "action": "./",
       "accept": {
-        "application/wasm": [".wasm"]
+        "application/wasm": [".wasm"],
+        "text/plain": [".wat"]
       }
     }
   ],
@@ -60,7 +61,7 @@
       "files": [
         {
           "name": "wasm-file",
-          "accept": ["application/wasm"]
+          "accept": ["application/wasm", ".wasm", ".wat"]
         }
       ]
     }

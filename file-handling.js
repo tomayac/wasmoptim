@@ -13,7 +13,7 @@ launchQueue.setConsumer(async (launchParams) => {
     file.handle = handle;
     if (
       (file.type && file.type !== 'application/wasm') ||
-      !file.name.endsWith('.wasm')
+      (!file.name.endsWith('.wasm') && !file.name.endsWith('.wat'))
     ) {
       continue;
     }

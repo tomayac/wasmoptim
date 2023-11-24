@@ -1,9 +1,15 @@
 self.addEventListener('message', async (event) => {
   const { default: binaryen } = await import('./third-party/binaryen.js');
+  const { isBinaryFile } = await import('arraybuffer-isbinary');
   const { wasmFileBefore } = event.data;
   try {
     const wasmBufferBefore = await wasmFileBefore.arrayBuffer();
-    const module = binaryen.readBinary(new Uint8Array(wasmBufferBefore));
+    let module;
+    if (isBinaryFile(wasmBufferBefore)) {
+      module = binaryen.readBinary(new Uint8Array(wasmBufferBefore));
+    } else {
+      module = binaryen.parseText(new TextDecoder().decode(wasmBufferBefore));
+    }
     module.optimize();
     const wasmFileAfter = new File([module.emitBinary()], wasmFileBefore.name, {
       type: 'application/wasm',

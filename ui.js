@@ -84,7 +84,10 @@ document.addEventListener('paste', (e) => {
       return;
     }
     const wasmFilesBefore = Array.from(e.clipboardData.files).filter(
-      (file) => file.type === 'application/wasm' || file.name.endsWith('.wasm'),
+      (file) =>
+        file.type === 'application/wasm' ||
+        file.name.endsWith('.wasm') ||
+        file.name.endsWith('.wat'),
     );
     optimizeWasmFiles(wasmFilesBefore);
   } catch (error) {
@@ -135,12 +138,14 @@ resultsArea.addEventListener('click', async (e) => {
     return;
   }
   const uuid = fileNameLabel.dataset.uuid;
-  const { file } = uuidToFile.get(uuid);
+  const { file, handle } = uuidToFile.get(uuid);
   try {
     await fileSave(file, {
       fileName: file.name,
-      extensions: ['.wasm'],
+      extensions: ['.wasm', '.wat'],
       mimeTypes: ['application/wasm'],
+      existingHandle: handle ? handle : undefined,
+      startIn: handle ? handle : undefined,
     });
   } catch (error) {
     if (error.name === 'AbortError') {
@@ -167,12 +172,14 @@ mergeArea.addEventListener('click', async (e) => {
     return;
   }
   const uuid = fileNameLabel.dataset.uuid;
-  const { file } = uuidToFile.get(uuid);
+  const { file, handle } = uuidToFile.get(uuid);
   try {
     await fileSave(file, {
       fileName: file.name,
       extensions: ['.wasm'],
       mimeTypes: ['application/wasm'],
+      existingHandle: handle ? handle : undefined,
+      startIn: handle ? handle : undefined,
     });
   } catch (error) {
     if (error.name === 'AbortError') {
@@ -189,7 +196,10 @@ loadDirectoryButton.addEventListener('click', async () => {
       mode: 'readwrite',
     });
     const wasmFilesBefore = files.filter(
-      (file) => file.type === 'application/wasm' || file.name.endsWith('.wasm'),
+      (file) =>
+        file.type === 'application/wasm' ||
+        file.name.endsWith('.wasm') ||
+        file.name.endsWith('.wat'),
     );
     optimizeWasmFiles(wasmFilesBefore);
   } catch (error) {
@@ -204,7 +214,7 @@ loadWasmButton.addEventListener('click', async () => {
   try {
     const wasmFilesBefore = await fileOpen({
       mimeTypes: ['application/wasm'],
-      extensions: ['.wasm'],
+      extensions: ['.wasm', '.wat'],
       multiple: true,
     });
     if (!wasmFilesBefore || !wasmFilesBefore.length) {
@@ -247,13 +257,17 @@ dropArea.addEventListener('drop', async (e) => {
       let entries = await readDirectory(handle, true);
       entries = entries.filter(
         (entry) =>
-          entry.type === 'application/wasm' || entry.name.endsWith('.wasm'),
+          entry.type === 'application/wasm' ||
+          entry.name.endsWith('.wasm') ||
+          entry.name.endsWith('.wat'),
       );
       wasmFilesBefore.push(...entries);
       continue;
     } else if (handle.isDirectory) {
       let entries = await readDirectoryLegacy(handle);
-      entries = entries.filter((entry) => entry.name.endsWith('.wasm'));
+      entries = entries.filter(
+        (entry) => entry.name.endsWith('.wasm') || entry.name.endsWith('.wat'),
+      );
       wasmFilesBefore.push(
         ...(await Promise.all(
           entries.map(
@@ -274,7 +288,7 @@ dropArea.addEventListener('drop', async (e) => {
     }
     if (
       (file.type && file.type !== 'application/wasm') ||
-      !file.name.endsWith('.wasm')
+      (!file.name.endsWith('.wasm') && !file.name.endsWith('.wat'))
     ) {
       continue;
     }
