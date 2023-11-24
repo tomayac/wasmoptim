@@ -14,6 +14,7 @@ import {
   overwriteCheckbox,
   totalSavingsSize,
 } from './dom.js';
+import { MERGE_FILE_UUID } from './wasm-merge.js';
 import { limit } from './util.js';
 
 const supportsBadging = 'setAppBadge' in navigator;
@@ -60,6 +61,9 @@ const optimizeWasmFiles = async (wasmFilesBefore, isMergedFile = false) => {
       resultsArea.append(stats);
     }
     spinnerImg.src = spinner;
+    deltaSizeLabel.textContent = 'Optimizing…';
+    deltaSizeLabel.classList.remove('size-smaller');
+    deltaSizeLabel.classList.remove('size-larger');
     fileNameLabel.querySelector('code').textContent = wasmFileBefore.name;
     fileNameLabel.classList.add('processing');
     mergeCheckbox.classList.add('processing');
@@ -89,14 +93,15 @@ const optimizeWasmFiles = async (wasmFilesBefore, isMergedFile = false) => {
           }
           const { wasmFileAfter, error } = event.data;
           if (error) {
-            reject(error);
+            const errorObject = new Error(error);
             fileNameLabel.classList.add('error');
             afterSizeLabel.classList.add('error');
             deltaSizeLabel.classList.add('error');
             mergeCheckbox.classList.add('error');
             mergeCheckbox.disabled = true;
-            afterSizeLabel.textContent = error.name;
-            deltaSizeLabel.textContent = error.message;
+            afterSizeLabel.textContent = errorObject.name;
+            deltaSizeLabel.textContent = errorObject.message;
+            reject(errorObject);
             return;
           }
           afterSizeLabel.textContent = prettyBytes(wasmFileAfter.size);
@@ -110,7 +115,9 @@ const optimizeWasmFiles = async (wasmFilesBefore, isMergedFile = false) => {
           deltaSizeLabel.textContent =
             Number(deltaSizePercent) === 0
               ? 'no change'
-              : `${deltaSizePercent}% ${deltaSize < 0 ? 'smaller' : 'larger'}`;
+              : `${deltaSizePercent}% ${
+                  deltaSize < 0 ? 'smaller' : 'larger'
+                } (${prettyBytes(Math.abs(deltaSize))})`;
           deltaSizeLabel.classList.add(
             Number(deltaSizePercent) === 0
               ? 'size-larger'
@@ -123,10 +130,14 @@ const optimizeWasmFiles = async (wasmFilesBefore, isMergedFile = false) => {
             handle: wasmFileBefore.handle,
             savings: deltaSize,
           });
-          const savings = Array.from(uuidToFile.values()).map(
-            (file) => file.savings,
-          );
-          const totalSavings = savings.reduce(
+          const savingsArray = [];
+          for (const [uuid, { savings }] of uuidToFile.entries()) {
+            if (uuid === MERGE_FILE_UUID) {
+              continue;
+            }
+            savingsArray.push(savings);
+          }
+          const totalSavings = savingsArray.reduce(
             (sum, percentage) => sum + percentage,
             0,
           );
@@ -135,7 +146,7 @@ const optimizeWasmFiles = async (wasmFilesBefore, isMergedFile = false) => {
             Math.abs(totalSavings),
           )} in total and ${prettyBytes(
             Math.abs(averageSavings),
-          )} per file on average.`;
+          )} per file on average`;
           if (deltaSize < 0) {
             if (
               supportsFileHandleDragAndDrop &&

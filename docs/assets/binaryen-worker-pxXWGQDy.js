@@ -1,0 +1,1 @@
+self.addEventListener("message",async r=>{const{default:t}=await import("./binaryen-P2Tsh51H.js"),{wasmFileBefore:a}=r.data;try{const e=await a.arrayBuffer(),s=t.readBinary(new Uint8Array(e));s.optimize();const n=new File([s.emitBinary()],a.name,{type:"application/wasm"});self.postMessage({wasmFileAfter:n})}catch(e){self.postMessage({error:e.message})}});

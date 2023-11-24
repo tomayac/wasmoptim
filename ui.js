@@ -12,6 +12,7 @@ import {
   loadWasmButton,
   dropArea,
   resultsArea,
+  mergeArea,
   selectAllCheckbox,
   overwriteCheckbox,
   examplesList,
@@ -93,8 +94,9 @@ document.addEventListener('paste', (e) => {
 
 const showOrHideMergeButton = () => {
   const numInputsChecked = resultsArea.querySelectorAll('input:checked').length;
-  mergeButton.closest('tr').hidden = numInputsChecked < 2;
+  mergeButton.style.display = numInputsChecked < 2 ? 'none' : '';
 };
+showOrHideMergeButton();
 
 selectAllCheckbox.addEventListener('click', () => {
   resultsArea.querySelectorAll('input:not(:disabled)').forEach((input) => {
@@ -118,6 +120,38 @@ resultsArea.addEventListener('click', async (e) => {
     showOrHideMergeButton();
     return;
   }
+  if (nodeName !== 'a' && nodeName !== 'code') {
+    return;
+  }
+  e.preventDefault();
+  const fileNameLabel = e.target.closest('a');
+  if (
+    !fileNameLabel.classList.contains('file-name') ||
+    fileNameLabel.classList.contains('error')
+  ) {
+    return;
+  }
+  if (fileNameLabel.classList.contains('processing')) {
+    return;
+  }
+  const uuid = fileNameLabel.dataset.uuid;
+  const { file } = uuidToFile.get(uuid);
+  try {
+    await fileSave(file, {
+      fileName: file.name,
+      extensions: ['.wasm'],
+      mimeTypes: ['application/wasm'],
+    });
+  } catch (error) {
+    if (error.name === 'AbortError') {
+      return;
+    }
+    console.error(error.name, error.message);
+  }
+});
+
+mergeArea.addEventListener('click', async (e) => {
+  const nodeName = e.target.nodeName.toLowerCase();
   if (nodeName !== 'a' && nodeName !== 'code') {
     return;
   }

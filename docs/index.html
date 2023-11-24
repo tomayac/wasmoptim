@@ -7,8 +7,8 @@
     <meta name="theme-color" />
     <meta name="color-scheme" content="dark light" />
     <title>WasmOptim</title>
-    <script type="module" crossorigin src="/wasmoptim/assets/index-ebI1EyE4.js"></script>
-    <link rel="stylesheet" crossorigin href="/wasmoptim/assets/index-AwE9oVL9.css">
+    <script type="module" crossorigin src="/wasmoptim/assets/index-p8IUD2Qf.js"></script>
+    <link rel="stylesheet" crossorigin href="/wasmoptim/assets/index-gg7apVQu.css">
   <link rel="manifest" href="/wasmoptim/manifest.webmanifest"></head>
   <body>
     <div id="titlebar"></div>
@@ -75,8 +75,9 @@
           <tr>
             <th>
               <label aria-label="Select all for merging"
-                ><input type="checkbox" id="select-all-checkbox"
-              /></label>
+                ><input type="checkbox" id="select-all-checkbox" /> Select
+                all</label
+              >
             </th>
             <th>File</th>
             <th>Before</th>
@@ -87,8 +88,23 @@
         <tbody id="results-area"></tbody>
         <tfoot>
           <tr>
-            <th colspan="2" scope="row">Savings Statistics</th>
+            <th>
+              <button id="merge-button" type="button">Merge selected</button>
+            </th>
+            <th scope="row">Savings Statistics</th>
             <td colspan="3" id="total-delta-size"></td>
+          </tr>
+          <tr id="merge-area" hidden>
+            <td></td>
+            <td>
+              <a hidden href="#" class="file-name"><code></code></a>
+            </td>
+            <td class="before-size"></td>
+            <td class="after-size"></td>
+            <td class="delta">
+              <span class="delta-size"></span>
+              <img class="spinner" alt="" />
+            </td>
           </tr>
         </tfoot>
       </table>
@@ -106,7 +122,7 @@
       <tr>
         <td>
           <label aria-label="Select for merging"
-            ><input type="checkbox"
+            ><input class="merge-checkbox" type="checkbox"
           /></label>
         </td>
         <td>

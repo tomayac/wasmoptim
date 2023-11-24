@@ -40,11 +40,12 @@ observeChangesCheckbox.addEventListener('change', () => {
 
   if (observeChangesCheckbox.checked) {
     getFileSystemChangeObserver();
-    for (const [, { handle }] of uuidToFile.entries()) {
+    for (const { handle } of uuidToFile.values()) {
       if (!handle) {
         continue;
       }
       fileSystemChangeObserver.observe(handle);
+      console.log(`${handle.name} → Observing changes`);
     }
     return;
   }

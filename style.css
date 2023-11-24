@@ -190,14 +190,13 @@ tbody:has(tr:nth-child(n + 2)) + tfoot {
   display: table-footer-group;
 }
 
-tfoot th,
-tfoot td {
-  text-align: right !important;
+tfoot th {
+  text-align: right;
 }
 
 thead th:nth-child(-n + 2) {
   text-align: left;
-  min-width: 2.5rem;
+  min-width: 8rem;
 }
 
 thead th:nth-child(n + 3) {
@@ -211,6 +210,7 @@ td[class] {
 
 th > label,
 td > label {
+  gap: 0.25rem;
   position: absolute;
   inset: 0;
   display: flex;
@@ -248,7 +248,6 @@ li {
   width: 1rem;
   height: 1rem;
   vertical-align: middle;
-  padding: auto;
   margin-inline-end: 0.5rem;
 }
 
