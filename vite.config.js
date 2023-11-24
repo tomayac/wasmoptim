@@ -22,6 +22,7 @@ export default defineConfig({
       manifest: webmanifest,
       workbox: {
         maximumFileSizeToCacheInBytes: 10000000,
+        globPatterns: ['**/*.{js,css,html,png,svg,wasm}'],
       },
     }),
   ],
