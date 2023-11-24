@@ -20,7 +20,6 @@ const optimizeMergedFile = async (mergedFile) => {
 self.addEventListener('message', async (event) => {
   try {
     const { default: loadWASM } = await import('./third-party/wasm-merge.js');
-    const { wasmFiles, uuids } = event.data;
     const errorTexts = [];
     const Module = await loadWASM({
       print: () => {
@@ -28,6 +27,8 @@ self.addEventListener('message', async (event) => {
       },
       printErr: (text) => errorTexts.push(text),
     });
+    await Module.ready;
+    const { wasmFiles, uuids } = event.data;
     const promises = wasmFiles.map(async (wasmFile, i) => {
       const buffer = await wasmFile.arrayBuffer();
       Module.FS.writeFile(wasmFile.name + uuids[i], new Uint8Array(buffer));

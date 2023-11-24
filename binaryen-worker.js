@@ -1,5 +1,14 @@
 self.addEventListener('message', async (event) => {
-  const { default: binaryen } = await import('./third-party/binaryen.js');
+  const { default: loadWASM } = await import('./third-party/binaryen_wasm.js');
+  const errorTexts = [];
+  const Module = await loadWASM({
+    print: () => {
+      return;
+    },
+    printErr: (text) => errorTexts.push(text),
+  });
+  await Module.ready;
+  const binaryen = Module;
   const { isBinaryFile } = await import('arraybuffer-isbinary');
   const { wasmFileBefore } = event.data;
   try {
