@@ -5,7 +5,7 @@ import {
   supportsFileSystemObserver,
 } from './main.js';
 import { supported as supportsFileSystemAccess } from 'browser-fs-access';
-import { supportsGetUniqueId } from './util.js';
+import { supportsGetUniqueId } from './file-system.js';
 import {
   statsTemplate,
   statsHeader,
@@ -13,6 +13,7 @@ import {
   observeChangesCheckbox,
   overwriteCheckbox,
   totalSavingsSize,
+  selectAllCheckbox,
 } from './dom.js';
 import { MERGE_FILE_UUID } from './wasm-merge.js';
 import { limit } from './util.js';
@@ -59,6 +60,13 @@ const optimizeWasmFiles = async (wasmFilesBefore, isMergedFile = false) => {
       spinnerImg = stats.querySelector('.spinner');
       mergeCheckbox = stats.querySelector('.merge-checkbox');
       resultsArea.append(stats);
+      const twoFilesOrMore = resultsArea.querySelectorAll('tr').length > 1;
+      selectAllCheckbox.closest('th').style.display = twoFilesOrMore
+        ? ''
+        : 'none';
+      resultsArea.querySelectorAll('input').forEach((input) => {
+        input.closest('td').style.display = twoFilesOrMore ? '' : 'none';
+      });
     }
     spinnerImg.src = spinner;
     deltaSizeLabel.textContent = 'Optimizing…';

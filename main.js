@@ -1,5 +1,4 @@
 import '/style.css';
-import { supported as supportsFileSystemAccess } from 'browser-fs-access';
 import './ui.js';
 import './wasm-optimize.js';
 import './wasm-merge.js';
@@ -11,10 +10,6 @@ const supportsFileSystemObserver = 'FileSystemObserver' in window;
 (async () => {
   if (supportsFileSystemObserver) {
     import('./file-system-observer.js');
-  }
-
-  if (supportsFileHandleDragAndDrop && supportsFileSystemAccess) {
-    import('./drag-and-drop.js');
   }
 
   if ('launchQueue' in window && 'files' in LaunchParams.prototype) {
@@ -31,7 +26,9 @@ const supportsFileSystemObserver = 'FileSystemObserver' in window;
     });
     updateSW();
 
-    import('./web-share-target.js');
+    if ('share' in navigator) {
+      import('./web-share-target.js');
+    }
   }
 })();
 

@@ -1,4 +1,4 @@
-import { checkForAndPossiblyAskForPermissions } from './ui.js';
+import { checkForAndPossiblyAskForPermissions } from './file-system.js';
 import { overwriteCheckbox } from './dom.js';
 import { supported as supportsFileSystemAccess } from 'browser-fs-access';
 import { optimizeWasmFiles } from './wasm-optimize.js';

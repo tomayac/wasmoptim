@@ -1,5 +1,9 @@
 import spinner from '/spinner.svg';
-import { readDirectory, readDirectoryLegacy } from './util.js';
+import {
+  readDirectory,
+  readDirectoryLegacy,
+  checkForAndPossiblyAskForPermissions,
+} from './file-system.js';
 import { optimizeWasmFiles, uuidToFile } from './wasm-optimize.js';
 import { supportsFileHandleDragAndDrop } from './main.js';
 import {
@@ -19,15 +23,32 @@ import {
   exampleTemplate,
   loadDirectoryButton,
   mergeButton,
+  metaThemeColor,
 } from './dom.js';
+import { MERGE_FILE_UUID } from './wasm-merge.js';
 
-const checkForAndPossiblyAskForPermissions = async (wasmFilesBefore) => {
-  for (const wasmFileBefore of wasmFilesBefore) {
-    await wasmFileBefore.handle.requestPermission({
-      mode: 'readwrite',
-    });
+if (supportsFileSystemAccess) {
+  overwriteCheckbox.parentNode.hidden = false;
+  overwriteCheckbox.addEventListener('change', () => {
+    localStorage.setItem('overwrite-original-files', overwriteCheckbox.checked);
+    const files = [];
+    if (overwriteCheckbox.checked) {
+      for (const [uuid, { file }] of uuidToFile.entries()) {
+        if (uuid === MERGE_FILE_UUID || !file.handle) {
+          continue;
+        }
+        files.push(file);
+      }
+      checkForAndPossiblyAskForPermissions(files);
+    }
+  });
+
+  if (localStorage.getItem('overwrite-original-files') !== 'true') {
+    overwriteCheckbox.checked = false;
+  } else {
+    overwriteCheckbox.checked = true;
   }
-};
+}
 
 const EXAMPLE_URLS = [
   'https://unpkg.com/canvaskit-wasm@0.39.1/bin/canvaskit.wasm',
@@ -193,7 +214,7 @@ loadDirectoryButton.addEventListener('click', async () => {
   try {
     const files = await directoryOpen({
       recursive: true,
-      mode: 'readwrite',
+      mode: overwriteCheckbox.checked ? 'readwrite' : 'read',
     });
     const wasmFilesBefore = files.filter(
       (file) =>
@@ -305,7 +326,6 @@ dropArea.addEventListener('drop', async (e) => {
 });
 
 const colorSchemeChange = (e) => {
-  const metaThemeColor = document.querySelector('meta[name=theme-color]');
   if (e.matches) {
     metaThemeColor.content = 'rgb(32, 33, 36)';
     return;
@@ -317,5 +337,3 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener(
   colorSchemeChange,
 );
 colorSchemeChange(matchMedia('(prefers-color-scheme: dark)'));
-
-export { checkForAndPossiblyAskForPermissions };

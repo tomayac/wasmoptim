@@ -20,7 +20,7 @@ const optimizeMergedFile = async (mergedFile) => {
 self.addEventListener('message', async (event) => {
   try {
     const { default: loadWASM } = await import('./third-party/wasm-merge.js');
-    const { wasmFiles } = event.data;
+    const { wasmFiles, uuids } = event.data;
     const errorTexts = [];
     const Module = await loadWASM({
       print: () => {
@@ -28,13 +28,29 @@ self.addEventListener('message', async (event) => {
       },
       printErr: (text) => errorTexts.push(text),
     });
-    const promises = wasmFiles.map(async (wasmFile) => {
+    const promises = wasmFiles.map(async (wasmFile, i) => {
       const buffer = await wasmFile.arrayBuffer();
-      Module.FS.writeFile(wasmFile.name, new Uint8Array(buffer));
+      Module.FS.writeFile(wasmFile.name + uuids[i], new Uint8Array(buffer));
     });
     await Promise.all(promises);
-    const wasmFilesWithNames = wasmFiles
+    const fakeWasmFilesWithNames = wasmFiles
       .map((wasmFile) => [wasmFile.name, wasmFile.name.replace(/\.wasm$/, '')])
+      .flat();
+    const timestamp = Date.now();
+    const fakeArgs = [
+      ...fakeWasmFilesWithNames,
+      '--rename-export-conflicts',
+      '--enable-multimemory',
+      '--enable-reference-types',
+      '-o',
+      MERGED_FILE_NAME + timestamp,
+    ];
+    console.log('wasm-merge', fakeArgs.join(' '));
+    const wasmFilesWithNames = wasmFiles
+      .map((wasmFile, i) => [
+        wasmFile.name + uuids[i],
+        wasmFile.name.replace(/\.wasm$/, ''),
+      ])
       .flat();
     const args = [
       ...wasmFilesWithNames,
@@ -42,21 +58,24 @@ self.addEventListener('message', async (event) => {
       '--enable-multimemory',
       '--enable-reference-types',
       '-o',
-      MERGED_FILE_NAME,
+      MERGED_FILE_NAME + timestamp,
     ];
-    console.log('wasm-merge', args.join(' '));
+
     Module.callMain(args);
     if (errorTexts.length) {
       self.postMessage({ error: errorTexts.join('\n') });
       return;
     }
-    const output = Module.FS.readFile(MERGED_FILE_NAME, { encoding: 'binary' });
+    const output = Module.FS.readFile(MERGED_FILE_NAME + timestamp, {
+      encoding: 'binary',
+    });
     const file = new File([output], MERGED_FILE_NAME, {
       type: 'application/wasm',
     });
-    [...wasmFiles.map((file) => file.name), MERGED_FILE_NAME].forEach(
-      Module.FS.unlink,
-    );
+    [
+      ...wasmFiles.map((file, i) => file.name + uuids[i]),
+      MERGED_FILE_NAME + timestamp,
+    ].forEach(Module.FS.unlink);
     self.postMessage({ status: { size: file.size } });
     const { wasmFileAfter, error } = await optimizeMergedFile(file);
     if (error) {

@@ -1,7 +1,7 @@
 import { observeChangesCheckbox } from './dom.js';
-import { uuidToFile } from './wasm-optimize.js';
-import { optimizeWasmFiles } from './wasm-optimize.js';
+import { uuidToFile, optimizeWasmFiles } from './wasm-optimize.js';
 import { debounce } from './util.js';
+import { MERGE_FILE_UUID } from './wasm-merge.js';
 
 let fileSystemChangeObserver = null;
 
@@ -36,12 +36,12 @@ const getFileSystemChangeObserver = () => {
 
 observeChangesCheckbox.parentNode.hidden = false;
 observeChangesCheckbox.addEventListener('change', () => {
-  localStorage.setItem('observe-changes', observeChangesCheckbox.checked);
+  localStorage.setItem('observe-file-changes', observeChangesCheckbox.checked);
 
   if (observeChangesCheckbox.checked) {
     getFileSystemChangeObserver();
-    for (const { handle } of uuidToFile.values()) {
-      if (!handle) {
+    for (const [uuid, { handle }] of uuidToFile.entries()) {
+      if (uuid === MERGE_FILE_UUID || !handle) {
         continue;
       }
       fileSystemChangeObserver.observe(handle);
@@ -55,7 +55,7 @@ observeChangesCheckbox.addEventListener('change', () => {
   }
 });
 
-if (localStorage.getItem('observe-changes') !== 'true') {
+if (localStorage.getItem('observe-file-changes') !== 'true') {
   observeChangesCheckbox.checked = false;
 } else {
   observeChangesCheckbox.checked = true;

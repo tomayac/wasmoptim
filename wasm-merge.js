@@ -24,10 +24,12 @@ mergeButton.addEventListener('click', async () => {
   deltaSizeLabel.classList.remove('error');
 
   const wasmFiles = [];
+  const uuids = [];
   resultsArea.querySelectorAll('input:checked').forEach((input) => {
     const uuid = input.closest('tr').querySelector('[data-uuid]').dataset.uuid;
     const { file } = uuidToFile.get(uuid);
     wasmFiles.push(file);
+    uuids.push(uuid);
   });
   const wasmFileSizes = wasmFiles.reduce(
     (acc, wasmFile) => acc + wasmFile.size,
@@ -88,7 +90,7 @@ mergeButton.addEventListener('click', async () => {
     uuidToFile.set(MERGE_FILE_UUID, { file });
   });
 
-  worker.postMessage({ wasmFiles });
+  worker.postMessage({ wasmFiles, uuids });
 });
 
 export { MERGE_FILE_UUID };

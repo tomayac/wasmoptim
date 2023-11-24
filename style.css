@@ -6,11 +6,12 @@
   --deepest-pink: deeppink;
   --deepest-green: lime;
   --blue: #654ff0;
+  --accent-color: var(--blue);
 
   color-scheme: dark light;
   background-color: var(--canvas-color);
   color: var(--canvas-text-color);
-  accent-color: var(--blue);
+  accent-color: var(--accent-color);
 }
 
 html {
@@ -135,15 +136,22 @@ button:hover {
 
 code {
   font-family: ui-monospace, monospace;
+}
+
+a code {
   color: var(--deepest-pink);
 }
 
 kbd {
   font-family: ui-monospace, monospace;
   border: 0.1rem solid var(--blue);
-  border-bottom: 0.25rem solid var(--blue);
-  border-radius: 0.25rem;
+  border-bottom: 0.2rem solid var(--blue);
+  border-radius: 0.2rem;
   padding: 0.1rem 0.4rem;
+}
+
+input[type="checkbox"]:hover {
+  accent-color: var(--deepest-pink);
 }
 
 details {
@@ -167,6 +175,14 @@ summary::before {
   margin-inline-end: 0.5rem;
 }
 
+summary::marker {
+  color: var(--accent-color);
+}
+
+summary:hover::marker {
+  color: var(--deepest-pink);
+}
+
 table {
   width: 100%;
 }
@@ -186,12 +202,12 @@ td {
   position: relative;
 }
 
-tbody:has(tr:nth-child(n + 2)) + tfoot {
-  display: table-footer-group;
-}
-
 tfoot th {
   text-align: right;
+}
+
+tbody:has(tr:nth-child(n + 2)) + tfoot {
+  display: table-footer-group;
 }
 
 thead th:nth-child(-n + 2) {
@@ -226,6 +242,14 @@ tbody tr:nth-child(odd) {
   background-color: var(--table-row-odd-background-color);
 }
 
+tfoot tr:nth-child(even) {
+  background-color: var(--table-row-odd-background-color);
+}
+
+tfoot tr:nth-child(even) td:first-child {
+  background-color: var(--canvas-color);
+}
+
 tbody tr:hover {
   outline: var(--blue) solid 0.1rem;
   outline-offset: -0.1rem;
@@ -253,7 +277,7 @@ li {
 
 #drop-area {
   width: 100%;
-  height: 25dvh;
+  height: 20dvh;
   outline: solid 0.25rem var(--blue);
   outline-offset: -0.25rem;
   padding: 0.5rem;

@@ -14,6 +14,7 @@ const observeChangesCheckbox = document.querySelector(
   '#observe-changes-checkbox',
 );
 const examplesList = document.querySelector('#examples-list');
+const metaThemeColor = document.querySelector('meta[name=theme-color]');
 
 export {
   loadWasmButton,
@@ -30,4 +31,5 @@ export {
   overwriteCheckbox,
   observeChangesCheckbox,
   examplesList,
+  metaThemeColor,
 };
