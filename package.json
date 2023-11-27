@@ -8,7 +8,7 @@
     "dev": "vite",
     "build": "vite build && touch docs/.nojekyll && git add docs/ -f",
     "install": "napa",
-    "binaryen": "shx mv node_modules/googletest node_modules/binaryen/third_party && cd node_modules/binaryen && emcmake cmake -DBUILD_FOR_BROWSER=ON . && emmake make",
+    "binaryen": "shx cp -r node_modules/googletest node_modules/binaryen/third_party && cd node_modules/binaryen && shx rm -f bin/* && emcmake cmake -DBUILD_FOR_BROWSER=ON . && emmake make -j2 binaryen_wasm && emmake make -j2 wasm-merge && shx cp bin/*.wasm ../../third-party && shx cp bin/*.js ../../third-party",
     "preview": "vite preview",
     "fix": "prettier --write .",
     "lint:js": "npx eslint . --ext .js,.mjs --fix --ignore-pattern docs/ --ignore-pattern third-party/ --ignore-pattern dev-dist/ && npx find-unused-exports",
@@ -22,7 +22,7 @@
     "googletest": "https://github.com/google/googletest/archive/refs/heads/main.zip"
   },
   "devDependencies": {
-    "@rollup/plugin-dynamic-import-vars": "^2.1.0",
+    "@rollup/plugin-dynamic-import-vars": "^2.1.1",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^9.0.0",
     "find-unused-exports": "^5.0.0",
@@ -33,7 +33,7 @@
     "stylelint-config-standard": "^34.0.0",
     "stylelint-order": "^6.0.3",
     "vite": "^5.0.2",
-    "vite-plugin-pwa": "^0.17.0"
+    "vite-plugin-pwa": "^0.17.2"
   },
   "dependencies": {
     "arraybuffer-isbinary": "^1.0.2",

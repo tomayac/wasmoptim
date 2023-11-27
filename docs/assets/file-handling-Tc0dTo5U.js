@@ -1,1 +1,0 @@
-import{e as a,b as n,c as o,a as c}from"./index-0Q1S9V_V.js";launchQueue.setConsumer(async i=>{if(!i.files.length)return;const s=[];for(const t of i.files){const e=await t.getFile();e.handle=t,!(e.type&&e.type!=="application/wasm"||!e.name.endsWith(".wasm")&&!e.name.endsWith(".wat"))&&s.push(e)}a&&n.checked&&await o(s),c(s)});
