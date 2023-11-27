@@ -1,6 +1,6 @@
 import spinner from '/spinner.svg';
 import { mergeButton, mergeArea, resultsArea } from './dom';
-import { uuidToFile } from './wasm-optimize';
+import { uuidToFile } from './file-system';
 import prettyBytes from 'pretty-bytes';
 
 const MERGE_FILE_UUID = crypto.randomUUID();

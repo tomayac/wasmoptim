@@ -68,7 +68,7 @@
     <meta name="twitter:url" content="https://tomayac.github.io/wasmoptim/" />
 
     <title>WasmOptim</title>
-    <script type="module" crossorigin src="/wasmoptim/assets/index-HM2gO01i.js"></script>
+    <script type="module" crossorigin src="/wasmoptim/assets/index-PFDAUNAB.js"></script>
     <link rel="stylesheet" crossorigin href="/wasmoptim/assets/index-5JlHWayF.css">
   <link rel="manifest" href="/wasmoptim/manifest.webmanifest"></head>
   <body>
@@ -124,13 +124,24 @@
         <div>
           <label hidden>
             <input type="checkbox" id="overwrite-checkbox" checked />
-            Overwrite original files with optimized version.
+            Overwrite original files with optimized versions.
           </label>
         </div>
         <div>
           <label hidden>
-            <input type="checkbox" id="observe-changes-checkbox" checked />
+            <input type="checkbox" id="observe-file-changes-checkbox" checked />
             Watch open files for changes and automatically re-optimize.
+          </label>
+        </div>
+        <div>
+          <label hidden>
+            <input
+              type="checkbox"
+              id="observe-directory-changes-checkbox"
+              checked
+            />
+            Watch open directories for changes and automatically optimize new
+            files.
           </label>
         </div>
       </details>

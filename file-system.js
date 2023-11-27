@@ -1,3 +1,5 @@
+const uuidToFile = new Map();
+
 const supportsGetUniqueId =
   'FileSystemHandle' in window && 'getUniqueId' in FileSystemHandle.prototype;
 
@@ -67,5 +69,6 @@ export {
   readDirectory,
   readDirectoryLegacy,
   checkForAndPossiblyAskForPermissions,
+  uuidToFile,
   supportsGetUniqueId,
 };

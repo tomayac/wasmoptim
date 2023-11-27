@@ -3,8 +3,9 @@ import {
   readDirectory,
   readDirectoryLegacy,
   checkForAndPossiblyAskForPermissions,
+  uuidToFile,
 } from './file-system.js';
-import { optimizeWasmFiles, uuidToFile } from './wasm-optimize.js';
+import { optimizeWasmFiles } from './wasm-optimize.js';
 import { supportsFileHandleDragAndDrop } from './main.js';
 import {
   fileOpen,
@@ -19,12 +20,18 @@ import {
   mergeArea,
   selectAllCheckbox,
   overwriteCheckbox,
+  observeDirectoryChangesCheckbox,
   examplesList,
   exampleTemplate,
   loadDirectoryButton,
   mergeButton,
   metaThemeColor,
 } from './dom.js';
+import { supportsFileSystemObserver } from './main.js';
+import {
+  getFileSystemChangeObserver,
+  observedDirectories,
+} from './file-system-observer.js';
 import { MERGE_FILE_UUID } from './wasm-merge.js';
 
 if (supportsFileSystemAccess) {
@@ -222,6 +229,23 @@ loadDirectoryButton.addEventListener('click', async () => {
         file.name.endsWith('.wasm') ||
         file.name.endsWith('.wat'),
     );
+    if (
+      supportsFileSystemAccess &&
+      supportsFileSystemObserver &&
+      observeDirectoryChangesCheckbox.checked
+    ) {
+      let directoryHandles = [];
+      for (const file of files) {
+        directoryHandles.push(file.directoryHandle);
+      }
+      directoryHandles = [...new Set(directoryHandles)];
+      const fileSystemChangeObserver = getFileSystemChangeObserver();
+      directoryHandles.forEach((directoryHandle) => {
+        fileSystemChangeObserver.observe(directoryHandle, { recursive: true });
+        observedDirectories.add(directoryHandle);
+        console.log(`Directory ${directoryHandle.name} → Observing changes`);
+      });
+    }
     optimizeWasmFiles(wasmFilesBefore);
   } catch (error) {
     if (error.name === 'AbortError') {
@@ -283,6 +307,24 @@ dropArea.addEventListener('drop', async (e) => {
           entry.name.endsWith('.wat'),
       );
       wasmFilesBefore.push(...entries);
+      if (
+        supportsFileSystemObserver &&
+        observeDirectoryChangesCheckbox.checked
+      ) {
+        let directoryHandles = [];
+        for (const entry of entries) {
+          directoryHandles.push(entry.directoryHandle);
+        }
+        directoryHandles = [...new Set(directoryHandles)];
+        const fileSystemChangeObserver = getFileSystemChangeObserver();
+        directoryHandles.forEach((directoryHandle) => {
+          fileSystemChangeObserver.observe(directoryHandle, {
+            recursive: true,
+          });
+          observedDirectories.add(directoryHandle);
+          console.log(`Directory ${directoryHandle.name} → Observing changes`);
+        });
+      }
       continue;
     } else if (handle.isDirectory) {
       let entries = await readDirectoryLegacy(handle);

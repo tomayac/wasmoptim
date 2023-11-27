@@ -5,12 +5,12 @@ import {
   supportsFileSystemObserver,
 } from './main.js';
 import { supported as supportsFileSystemAccess } from 'browser-fs-access';
-import { supportsGetUniqueId } from './file-system.js';
+import { supportsGetUniqueId, uuidToFile } from './file-system.js';
 import {
   statsTemplate,
   statsHeader,
   resultsArea,
-  observeChangesCheckbox,
+  observeFileChangesCheckbox,
   overwriteCheckbox,
   totalSavingsSize,
   selectAllCheckbox,
@@ -19,8 +19,6 @@ import { MERGE_FILE_UUID } from './wasm-merge.js';
 import { limit } from './util.js';
 
 const supportsBadging = 'setAppBadge' in navigator;
-
-const uuidToFile = new Map();
 
 let currentlyProcessing = 0;
 
@@ -72,13 +70,21 @@ const optimizeWasmFiles = async (wasmFilesBefore, isMergedFile = false) => {
     deltaSizeLabel.textContent = 'Optimizing…';
     deltaSizeLabel.classList.remove('size-smaller');
     deltaSizeLabel.classList.remove('size-larger');
+    deltaSizeLabel.classList.remove('error');
+    afterSizeLabel.classList.remove('error');
     fileNameLabel.querySelector('code').textContent = wasmFileBefore.name;
     fileNameLabel.classList.add('processing');
     mergeCheckbox.classList.add('processing');
     mergeCheckbox.disabled = true;
+
     if (supportsBadging) {
-      navigator.setAppBadge(++currentlyProcessing);
+      try {
+        await navigator.setAppBadge(++currentlyProcessing);
+      } catch (error) {
+        console.error(error.name, error.message);
+      }
     }
+
     beforeSizeLabel.textContent = prettyBytes(wasmFileBefore.size);
     fileNameLabel.dataset.uuid = uniqueId;
 
@@ -94,9 +100,15 @@ const optimizeWasmFiles = async (wasmFilesBefore, isMergedFile = false) => {
           mergeCheckbox.classList.remove('processing');
           mergeCheckbox.disabled = false;
           if (supportsBadging) {
-            navigator.setAppBadge(--currentlyProcessing);
-            if (currentlyProcessing === 0) {
-              navigator.clearAppBadge();
+            --currentlyProcessing;
+            try {
+              if (currentlyProcessing === 0) {
+                await navigator.clearAppBadge();
+              } else {
+                await navigator.setAppBadge(currentlyProcessing);
+              }
+            } catch (error) {
+              console.error(error.name, error.message);
             }
           }
           const { wasmFileAfter, error } = event.data;
@@ -173,7 +185,7 @@ const optimizeWasmFiles = async (wasmFilesBefore, isMergedFile = false) => {
           }
           if (
             supportsFileSystemObserver &&
-            observeChangesCheckbox.checked &&
+            observeFileChangesCheckbox.checked &&
             wasmFileBefore.handle
           ) {
             const { getFileSystemChangeObserver } = await import(
@@ -181,7 +193,7 @@ const optimizeWasmFiles = async (wasmFilesBefore, isMergedFile = false) => {
             );
             const fileSystemChangeObserver = getFileSystemChangeObserver();
             fileSystemChangeObserver.observe(wasmFileBefore.handle);
-            console.log(`${wasmFileBefore.name} → Observing changes`);
+            console.log(`File ${wasmFileBefore.name} → Observing changes`);
           }
           resolve();
         });
@@ -197,4 +209,4 @@ const optimizeWasmFiles = async (wasmFilesBefore, isMergedFile = false) => {
   );
 };
 
-export { optimizeWasmFiles, uuidToFile };
+export { optimizeWasmFiles };

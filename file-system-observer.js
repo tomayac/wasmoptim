@@ -1,25 +1,43 @@
-import { observeChangesCheckbox } from './dom.js';
-import { uuidToFile, optimizeWasmFiles } from './wasm-optimize.js';
+import {
+  observeFileChangesCheckbox,
+  observeDirectoryChangesCheckbox,
+} from './dom.js';
+import { optimizeWasmFiles } from './wasm-optimize.js';
+import { readDirectory, uuidToFile } from './file-system.js';
 import { debounce } from './util.js';
 import { MERGE_FILE_UUID } from './wasm-merge.js';
+
+const observedDirectories = new Set();
 
 let fileSystemChangeObserver = null;
 
 const fileSystemChangeCallback = async (changes) => {
-  console.log(
-    'File system changes detected',
-    changes,
-    await changes[0].changedHandle.getFile(),
-  );
-  const wasmFilesBefore = [];
+  console.log('File system changes detected', changes);
+  let wasmFilesBefore = [];
   for (const change of changes) {
     if (change.type === 'modified') {
-      const changedFile = await change.changedHandle.getFile();
-      console.log(`${changedFile.name} modified → Re-optimizing`);
-      changedFile.handle = change.changedHandle;
-      wasmFilesBefore.push(changedFile);
+      if (change.changedHandle instanceof FileSystemFileHandle) {
+        const changedFile = await change.changedHandle.getFile();
+        console.log(`File ${changedFile.name} modified → Re-optimizing`);
+        changedFile.handle = change.changedHandle;
+        wasmFilesBefore.push(changedFile);
+      } else if (change.changedHandle instanceof FileSystemDirectoryHandle) {
+        const changedDirectoryHandle = change.changedHandle;
+        let entries = await readDirectory(changedDirectoryHandle, true);
+        console.log(
+          `Directory ${change.changedHandle.name} modified → Getting entries`,
+        );
+        entries = entries.filter(
+          (entry) =>
+            entry.type === 'application/wasm' ||
+            entry.name.endsWith('.wasm') ||
+            entry.name.endsWith('.wat'),
+        );
+        wasmFilesBefore.push(...entries);
+      }
     }
   }
+  wasmFilesBefore = [...new Set(wasmFilesBefore)];
   optimizeWasmFiles(wasmFilesBefore);
 };
 
@@ -34,31 +52,68 @@ const getFileSystemChangeObserver = () => {
   return fileSystemChangeObserver;
 };
 
-observeChangesCheckbox.parentNode.hidden = false;
-observeChangesCheckbox.addEventListener('change', () => {
-  localStorage.setItem('observe-file-changes', observeChangesCheckbox.checked);
+if (localStorage.getItem('observe-file-changes') !== 'true') {
+  observeFileChangesCheckbox.checked = false;
+} else {
+  observeFileChangesCheckbox.checked = true;
+}
 
-  if (observeChangesCheckbox.checked) {
+if (localStorage.getItem('observe-directory-changes') !== 'true') {
+  observeDirectoryChangesCheckbox.checked = false;
+} else {
+  observeDirectoryChangesCheckbox.checked = true;
+}
+
+observeFileChangesCheckbox.parentNode.hidden = false;
+observeFileChangesCheckbox.addEventListener('change', () => {
+  localStorage.setItem(
+    'observe-file-changes',
+    observeFileChangesCheckbox.checked,
+  );
+
+  if (observeFileChangesCheckbox.checked) {
     getFileSystemChangeObserver();
     for (const [uuid, { handle }] of uuidToFile.entries()) {
       if (uuid === MERGE_FILE_UUID || !handle) {
         continue;
       }
       fileSystemChangeObserver.observe(handle);
-      console.log(`${handle.name} → Observing changes`);
+      console.log(`File ${handle.name} → Observing changes`);
     }
     return;
   }
   if (fileSystemChangeObserver) {
-    fileSystemChangeObserver.disconnect();
-    fileSystemChangeObserver = null;
+    for (const [uuid, { handle }] of uuidToFile.entries()) {
+      if (uuid === MERGE_FILE_UUID || !handle) {
+        continue;
+      }
+      fileSystemChangeObserver.unobserve(handle);
+      console.log(`File ${handle.name} → No longer observing changes`);
+    }
   }
 });
 
-if (localStorage.getItem('observe-file-changes') !== 'true') {
-  observeChangesCheckbox.checked = false;
-} else {
-  observeChangesCheckbox.checked = true;
-}
+observeDirectoryChangesCheckbox.parentNode.hidden = false;
+observeDirectoryChangesCheckbox.addEventListener('change', () => {
+  localStorage.setItem(
+    'observe-directory-changes',
+    observeDirectoryChangesCheckbox.checked,
+  );
 
-export { getFileSystemChangeObserver };
+  if (observeDirectoryChangesCheckbox.checked) {
+    getFileSystemChangeObserver();
+    for (const dirHandle of observedDirectories) {
+      fileSystemChangeObserver.observe(dirHandle);
+      console.log(`Directory ${dirHandle.name} → Observing changes`);
+    }
+    return;
+  }
+  if (fileSystemChangeObserver) {
+    for (const dirHandle of observedDirectories) {
+      fileSystemChangeObserver.unobserve(dirHandle);
+      console.log(`Directory ${dirHandle.name} → No longer observing changes`);
+    }
+  }
+});
+
+export { getFileSystemChangeObserver, observedDirectories };

@@ -10,8 +10,11 @@ const exampleTemplate = document.querySelector('#example-template');
 const statsHeader = document.querySelector('#stats-header');
 const selectAllCheckbox = document.querySelector('#select-all-checkbox');
 const overwriteCheckbox = document.querySelector('#overwrite-checkbox');
-const observeChangesCheckbox = document.querySelector(
-  '#observe-changes-checkbox',
+const observeFileChangesCheckbox = document.querySelector(
+  '#observe-file-changes-checkbox',
+);
+const observeDirectoryChangesCheckbox = document.querySelector(
+  '#observe-directory-changes-checkbox',
 );
 const examplesList = document.querySelector('#examples-list');
 const metaThemeColor = document.querySelector('meta[name=theme-color]');
@@ -29,7 +32,8 @@ export {
   statsHeader,
   selectAllCheckbox,
   overwriteCheckbox,
-  observeChangesCheckbox,
+  observeFileChangesCheckbox,
+  observeDirectoryChangesCheckbox,
   examplesList,
   metaThemeColor,
 };

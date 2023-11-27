@@ -122,13 +122,24 @@
         <div>
           <label hidden>
             <input type="checkbox" id="overwrite-checkbox" checked />
-            Overwrite original files with optimized version.
+            Overwrite original files with optimized versions.
           </label>
         </div>
         <div>
           <label hidden>
-            <input type="checkbox" id="observe-changes-checkbox" checked />
+            <input type="checkbox" id="observe-file-changes-checkbox" checked />
             Watch open files for changes and automatically re-optimize.
+          </label>
+        </div>
+        <div>
+          <label hidden>
+            <input
+              type="checkbox"
+              id="observe-directory-changes-checkbox"
+              checked
+            />
+            Watch open directories for changes and automatically optimize new
+            files.
           </label>
         </div>
       </details>
