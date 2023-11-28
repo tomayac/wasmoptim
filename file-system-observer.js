@@ -3,7 +3,11 @@ import {
   observeDirectoryChangesCheckbox,
 } from './dom.js';
 import { optimizeWasmFiles } from './wasm-optimize.js';
-import { readDirectory, uuidToFile } from './file-system.js';
+import {
+  readDirectory,
+  uuidToFile,
+  supportsGetUniqueId,
+} from './file-system.js';
 import { debounce } from './util.js';
 import { MERGE_FILE_UUID } from './wasm-merge.js';
 
@@ -34,6 +38,17 @@ const fileSystemChangeCallback = async (changes) => {
             entry.name.endsWith('.wat'),
         );
         wasmFilesBefore.push(...entries);
+        const existingUuids = Array.from(uuidToFile.keys());
+        const promises = wasmFilesBefore.map(async (wasmFileBefore) => {
+          return supportsGetUniqueId
+            ? await wasmFileBefore.handle.getUniqueId()
+            : wasmFileBefore.name;
+        });
+        const toBeCheckedUuids = await Promise.all(promises);
+        wasmFilesBefore = wasmFilesBefore.filter((wasmFileBefore, i) => {
+          const uuid = toBeCheckedUuids[i];
+          return !existingUuids.includes(uuid);
+        });
       }
     }
   }

@@ -16,6 +16,9 @@ const sendStats = async (beforeSize, afterSize) => {
     });
     await saveResponse.json();
   } catch (error) {
+    if (location.hostname === 'localhost') {
+      return;
+    }
     console.error(error.name, error.message);
   }
 };
@@ -37,6 +40,9 @@ const getStats = async () => {
     statsSize.textContent = prettyBytes(stats.totalBytesSaved);
     statsPercent.textContent = Number(stats.averagePercentageSaved).toFixed(2);
   } catch (error) {
+    if (location.hostname === 'localhost') {
+      return;
+    }
     console.error(error.name, error.message);
   }
 };

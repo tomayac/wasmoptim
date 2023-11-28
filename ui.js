@@ -87,23 +87,32 @@ examplesList.addEventListener('click', async (e) => {
   const anchor = e.target.closest('a');
   const wasmFileURL = anchor.href;
   const downloading = anchor.parentNode.querySelector('.downloading');
+  downloading.textContent = 'Downloading…';
+  downloading.classList.remove('error');
   downloading.hidden = false;
   const spinnerImg = anchor.parentNode.querySelector('img');
   spinnerImg.src = spinner;
-  const wasmBlobBefore = await fetch(wasmFileURL).then((response) =>
-    response.blob(),
-  );
-  spinnerImg.removeAttribute('src');
-  downloading.hidden = true;
-  const wasmFileBefore = new File(
-    [wasmBlobBefore],
-    wasmFileURL.split('/').pop(),
-    {
-      type: 'application/wasm',
-    },
-  );
-  wasmFileBefore.handle = false;
-  optimizeWasmFiles([wasmFileBefore]);
+  try {
+    const wasmBlobBefore = await fetch(wasmFileURL).then((response) =>
+      response.blob(),
+    );
+    spinnerImg.removeAttribute('src');
+    downloading.hidden = true;
+    const wasmFileBefore = new File(
+      [wasmBlobBefore],
+      wasmFileURL.split('/').pop(),
+      {
+        type: 'application/wasm',
+      },
+    );
+    wasmFileBefore.handle = false;
+    optimizeWasmFiles([wasmFileBefore]);
+  } catch (error) {
+    console.error(error.name, error.message);
+    spinnerImg.removeAttribute('src');
+    downloading.classList.add('error');
+    downloading.textContent = error.message;
+  }
 });
 
 document.addEventListener('paste', (e) => {
