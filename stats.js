@@ -34,9 +34,9 @@ const getStats = async () => {
     });
 
     const stats = await statsResponse.json();
-    statsFiles.textContent = `${stats.entryCount} ${
-      stats.entryCount === 1 ? 'file' : 'files'
-    }`;
+    statsFiles.textContent = `${new Intl.NumberFormat().format(
+      stats.entryCount,
+    )} ${stats.entryCount === 1 ? 'file' : 'files'}`;
     statsSize.textContent = prettyBytes(stats.totalBytesSaved);
     statsPercent.textContent = Number(stats.averagePercentageSaved).toFixed(2);
   } catch (error) {
