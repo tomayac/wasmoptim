@@ -4,7 +4,36 @@
   "start_url": "./",
   "id": "./",
   "description": "Optimize your .wasm files for size.",
-  "screenshots": [],
+  "screenshots": [
+    {
+      "src": "screenshot-desktop-light.png",
+      "sizes": "1280x842",
+      "type": "image/png",
+      "form_factor": "wide",
+      "description": "WasmOptim running on desktop in light mode."
+    },
+    {
+      "src": "screenshot-desktop-dark.png",
+      "sizes": "1280x842",
+      "type": "image/png",
+      "form_factor": "wide",
+      "description": "WasmOptim running on desktop in dark mode."
+    },
+    {
+      "src": "screenshot-mobile-light.png",
+      "sizes": "1125x2436",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "description": "WasmOptim running on mobile in light mode."
+    },
+    {
+      "src": "screenshot-desktop-light.png",
+      "sizes": "1125x2436",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "description": "WasmOptim running on mobile in light mode."
+    }
+  ],
   "scope": "./",
   "display": "standalone",
   "dir": "auto",

@@ -14,8 +14,9 @@
     "lint:js": "npx eslint . --ext .js,.mjs --fix --ignore-pattern docs/ --ignore-pattern third-party/ --ignore-pattern dev-dist/ && npx find-unused-exports",
     "lint:css": "npx stylelint \"**/*.css\" --fix",
     "lint": "npm run lint:js && npm run lint:css",
-    "deploy": "npm run fix && npm run lint && npm run build && git add . && git commit -a && git push",
-    "prepare": "npm run binaryen && npm run build"
+    "deploy": "npm run fix && npm run lint && npm run build && npm run screenshots && git add . && git commit -a && git push",
+    "prepare": "npm run binaryen && npm run build",
+    "screenshots": "node scripts/screenshots.js"
   },
   "napa": {
     "binaryen": "https://github.com/WebAssembly/binaryen/archive/refs/heads/main.zip",
@@ -38,6 +39,7 @@
   "dependencies": {
     "arraybuffer-isbinary": "^1.0.2",
     "browser-fs-access": "^0.35.0",
+    "capture-website": "^4.0.0",
     "pretty-bytes": "^6.1.1"
   },
   "eslintConfig": {
