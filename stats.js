@@ -7,18 +7,14 @@ const sendStats = async (beforeSize, afterSize) => {
   const headers = {
     'Content-Type': 'application/json',
   };
-
   const body = JSON.stringify({ beforeSize, afterSize });
-
   try {
     const saveResponse = await fetch(`${STATS_ENDPOINT}/saved-bytes`, {
       method: 'POST',
       headers,
       body,
     });
-
-    const saveResult = await saveResponse.json();
-    console.log(saveResult);
+    await saveResponse.json();
   } catch (error) {
     console.error(error.name, error.message);
   }
@@ -28,28 +24,20 @@ const getStats = async () => {
   const headers = {
     'Content-Type': 'application/json',
   };
-
   try {
     const statsResponse = await fetch(`${STATS_ENDPOINT}/saved-bytes`, {
       method: 'GET',
       headers,
     });
 
-    const statsResult = await statsResponse.json();
-    console.log(statsResult);
-    return statsResult;
+    const stats = await statsResponse.json();
+    statsFiles.textContent = stats.entryCount;
+    statsSize.textContent = prettyBytes(stats.totalBytesSaved);
+    statsPercent.textContent = stats.averagePercentageSaved;
   } catch (error) {
     console.error(error.name, error.message);
   }
 };
+getStats();
 
-(async () => {
-  const stats = await getStats();
-  if (stats) {
-    statsFiles.textContent = stats.files;
-    statsSize.textContent = prettyBytes(stats.size);
-    statsPercent.textContent = stats.percent;
-  }
-})();
-
-export { sendStats };
+export { sendStats, getStats };

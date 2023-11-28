@@ -17,7 +17,7 @@ import {
 } from './dom.js';
 import { MERGE_FILE_UUID } from './wasm-merge.js';
 import { limit } from './util.js';
-import { sendStats } from './stats.js';
+import { sendStats, getStats } from './stats.js';
 
 const supportsBadging = 'setAppBadge' in navigator;
 
@@ -169,7 +169,9 @@ const optimizeWasmFiles = async (wasmFilesBefore, isMergedFile = false) => {
             Math.abs(averageSavings),
           )} per file on average`;
           if (deltaSize < 0) {
-            sendStats(wasmFileBefore.size, wasmFileAfter.size);
+            sendStats(wasmFileBefore.size, wasmFileAfter.size).then(() =>
+              getStats(),
+            );
             if (
               supportsFileHandleDragAndDrop &&
               supportsFileSystemAccess &&
