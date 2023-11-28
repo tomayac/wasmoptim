@@ -274,19 +274,24 @@ loadWasmButton.addEventListener('click', async () => {
   }
 });
 
-dropArea.addEventListener('dragover', (e) => {
+document.addEventListener('dragover', (e) => {
   e.preventDefault();
 });
 
-dropArea.addEventListener('dragenter', (e) => {
+document.addEventListener('dragenter', (e) => {
+  e.preventDefault();
   dropArea.classList.add('drag-hover');
 });
 
-dropArea.addEventListener('dragleave', (e) => {
+document.addEventListener('dragleave', (e) => {
+  e.preventDefault();
+  if (e.target !== document.documentElement) {
+    return;
+  }
   dropArea.classList.remove('drag-hover');
 });
 
-dropArea.addEventListener('drop', async (e) => {
+document.addEventListener('drop', async (e) => {
   e.preventDefault();
   dropArea.classList.remove('drag-hover');
   const fileHandlesPromises = [...e.dataTransfer.items]
