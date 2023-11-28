@@ -35,7 +35,7 @@ const getStats = async () => {
       stats.entryCount === 1 ? 'file' : 'files'
     }`;
     statsSize.textContent = prettyBytes(stats.totalBytesSaved);
-    statsPercent.textContent = stats.averagePercentageSaved;
+    statsPercent.textContent = Number(stats.averagePercentageSaved).toFixed(2);
   } catch (error) {
     console.error(error.name, error.message);
   }
