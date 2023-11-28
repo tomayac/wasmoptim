@@ -27,11 +27,11 @@
       "description": "WasmOptim running on mobile in light mode."
     },
     {
-      "src": "screenshot-desktop-light.png",
+      "src": "screenshot-mobile-dark.png",
       "sizes": "1125x2436",
       "type": "image/png",
       "form_factor": "narrow",
-      "description": "WasmOptim running on mobile in light mode."
+      "description": "WasmOptim running on mobile in dark mode."
     }
   ],
   "scope": "./",
