@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/wasmoptim/icon.png" />
-    <link rel="preload" href="data:application/javascript;base64,aW1wb3J0ICcvc3R5bGUuY3NzJzsKaW1wb3J0ICcuL3VpLmpzJzsKaW1wb3J0ICcuL3dhc20tb3B0aW1pemUuanMnOwppbXBvcnQgJy4vd2FzbS1tZXJnZS5qcyc7CmltcG9ydCAnLi9zdGF0cy5qcyc7Cgpjb25zdCBzdXBwb3J0c0ZpbGVIYW5kbGVEcmFnQW5kRHJvcCA9CiAgJ2dldEFzRmlsZVN5c3RlbUhhbmRsZScgaW4gRGF0YVRyYW5zZmVySXRlbS5wcm90b3R5cGU7CmNvbnN0IHN1cHBvcnRzRmlsZVN5c3RlbU9ic2VydmVyID0gJ0ZpbGVTeXN0ZW1PYnNlcnZlcicgaW4gd2luZG93OwoKKGFzeW5jICgpID0+IHsKICBpZiAoc3VwcG9ydHNGaWxlU3lzdGVtT2JzZXJ2ZXIpIHsKICAgIGltcG9ydCgnLi9maWxlLXN5c3RlbS1vYnNlcnZlci5qcycpOwogIH0KCiAgaWYgKCdsYXVuY2hRdWV1ZScgaW4gd2luZG93ICYmICdmaWxlcycgaW4gTGF1bmNoUGFyYW1zLnByb3RvdHlwZSkgewogICAgaW1wb3J0KCcuL2ZpbGUtaGFuZGxpbmcuanMnKTsKICB9CgogIGlmICgnc2VydmljZVdvcmtlcicgaW4gbmF2aWdhdG9yKSB7CiAgICBjb25zdCB7IHJlZ2lzdGVyU1cgfSA9IGF3YWl0IGltcG9ydCgndmlydHVhbDpwd2EtcmVnaXN0ZXInKTsKICAgIGNvbnN0IHVwZGF0ZVNXID0gcmVnaXN0ZXJTVyh7CiAgICAgIG9uT2ZmbGluZVJlYWR5KCkge30sCiAgICAgIG9uTmVlZFJlZnJlc2goKSB7CiAgICAgICAgbG9jYXRpb24ucmVsb2FkKCk7CiAgICAgIH0sCiAgICB9KTsKICAgIHVwZGF0ZVNXKCk7CgogICAgaWYgKCdzaGFyZScgaW4gbmF2aWdhdG9yKSB7CiAgICAgIGltcG9ydCgnLi93ZWItc2hhcmUtdGFyZ2V0LmpzJyk7CiAgICB9CiAgfQp9KSgpOwoKZXhwb3J0IHsgc3VwcG9ydHNGaWxlSGFuZGxlRHJhZ0FuZERyb3AsIHN1cHBvcnRzRmlsZVN5c3RlbU9ic2VydmVyIH07Cg==" as="script" />
+    <link rel="preload" href="data:application/javascript;base64,aW1wb3J0ICcuL3VpLmpzJzsKaW1wb3J0ICcuL3dhc20tb3B0aW1pemUuanMnOwppbXBvcnQgJy4vd2FzbS1tZXJnZS5qcyc7CmltcG9ydCAnLi9zdGF0cy5qcyc7Cgpjb25zdCBzdXBwb3J0c0ZpbGVIYW5kbGVEcmFnQW5kRHJvcCA9CiAgJ2dldEFzRmlsZVN5c3RlbUhhbmRsZScgaW4gRGF0YVRyYW5zZmVySXRlbS5wcm90b3R5cGU7CmNvbnN0IHN1cHBvcnRzRmlsZVN5c3RlbU9ic2VydmVyID0gJ0ZpbGVTeXN0ZW1PYnNlcnZlcicgaW4gd2luZG93OwoKKGFzeW5jICgpID0+IHsKICBpZiAoc3VwcG9ydHNGaWxlU3lzdGVtT2JzZXJ2ZXIpIHsKICAgIGltcG9ydCgnLi9maWxlLXN5c3RlbS1vYnNlcnZlci5qcycpOwogIH0KCiAgaWYgKCdsYXVuY2hRdWV1ZScgaW4gd2luZG93ICYmICdmaWxlcycgaW4gTGF1bmNoUGFyYW1zLnByb3RvdHlwZSkgewogICAgaW1wb3J0KCcuL2ZpbGUtaGFuZGxpbmcuanMnKTsKICB9CgogIGlmICgnc2VydmljZVdvcmtlcicgaW4gbmF2aWdhdG9yKSB7CiAgICBjb25zdCB7IHJlZ2lzdGVyU1cgfSA9IGF3YWl0IGltcG9ydCgndmlydHVhbDpwd2EtcmVnaXN0ZXInKTsKICAgIGNvbnN0IHVwZGF0ZVNXID0gcmVnaXN0ZXJTVyh7CiAgICAgIG9uT2ZmbGluZVJlYWR5KCkge30sCiAgICAgIG9uTmVlZFJlZnJlc2goKSB7CiAgICAgICAgbG9jYXRpb24ucmVsb2FkKCk7CiAgICAgIH0sCiAgICB9KTsKICAgIHVwZGF0ZVNXKCk7CgogICAgaWYgKCdzaGFyZScgaW4gbmF2aWdhdG9yKSB7CiAgICAgIGltcG9ydCgnLi93ZWItc2hhcmUtdGFyZ2V0LmpzJyk7CiAgICB9CiAgfQp9KSgpOwoKZXhwb3J0IHsgc3VwcG9ydHNGaWxlSGFuZGxlRHJhZ0FuZERyb3AsIHN1cHBvcnRzRmlsZVN5c3RlbU9ic2VydmVyIH07Cg==" as="script" crossorigin />
     <link
       rel="preload"
       href="/wasmoptim/assets/binaryen_wasm-oRR6JeeR.js"
@@ -69,8 +69,8 @@
     <meta name="twitter:url" content="https://tomayac.github.io/wasmoptim/" />
 
     <title>WasmOptim</title>
-    <script type="module" crossorigin src="/wasmoptim/assets/index-vsgyoISD.js"></script>
-    <link rel="stylesheet" crossorigin href="/wasmoptim/assets/index-5JlHWayF.css">
+    <script type="module" crossorigin src="/wasmoptim/assets/index-Q6DBO2Sq.js"></script>
+    <link rel="stylesheet" crossorigin href="/wasmoptim/assets/index-SwBDhlE-.css">
   <link rel="manifest" href="/wasmoptim/manifest.webmanifest"></head>
   <body>
     <div id="titlebar"></div>
@@ -107,7 +107,7 @@
       <div id="drop-area">
         <p>
           …or drop <code>.wasm</code> file(s) or folder(s) with
-          <code>.wasm</code> files here
+          <code>.wasm</code> files anywhere on the page
         </p>
       </div>
 
@@ -194,9 +194,11 @@
         Developed by <a href="https://blog.tomayac.com/">Thomas Steiner</a>.
       </p>
       <p>
-        WasmOptim has so far optimized <span id="stats-files">0 files</span>,
-        saving a total of <span id="stats-size">0 bytes</span> with a reduction
-        of <span id="stats-percent">0</span>% on average.
+        WasmOptim has so far optimized
+        <span class="stats" id="stats-files">0 files</span>, saving a total of
+        <span class="stats" id="stats-size">0 bytes</span> with a file size
+        reduction of <span class="stats" id="stats-percent">0</span>% on
+        average.
       </p>
     </footer>
 

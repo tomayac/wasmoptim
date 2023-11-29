@@ -28,10 +28,6 @@ import {
   metaThemeColor,
 } from './dom.js';
 import { supportsFileSystemObserver } from './main.js';
-import {
-  getFileSystemChangeObserver,
-  observedDirectories,
-} from './file-system-observer.js';
 import { MERGE_FILE_UUID } from './wasm-merge.js';
 
 if (supportsFileSystemAccess) {
@@ -248,6 +244,9 @@ loadDirectoryButton.addEventListener('click', async () => {
         directoryHandles.push(file.directoryHandle);
       }
       directoryHandles = [...new Set(directoryHandles)];
+      const { getFileSystemChangeObserver, observedDirectories } = await import(
+        './file-system-observer.js'
+      );
       const fileSystemChangeObserver = getFileSystemChangeObserver();
       directoryHandles.forEach((directoryHandle) => {
         fileSystemChangeObserver.observe(directoryHandle, { recursive: true });
@@ -311,6 +310,14 @@ document.addEventListener('drop', async (e) => {
         : item.webkitGetAsEntry(),
     );
   const wasmFilesBefore = [];
+
+  let getFileSystemChangeObserver;
+  let observedDirectories;
+  if (supportsFileSystemObserver) {
+    ({ getFileSystemChangeObserver, observedDirectories } = await import(
+      './file-system-observer.js'
+    ));
+  }
   for await (const handle of fileHandlesPromises) {
     if (handle.kind === 'directory') {
       let entries = await readDirectory(handle, true);

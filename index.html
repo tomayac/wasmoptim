@@ -2,8 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <link rel="stylesheet" href="/style.css" />
     <link rel="icon" type="image/svg+xml" href="/icon.png" />
-    <link rel="preload" href="/main.js" as="script" />
+    <link rel="preload" href="/main.js" as="script" crossorigin />
     <link
       rel="preload"
       href="/third-party/binaryen_wasm.js"
@@ -105,7 +106,7 @@
       <div id="drop-area">
         <p>
           …or drop <code>.wasm</code> file(s) or folder(s) with
-          <code>.wasm</code> files here
+          <code>.wasm</code> files anywhere on the page
         </p>
       </div>
 
@@ -192,9 +193,11 @@
         Developed by <a href="https://blog.tomayac.com/">Thomas Steiner</a>.
       </p>
       <p>
-        WasmOptim has so far optimized <span id="stats-files">0 files</span>,
-        saving a total of <span id="stats-size">0 bytes</span> with a reduction
-        of <span id="stats-percent">0</span>% on average.
+        WasmOptim has so far optimized
+        <span class="stats" id="stats-files">0 files</span>, saving a total of
+        <span class="stats" id="stats-size">0 bytes</span> with a file size
+        reduction of <span class="stats" id="stats-percent">0</span>% on
+        average.
       </p>
     </footer>
 

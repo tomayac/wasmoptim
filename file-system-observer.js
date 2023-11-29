@@ -16,7 +16,11 @@ const observedDirectories = new Set();
 let fileSystemChangeObserver = null;
 
 const fileSystemChangeCallback = async (changes) => {
-  console.log('File system changes detected', changes);
+  console.log(
+    `File system changes detected  → ${changes
+      .map((change) => `${change.changedHandle.name} (${change.type})`)
+      .join(', ')}`.trim(),
+  );
   let wasmFilesBefore = [];
   for (const change of changes) {
     if (change.type === 'modified') {

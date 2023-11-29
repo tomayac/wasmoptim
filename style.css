@@ -156,10 +156,15 @@ input[type="checkbox"]:hover {
 
 details {
   margin-block: 1rem;
+  display: none;
 }
 
 details > * {
   margin-block: 1rem;
+}
+
+details:has(label:not([hidden])) {
+  display: block;
 }
 
 summary {

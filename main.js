@@ -1,4 +1,3 @@
-import '/style.css';
 import './ui.js';
 import './wasm-optimize.js';
 import './wasm-merge.js';
