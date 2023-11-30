@@ -6,6 +6,7 @@ import { optimizeWasmFiles } from './wasm-optimize.js';
 import {
   readDirectory,
   uuidToFile,
+  checkForAndPossiblyAskForPermissions,
   supportsGetUniqueId,
 } from './file-system.js';
 import { debounce } from './util.js';
@@ -43,6 +44,9 @@ const fileSystemChangeCallback = async (changes) => {
         );
         wasmFilesBefore.push(...entries);
         const existingUuids = Array.from(uuidToFile.keys());
+        const existingFilesLastModifieds = Array.from(uuidToFile.values()).map(
+          (value) => value.lastModified,
+        );
         const promises = wasmFilesBefore.map(async (wasmFileBefore) => {
           return supportsGetUniqueId
             ? await wasmFileBefore.handle.getUniqueId()
@@ -51,13 +55,18 @@ const fileSystemChangeCallback = async (changes) => {
         const toBeCheckedUuids = await Promise.all(promises);
         wasmFilesBefore = wasmFilesBefore.filter((wasmFileBefore, i) => {
           const uuid = toBeCheckedUuids[i];
-          return !existingUuids.includes(uuid);
+          const isNewFile = !existingUuids.includes(uuid);
+          const isModifiedFile =
+            existingFilesLastModifieds[existingUuids.indexOf(uuid)] <
+            wasmFileBefore.lastModified;
+          return isNewFile || isModifiedFile;
         });
       }
     }
   }
   wasmFilesBefore = [...new Set(wasmFilesBefore)];
-  optimizeWasmFiles(wasmFilesBefore);
+  await checkForAndPossiblyAskForPermissions(wasmFilesBefore);
+  await optimizeWasmFiles(wasmFilesBefore);
 };
 
 const getFileSystemChangeObserver = () => {

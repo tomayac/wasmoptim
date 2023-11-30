@@ -4,11 +4,12 @@ const supportsGetUniqueId =
   'FileSystemHandle' in window && 'getUniqueId' in FileSystemHandle.prototype;
 
 const checkForAndPossiblyAskForPermissions = async (wasmFilesBefore) => {
-  for (const wasmFileBefore of wasmFilesBefore) {
-    await wasmFileBefore.handle.requestPermission({
+  const promises = wasmFilesBefore.map((wasmFileBefore) =>
+    wasmFileBefore.handle.requestPermission({
       mode: 'readwrite',
-    });
-  }
+    }),
+  );
+  await Promise.all(promises);
 };
 
 const readDirectoryLegacy = async (directoryEntry) => {

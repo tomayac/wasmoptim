@@ -32,7 +32,7 @@ import { MERGE_FILE_UUID } from './wasm-merge.js';
 
 if (supportsFileSystemAccess) {
   overwriteCheckbox.parentNode.hidden = false;
-  overwriteCheckbox.addEventListener('change', () => {
+  overwriteCheckbox.addEventListener('change', async () => {
     localStorage.setItem('overwrite-original-files', overwriteCheckbox.checked);
     const files = [];
     if (overwriteCheckbox.checked) {
@@ -42,7 +42,7 @@ if (supportsFileSystemAccess) {
         }
         files.push(file);
       }
-      checkForAndPossiblyAskForPermissions(files);
+      await checkForAndPossiblyAskForPermissions(files);
     }
   });
 
@@ -102,7 +102,7 @@ examplesList.addEventListener('click', async (e) => {
       },
     );
     wasmFileBefore.handle = false;
-    optimizeWasmFiles([wasmFileBefore]);
+    await optimizeWasmFiles([wasmFileBefore]);
   } catch (error) {
     console.error(error.name, error.message);
     spinnerImg.removeAttribute('src');
@@ -111,7 +111,7 @@ examplesList.addEventListener('click', async (e) => {
   }
 });
 
-document.addEventListener('paste', (e) => {
+document.addEventListener('paste', async (e) => {
   try {
     if (!e.clipboardData.files.length) {
       return;
@@ -122,7 +122,7 @@ document.addEventListener('paste', (e) => {
         file.name.endsWith('.wasm') ||
         file.name.endsWith('.wat'),
     );
-    optimizeWasmFiles(wasmFilesBefore);
+    await optimizeWasmFiles(wasmFilesBefore);
   } catch (error) {
     console.error(error.name, error.message);
   }
@@ -254,7 +254,7 @@ loadDirectoryButton.addEventListener('click', async () => {
         console.log(`Directory ${directoryHandle.name} → Observing changes`);
       });
     }
-    optimizeWasmFiles(wasmFilesBefore);
+    await optimizeWasmFiles(wasmFilesBefore);
   } catch (error) {
     if (error.name === 'AbortError') {
       return;
@@ -273,7 +273,7 @@ loadWasmButton.addEventListener('click', async () => {
     if (!wasmFilesBefore || !wasmFilesBefore.length) {
       return;
     }
-    optimizeWasmFiles(wasmFilesBefore);
+    await optimizeWasmFiles(wasmFilesBefore);
   } catch (error) {
     if (error.name === 'AbortError') {
       return;
@@ -378,14 +378,10 @@ document.addEventListener('drop', async (e) => {
     }
     wasmFilesBefore.push(file);
   }
-  if (
-    supportsFileSystemAccess &&
-    supportsFileSystemAccess &&
-    overwriteCheckbox.checked
-  ) {
+  if (supportsFileSystemAccess && overwriteCheckbox.checked) {
     await checkForAndPossiblyAskForPermissions(wasmFilesBefore);
   }
-  optimizeWasmFiles(wasmFilesBefore);
+  await optimizeWasmFiles(wasmFilesBefore);
 });
 
 const colorSchemeChange = (e) => {

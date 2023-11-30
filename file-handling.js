@@ -22,5 +22,5 @@ launchQueue.setConsumer(async (launchParams) => {
   if (supportsFileSystemAccess && overwriteCheckbox.checked) {
     await checkForAndPossiblyAskForPermissions(wasmFilesBefore);
   }
-  optimizeWasmFiles(wasmFilesBefore);
+  await optimizeWasmFiles(wasmFilesBefore);
 });

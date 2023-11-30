@@ -46,7 +46,7 @@ self.addEventListener('message', async (event) => {
       '-o',
       MERGED_FILE_NAME + timestamp,
     ];
-    console.log('wasm-merge', fakeArgs.join(' '));
+    console.log('Running wasm-merge', fakeArgs.join(' '));
     const wasmFilesWithNames = wasmFiles
       .map((wasmFile, i) => [
         wasmFile.name + uuids[i],

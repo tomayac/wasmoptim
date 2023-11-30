@@ -62,7 +62,7 @@ mergeButton.addEventListener('click', async () => {
     afterSizeLabel.textContent = prettyBytes(file.size);
     const deltaSize = file.size - wasmFileSizes;
     console.log(
-      `${new Intl.ListFormat('en', {
+      `Files ${new Intl.ListFormat('en', {
         style: 'long',
         type: 'conjunction',
       }).format(

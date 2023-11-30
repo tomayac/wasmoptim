@@ -24,7 +24,7 @@ import { optimizeWasmFiles } from './wasm-optimize.js';
         type: 'application/wasm',
       });
       wasmFileBefore.handle = false;
-      optimizeWasmFiles([wasmFileBefore]);
+      await optimizeWasmFiles([wasmFileBefore]);
     } catch (error) {
       console.error(error.name, error.message);
     }

@@ -128,7 +128,7 @@ const optimizeWasmFiles = async (wasmFilesBefore, isMergedFile = false) => {
           afterSizeLabel.textContent = prettyBytes(wasmFileAfter.size);
           const deltaSize = wasmFileAfter.size - wasmFileBefore.size;
           console.log(
-            `${wasmFileBefore.name} processed → Before: ${wasmFileBefore.size} After: ${wasmFileAfter.size} Delta: ${deltaSize}`,
+            `File ${wasmFileBefore.name} processed → Before: ${wasmFileBefore.size} After: ${wasmFileAfter.size} Delta: ${deltaSize}`,
           );
           const deltaSizePercent = Math.abs(
             100 - (wasmFileAfter.size / wasmFileBefore.size) * 100,
@@ -150,6 +150,7 @@ const optimizeWasmFiles = async (wasmFilesBefore, isMergedFile = false) => {
             file: wasmFileAfter,
             handle: wasmFileBefore.handle,
             savings: deltaSize,
+            lastModified: wasmFileAfter.lastModified,
           });
           const savingsArray = [];
           for (const [uuid, { savings }] of uuidToFile.entries()) {
