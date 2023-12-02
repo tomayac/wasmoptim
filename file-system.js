@@ -1,6 +1,7 @@
 import { MERGE_FILE_UUID } from './wasm-merge.js';
 import { overwriteCheckbox } from './dom.js';
 import { supported as supportsFileSystemAccess } from 'browser-fs-access';
+import { uuidToFile } from './wasm-optimize.js';
 
 if (supportsFileSystemAccess) {
   overwriteCheckbox.parentNode.hidden = false;

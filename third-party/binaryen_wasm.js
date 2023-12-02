@@ -263,57 +263,57 @@ var Binaryen = (() => {
       Ta = 0,
       D = 0;
     function Ua(b) {
-      this.OB = b;
-      this.CB = b - 24;
+      this.QB = b;
+      this.EB = b - 24;
+      this.AC = function (c) {
+        x[(this.EB + 4) >> 2] = c;
+      };
+      this.DB = function () {
+        return x[(this.EB + 4) >> 2];
+      };
+      this.zC = function (c) {
+        x[(this.EB + 8) >> 2] = c;
+      };
       this.wC = function (c) {
-        x[(this.CB + 4) >> 2] = c;
+        u[(this.EB + 12) >> 0] = c ? 1 : 0;
       };
-      this.BB = function () {
-        return x[(this.CB + 4) >> 2];
+      this.TC = function () {
+        return 0 != u[(this.EB + 12) >> 0];
       };
-      this.RC = function (c) {
-        x[(this.CB + 8) >> 2] = c;
+      this.xC = function (c) {
+        u[(this.EB + 13) >> 0] = c ? 1 : 0;
       };
-      this.uC = function (c) {
-        u[(this.CB + 12) >> 0] = c ? 1 : 0;
+      this.EC = function () {
+        return 0 != u[(this.EB + 13) >> 0];
       };
-      this.PC = function () {
-        return 0 != u[(this.CB + 12) >> 0];
+      this.pC = function (c, g) {
+        this.aC(0);
+        this.AC(c);
+        this.zC(g);
       };
-      this.vC = function (c) {
-        u[(this.CB + 13) >> 0] = c ? 1 : 0;
+      this.aC = function (c) {
+        x[(this.EB + 16) >> 2] = c;
       };
-      this.AC = function () {
-        return 0 != u[(this.CB + 13) >> 0];
+      this.SC = function () {
+        return x[(this.EB + 16) >> 2];
       };
-      this.nC = function (c, g) {
-        this.ZB(0);
-        this.wC(c);
-        this.RC(g);
-      };
-      this.ZB = function (c) {
-        x[(this.CB + 16) >> 2] = c;
-      };
-      this.OC = function () {
-        return x[(this.CB + 16) >> 2];
-      };
-      this.QC = function () {
-        if (Va(this.BB())) return x[this.OB >> 2];
-        var c = this.OC();
-        return 0 !== c ? c : this.OB;
+      this.yC = function () {
+        if (Va(this.DB())) return x[this.QB >> 2];
+        var c = this.SC();
+        return 0 !== c ? c : this.QB;
       };
     }
     var Ya = (b) => {
         var c = D;
         if (!c) return Wa(0), 0;
         var g = new Ua(c);
-        g.ZB(c);
-        var d = g.BB();
+        g.aC(c);
+        var d = g.DB();
         if (!d) return Wa(0), c;
         for (var f in b) {
           var h = b[f];
           if (0 === h || h === d) break;
-          if (Xa(h, d, g.CB + 16)) return Wa(h), c;
+          if (Xa(h, d, g.EB + 16)) return Wa(h), c;
         }
         Wa(d);
         return c;
@@ -439,27 +439,27 @@ var Binaryen = (() => {
     }
     var ib = [];
     function jb(b, c) {
-      ib[b] = { input: [], zB: [], GB: c };
+      ib[b] = { input: [], BB: [], IB: c };
       kb(b, lb);
     }
     var lb = {
         open(b) {
-          var c = ib[b.node.UB];
+          var c = ib[b.node.WB];
           if (!c) throw new G(43);
-          b.xB = c;
+          b.zB = c;
           b.seekable = !1;
         },
         close(b) {
-          b.xB.GB.SB(b.xB);
+          b.zB.IB.UB(b.zB);
         },
-        SB(b) {
-          b.xB.GB.SB(b.xB);
+        UB(b) {
+          b.zB.IB.UB(b.zB);
         },
         read(b, c, g, d) {
-          if (!b.xB || !b.xB.GB.lC) throw new G(60);
+          if (!b.zB || !b.zB.IB.nC) throw new G(60);
           for (var f = 0, h = 0; h < d; h++) {
             try {
-              var k = b.xB.GB.lC(b.xB);
+              var k = b.zB.IB.nC(b.zB);
             } catch (l) {
               throw new G(29);
             }
@@ -472,9 +472,9 @@ var Binaryen = (() => {
           return f;
         },
         write(b, c, g, d) {
-          if (!b.xB || !b.xB.GB.dC) throw new G(60);
+          if (!b.zB || !b.zB.IB.fC) throw new G(60);
           try {
-            for (var f = 0; f < d; f++) b.xB.GB.dC(b.xB, c[g + f]);
+            for (var f = 0; f < d; f++) b.zB.IB.fC(b.zB, c[g + f]);
           } catch (h) {
             throw new G(29);
           }
@@ -483,7 +483,7 @@ var Binaryen = (() => {
         },
       },
       mb = {
-        lC() {
+        nC() {
           a: {
             if (!eb.length) {
               var b = null;
@@ -501,203 +501,203 @@ var Binaryen = (() => {
           }
           return b;
         },
-        dC(b, c) {
+        fC(b, c) {
           null === c || 10 === c
-            ? (m(z(b.zB, 0)), (b.zB = []))
-            : 0 != c && b.zB.push(c);
+            ? (m(z(b.BB, 0)), (b.BB = []))
+            : 0 != c && b.BB.push(c);
         },
-        SB(b) {
-          b.zB && 0 < b.zB.length && (m(z(b.zB, 0)), (b.zB = []));
+        UB(b) {
+          b.BB && 0 < b.BB.length && (m(z(b.BB, 0)), (b.BB = []));
         },
-        CC() {
+        GC() {
           return {
-            XC: 25856,
-            ZC: 5,
-            WC: 191,
-            YC: 35387,
-            VC: [
+            ZC: 25856,
+            aD: 5,
+            YC: 191,
+            $C: 35387,
+            XC: [
               3, 28, 127, 21, 4, 0, 1, 0, 17, 19, 26, 0, 18, 15, 23, 22, 0, 0,
               0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             ],
           };
         },
-        DC() {
+        HC() {
           return 0;
         },
-        EC() {
+        IC() {
           return [24, 80];
         },
       },
       nb = {
-        dC(b, c) {
+        fC(b, c) {
           null === c || 10 === c
-            ? (pa(z(b.zB, 0)), (b.zB = []))
-            : 0 != c && b.zB.push(c);
+            ? (pa(z(b.BB, 0)), (b.BB = []))
+            : 0 != c && b.BB.push(c);
         },
-        SB(b) {
-          b.zB && 0 < b.zB.length && (pa(z(b.zB, 0)), (b.zB = []));
+        UB(b) {
+          b.BB && 0 < b.BB.length && (pa(z(b.BB, 0)), (b.BB = []));
         },
       };
     function ob(b, c) {
-      var g = b.uB ? b.uB.length : 0;
+      var g = b.wB ? b.wB.length : 0;
       g >= c ||
         ((c = Math.max(c, (g * (1048576 > g ? 2 : 1.125)) >>> 0)),
         0 != g && (c = Math.max(c, 256)),
-        (g = b.uB),
-        (b.uB = new Uint8Array(c)),
-        0 < b.yB && b.uB.set(g.subarray(0, b.yB), 0));
+        (g = b.wB),
+        (b.wB = new Uint8Array(c)),
+        0 < b.AB && b.wB.set(g.subarray(0, b.AB), 0));
     }
     var I = {
-        DB: null,
-        FB() {
+        FB: null,
+        HB() {
           return I.createNode(null, '/', 16895, 0);
         },
         createNode(b, c, g, d) {
           if (24576 === (g & 61440) || 4096 === (g & 61440)) throw new G(63);
-          I.DB ||
-            (I.DB = {
+          I.FB ||
+            (I.FB = {
               dir: {
                 node: {
-                  JB: I.vB.JB,
-                  AB: I.vB.AB,
-                  PB: I.vB.PB,
-                  TB: I.vB.TB,
-                  sC: I.vB.sC,
-                  YB: I.vB.YB,
-                  tC: I.vB.tC,
-                  rC: I.vB.rC,
-                  VB: I.vB.VB,
+                  LB: I.xB.LB,
+                  CB: I.xB.CB,
+                  RB: I.xB.RB,
+                  VB: I.xB.VB,
+                  uC: I.xB.uC,
+                  $B: I.xB.$B,
+                  vC: I.xB.vC,
+                  tC: I.xB.tC,
+                  XB: I.xB.XB,
                 },
-                stream: { KB: I.wB.KB },
+                stream: { MB: I.yB.MB },
               },
               file: {
-                node: { JB: I.vB.JB, AB: I.vB.AB },
+                node: { LB: I.xB.LB, CB: I.xB.CB },
                 stream: {
-                  KB: I.wB.KB,
-                  read: I.wB.read,
-                  write: I.wB.write,
-                  gC: I.wB.gC,
-                  cC: I.wB.cC,
-                  qC: I.wB.qC,
+                  MB: I.yB.MB,
+                  read: I.yB.read,
+                  write: I.yB.write,
+                  iC: I.yB.iC,
+                  eC: I.yB.eC,
+                  sC: I.yB.sC,
                 },
               },
               link: {
-                node: { JB: I.vB.JB, AB: I.vB.AB, RB: I.vB.RB },
+                node: { LB: I.xB.LB, CB: I.xB.CB, TB: I.xB.TB },
                 stream: {},
               },
-              iC: { node: { JB: I.vB.JB, AB: I.vB.AB }, stream: pb },
+              kC: { node: { LB: I.xB.LB, CB: I.xB.CB }, stream: pb },
             });
           g = qb(b, c, g, d);
           16384 === (g.mode & 61440)
-            ? ((g.vB = I.DB.dir.node), (g.wB = I.DB.dir.stream), (g.uB = {}))
+            ? ((g.xB = I.FB.dir.node), (g.yB = I.FB.dir.stream), (g.wB = {}))
             : 32768 === (g.mode & 61440)
-              ? ((g.vB = I.DB.file.node),
-                (g.wB = I.DB.file.stream),
-                (g.yB = 0),
-                (g.uB = null))
+              ? ((g.xB = I.FB.file.node),
+                (g.yB = I.FB.file.stream),
+                (g.AB = 0),
+                (g.wB = null))
               : 40960 === (g.mode & 61440)
-                ? ((g.vB = I.DB.link.node), (g.wB = I.DB.link.stream))
+                ? ((g.xB = I.FB.link.node), (g.yB = I.FB.link.stream))
                 : 8192 === (g.mode & 61440) &&
-                  ((g.vB = I.DB.iC.node), (g.wB = I.DB.iC.stream));
+                  ((g.xB = I.FB.kC.node), (g.yB = I.FB.kC.stream));
           g.timestamp = Date.now();
-          b && ((b.uB[c] = g), (b.timestamp = g.timestamp));
+          b && ((b.wB[c] = g), (b.timestamp = g.timestamp));
           return g;
         },
-        cD(b) {
-          return b.uB
-            ? b.uB.subarray
-              ? b.uB.subarray(0, b.yB)
-              : new Uint8Array(b.uB)
+        eD(b) {
+          return b.wB
+            ? b.wB.subarray
+              ? b.wB.subarray(0, b.AB)
+              : new Uint8Array(b.wB)
             : new Uint8Array(0);
         },
-        vB: {
-          JB(b) {
+        xB: {
+          LB(b) {
             var c = {};
-            c.aD = 8192 === (b.mode & 61440) ? b.id : 1;
-            c.eD = b.id;
+            c.cD = 8192 === (b.mode & 61440) ? b.id : 1;
+            c.gD = b.id;
             c.mode = b.mode;
-            c.gD = 1;
+            c.iD = 1;
             c.uid = 0;
-            c.dD = 0;
-            c.UB = b.UB;
+            c.fD = 0;
+            c.WB = b.WB;
             16384 === (b.mode & 61440)
               ? (c.size = 4096)
               : 32768 === (b.mode & 61440)
-                ? (c.size = b.yB)
+                ? (c.size = b.AB)
                 : 40960 === (b.mode & 61440)
                   ? (c.size = b.link.length)
                   : (c.size = 0);
-            c.TC = new Date(b.timestamp);
-            c.fD = new Date(b.timestamp);
-            c.$C = new Date(b.timestamp);
-            c.zC = 4096;
-            c.UC = Math.ceil(c.size / c.zC);
+            c.VC = new Date(b.timestamp);
+            c.hD = new Date(b.timestamp);
+            c.bD = new Date(b.timestamp);
+            c.DC = 4096;
+            c.WC = Math.ceil(c.size / c.DC);
             return c;
           },
-          AB(b, c) {
+          CB(b, c) {
             void 0 !== c.mode && (b.mode = c.mode);
             void 0 !== c.timestamp && (b.timestamp = c.timestamp);
-            if (void 0 !== c.size && ((c = c.size), b.yB != c))
-              if (0 == c) (b.uB = null), (b.yB = 0);
+            if (void 0 !== c.size && ((c = c.size), b.AB != c))
+              if (0 == c) (b.wB = null), (b.AB = 0);
               else {
-                var g = b.uB;
-                b.uB = new Uint8Array(c);
-                g && b.uB.set(g.subarray(0, Math.min(c, b.yB)));
-                b.yB = c;
+                var g = b.wB;
+                b.wB = new Uint8Array(c);
+                g && b.wB.set(g.subarray(0, Math.min(c, b.AB)));
+                b.AB = c;
               }
           },
-          PB() {
+          RB() {
             throw rb[44];
           },
-          TB(b, c, g, d) {
+          VB(b, c, g, d) {
             return I.createNode(b, c, g, d);
           },
-          sC(b, c, g) {
+          uC(b, c, g) {
             if (16384 === (b.mode & 61440)) {
               try {
                 var d = sb(c, g);
               } catch (h) {}
-              if (d) for (var f in d.uB) throw new G(55);
+              if (d) for (var f in d.wB) throw new G(55);
             }
-            delete b.parent.uB[b.name];
+            delete b.parent.wB[b.name];
             b.parent.timestamp = Date.now();
             b.name = g;
-            c.uB[g] = b;
+            c.wB[g] = b;
             c.timestamp = b.parent.timestamp;
             b.parent = c;
           },
-          YB(b, c) {
-            delete b.uB[c];
+          $B(b, c) {
+            delete b.wB[c];
             b.timestamp = Date.now();
           },
-          tC(b, c) {
+          vC(b, c) {
             var g = sb(b, c),
               d;
-            for (d in g.uB) throw new G(55);
-            delete b.uB[c];
+            for (d in g.wB) throw new G(55);
+            delete b.wB[c];
             b.timestamp = Date.now();
           },
-          rC(b) {
+          tC(b) {
             var c = ['.', '..'],
               g;
-            for (g in b.uB) b.uB.hasOwnProperty(g) && c.push(g);
+            for (g in b.wB) b.wB.hasOwnProperty(g) && c.push(g);
             return c;
           },
-          VB(b, c, g) {
+          XB(b, c, g) {
             b = I.createNode(b, c, 41471, 0);
             b.link = g;
             return b;
           },
-          RB(b) {
+          TB(b) {
             if (40960 !== (b.mode & 61440)) throw new G(28);
             return b.link;
           },
         },
-        wB: {
+        yB: {
           read(b, c, g, d, f) {
-            var h = b.node.uB;
-            if (f >= b.node.yB) return 0;
-            b = Math.min(b.node.yB - f, d);
+            var h = b.node.wB;
+            if (f >= b.node.AB) return 0;
+            b = Math.min(b.node.AB - f, d);
             if (8 < b && h.subarray) c.set(h.subarray(f, f + b), g);
             else for (d = 0; d < b; d++) c[g + d] = h[f + d];
             return b;
@@ -707,32 +707,32 @@ var Binaryen = (() => {
             if (!d) return 0;
             b = b.node;
             b.timestamp = Date.now();
-            if (c.subarray && (!b.uB || b.uB.subarray)) {
-              if (h) return (b.uB = c.subarray(g, g + d)), (b.yB = d);
-              if (0 === b.yB && 0 === f)
-                return (b.uB = c.slice(g, g + d)), (b.yB = d);
-              if (f + d <= b.yB) return b.uB.set(c.subarray(g, g + d), f), d;
+            if (c.subarray && (!b.wB || b.wB.subarray)) {
+              if (h) return (b.wB = c.subarray(g, g + d)), (b.AB = d);
+              if (0 === b.AB && 0 === f)
+                return (b.wB = c.slice(g, g + d)), (b.AB = d);
+              if (f + d <= b.AB) return b.wB.set(c.subarray(g, g + d), f), d;
             }
             ob(b, f + d);
-            if (b.uB.subarray && c.subarray) b.uB.set(c.subarray(g, g + d), f);
-            else for (h = 0; h < d; h++) b.uB[f + h] = c[g + h];
-            b.yB = Math.max(b.yB, f + d);
+            if (b.wB.subarray && c.subarray) b.wB.set(c.subarray(g, g + d), f);
+            else for (h = 0; h < d; h++) b.wB[f + h] = c[g + h];
+            b.AB = Math.max(b.AB, f + d);
             return d;
           },
-          KB(b, c, g) {
+          MB(b, c, g) {
             1 === g
               ? (c += b.position)
-              : 2 === g && 32768 === (b.node.mode & 61440) && (c += b.node.yB);
+              : 2 === g && 32768 === (b.node.mode & 61440) && (c += b.node.AB);
             if (0 > c) throw new G(28);
             return c;
           },
-          gC(b, c, g) {
+          iC(b, c, g) {
             ob(b.node, c + g);
-            b.node.yB = Math.max(b.node.yB, c + g);
+            b.node.AB = Math.max(b.node.AB, c + g);
           },
-          cC(b, c, g, d, f) {
+          eC(b, c, g, d, f) {
             if (32768 !== (b.node.mode & 61440)) throw new G(43);
-            b = b.node.uB;
+            b = b.node.wB;
             if (f & 2 || b.buffer !== u.buffer) {
               if (0 < g || g + c < b.length)
                 b.subarray
@@ -744,10 +744,10 @@ var Binaryen = (() => {
               if (!c) throw new G(48);
               u.set(b, c);
             } else (g = !1), (c = b.byteOffset);
-            return { CB: c, SC: g };
+            return { EB: c, UC: g };
           },
-          qC(b, c, g, d) {
-            I.wB.write(b, c, 0, d, g, !1);
+          sC(b, c, g, d) {
+            I.yB.write(b, c, 0, d, g, !1);
             return 0;
           },
         },
@@ -770,7 +770,7 @@ var Binaryen = (() => {
       },
       ub = a.preloadPlugins || [],
       vb = (b, c, g, d) => {
-        'undefined' != typeof Browser && Browser.nC();
+        'undefined' != typeof Browser && Browser.pC();
         var f = !1;
         ub.forEach((h) => {
           !f && h.canHandle(c) && (h.handle(b, c, g, d), (f = !0));
@@ -812,21 +812,21 @@ var Binaryen = (() => {
     function Fb(b, c = {}) {
       b = db(b);
       if (!b) return { path: '', node: null };
-      c = Object.assign({ kC: !0, eC: 0 }, c);
-      if (8 < c.eC) throw new G(32);
+      c = Object.assign({ mC: !0, gC: 0 }, c);
+      if (8 < c.gC) throw new G(32);
       b = b.split('/').filter((k) => !!k);
       for (var g = zb, d = '/', f = 0; f < b.length; f++) {
         var h = f === b.length - 1;
         if (h && c.parent) break;
         g = sb(g, b[f]);
         d = F(d + '/' + b[f]);
-        g.QB && (!h || (h && c.kC)) && (g = g.QB.root);
-        if (!h || c.$B)
+        g.SB && (!h || (h && c.mC)) && (g = g.SB.root);
+        if (!h || c.bC)
           for (h = 0; 40960 === (g.mode & 61440); )
             if (
               ((g = Gb(d)),
               (d = db($a(d), g)),
-              (g = Fb(d, { eC: c.eC + 1 }).node),
+              (g = Fb(d, { gC: c.gC + 1 }).node),
               40 < h++)
             )
               throw new G(32);
@@ -837,7 +837,7 @@ var Binaryen = (() => {
       for (var c; ; ) {
         if (b === b.parent)
           return (
-            (b = b.FB.pC),
+            (b = b.HB.rC),
             c ? ('/' !== b[b.length - 1] ? `${b}/${c}` : b + c) : b
           );
         c = c ? `${b.name}/${c}` : b.name;
@@ -851,17 +851,17 @@ var Binaryen = (() => {
     }
     function sb(b, c) {
       var g;
-      if ((g = (g = Jb(b, 'x')) ? g : b.vB.PB ? 0 : 2)) throw new G(g, b);
-      for (g = Db[Ib(b.id, c)]; g; g = g.NB) {
+      if ((g = (g = Jb(b, 'x')) ? g : b.xB.RB ? 0 : 2)) throw new G(g, b);
+      for (g = Db[Ib(b.id, c)]; g; g = g.PB) {
         var d = g.name;
         if (g.parent.id === b.id && d === c) return g;
       }
-      return b.vB.PB(b, c);
+      return b.xB.RB(b, c);
     }
     function qb(b, c, g, d) {
       b = new Kb(b, c, g, d);
       c = Ib(b.parent.id, b.name);
-      b.NB = Db[c];
+      b.PB = Db[c];
       return (Db[c] = b);
     }
     function Lb(b) {
@@ -898,7 +898,7 @@ var Binaryen = (() => {
     function Pb(b, c = -1) {
       Qb ||
         ((Qb = function () {
-          this.BB = {};
+          this.DB = {};
         }),
         (Qb.prototype = {}),
         Object.defineProperties(Qb.prototype, {
@@ -912,54 +912,54 @@ var Binaryen = (() => {
           },
           flags: {
             get() {
-              return this.BB.flags;
+              return this.DB.flags;
             },
             set(g) {
-              this.BB.flags = g;
+              this.DB.flags = g;
             },
           },
           position: {
             get() {
-              return this.BB.position;
+              return this.DB.position;
             },
             set(g) {
-              this.BB.position = g;
+              this.DB.position = g;
             },
           },
         }));
       b = Object.assign(new Qb(), b);
       -1 == c && (c = Nb());
-      b.IB = c;
+      b.KB = c;
       return (Bb[c] = b);
     }
     var pb = {
       open(b) {
-        b.wB = Ab[b.node.UB].wB;
-        b.wB.open && b.wB.open(b);
+        b.yB = Ab[b.node.WB].yB;
+        b.yB.open && b.yB.open(b);
       },
-      KB() {
+      MB() {
         throw new G(70);
       },
     };
     function kb(b, c) {
-      Ab[b] = { wB: c };
+      Ab[b] = { yB: c };
     }
     function Rb(b, c) {
       var g = '/' === c,
         d = !c;
       if (g && zb) throw new G(10);
       if (!g && !d) {
-        var f = Fb(c, { kC: !1 });
+        var f = Fb(c, { mC: !1 });
         c = f.path;
         f = f.node;
-        if (f.QB) throw new G(10);
+        if (f.SB) throw new G(10);
         if (16384 !== (f.mode & 61440)) throw new G(54);
       }
-      c = { type: b, hD: {}, pC: c, HC: [] };
-      b = b.FB(c);
-      b.FB = c;
+      c = { type: b, jD: {}, rC: c, LC: [] };
+      b = b.HB(c);
+      b.HB = c;
       c.root = b;
-      g ? (zb = b) : f && ((f.QB = c), f.FB && f.FB.HC.push(c));
+      g ? (zb = b) : f && ((f.SB = c), f.HB && f.HB.LC.push(c));
     }
     function Sb(b, c, g) {
       var d = Fb(b, { parent: !0 }).node;
@@ -967,8 +967,8 @@ var Binaryen = (() => {
       if (!b || '.' === b || '..' === b) throw new G(28);
       var f = Mb(d, b);
       if (f) throw new G(f);
-      if (!d.vB.TB) throw new G(63);
-      return d.vB.TB(d, b, c, g);
+      if (!d.xB.VB) throw new G(63);
+      return d.xB.VB(d, b, c, g);
     }
     function J(b) {
       return Sb(b, 16895, 0);
@@ -984,8 +984,8 @@ var Binaryen = (() => {
       c = ab(c);
       var d = Mb(g, c);
       if (d) throw new G(d);
-      if (!g.vB.VB) throw new G(63);
-      g.vB.VB(g, c, b);
+      if (!g.xB.XB) throw new G(63);
+      g.xB.XB(g, c, b);
     }
     function Vb(b) {
       var c = Fb(b, { parent: !0 }).node;
@@ -996,37 +996,37 @@ var Binaryen = (() => {
         try {
           var d = sb(c, g);
         } catch (h) {
-          d = h.HB;
+          d = h.JB;
           break a;
         }
         var f = Jb(c, 'wx');
         d = f ? f : 16384 === (d.mode & 61440) ? 31 : 0;
       }
       if (d) throw new G(d);
-      if (!c.vB.YB) throw new G(63);
-      if (b.QB) throw new G(10);
-      c.vB.YB(c, g);
+      if (!c.xB.$B) throw new G(63);
+      if (b.SB) throw new G(10);
+      c.xB.$B(c, g);
       c = Ib(b.parent.id, b.name);
-      if (Db[c] === b) Db[c] = b.NB;
+      if (Db[c] === b) Db[c] = b.PB;
       else
         for (c = Db[c]; c; ) {
-          if (c.NB === b) {
-            c.NB = b.NB;
+          if (c.PB === b) {
+            c.PB = b.PB;
             break;
           }
-          c = c.NB;
+          c = c.PB;
         }
     }
     function Gb(b) {
       b = Fb(b).node;
       if (!b) throw new G(44);
-      if (!b.vB.RB) throw new G(28);
-      return db(Hb(b.parent), b.vB.RB(b));
+      if (!b.xB.TB) throw new G(28);
+      return db(Hb(b.parent), b.xB.TB(b));
     }
     function Wb(b, c) {
-      b = 'string' == typeof b ? Fb(b, { $B: !0 }).node : b;
-      if (!b.vB.AB) throw new G(63);
-      b.vB.AB(b, {
+      b = 'string' == typeof b ? Fb(b, { bC: !0 }).node : b;
+      if (!b.xB.CB) throw new G(63);
+      b.xB.CB(b, {
         mode: (c & 4095) | (b.mode & -4096),
         timestamp: Date.now(),
       });
@@ -1044,7 +1044,7 @@ var Binaryen = (() => {
       else {
         b = F(b);
         try {
-          f = Fb(b, { $B: !(c & 131072) }).node;
+          f = Fb(b, { bC: !(c & 131072) }).node;
         } catch (h) {}
       }
       d = !1;
@@ -1068,12 +1068,12 @@ var Binaryen = (() => {
         throw new G(g);
       if (c & 512 && !d) {
         g = f;
-        g = 'string' == typeof g ? Fb(g, { $B: !0 }).node : g;
-        if (!g.vB.AB) throw new G(63);
+        g = 'string' == typeof g ? Fb(g, { bC: !0 }).node : g;
+        if (!g.xB.CB) throw new G(63);
         if (16384 === (g.mode & 61440)) throw new G(31);
         if (32768 !== (g.mode & 61440)) throw new G(28);
         if ((d = Jb(g, 'w'))) throw new G(d);
-        g.vB.AB(g, { size: 0, timestamp: Date.now() });
+        g.xB.CB(g, { size: 0, timestamp: Date.now() });
       }
       c &= -131713;
       f = Pb({
@@ -1082,44 +1082,44 @@ var Binaryen = (() => {
         flags: c,
         seekable: !0,
         position: 0,
-        wB: f.wB,
-        NC: [],
+        yB: f.yB,
+        RC: [],
         error: !1,
       });
-      f.wB.open && f.wB.open(f);
+      f.yB.open && f.yB.open(f);
       !a.logReadFiles || c & 1 || (Yb || (Yb = {}), b in Yb || (Yb[b] = 1));
       return f;
     }
     function Zb(b) {
-      if (null === b.IB) throw new G(8);
-      b.aC && (b.aC = null);
+      if (null === b.KB) throw new G(8);
+      b.cC && (b.cC = null);
       try {
-        b.wB.close && b.wB.close(b);
+        b.yB.close && b.yB.close(b);
       } catch (c) {
         throw c;
       } finally {
-        Bb[b.IB] = null;
+        Bb[b.KB] = null;
       }
-      b.IB = null;
+      b.KB = null;
     }
     function $b(b, c, g) {
-      if (null === b.IB) throw new G(8);
-      if (!b.seekable || !b.wB.KB) throw new G(70);
+      if (null === b.KB) throw new G(8);
+      if (!b.seekable || !b.yB.MB) throw new G(70);
       if (0 != g && 1 != g && 2 != g) throw new G(28);
-      b.position = b.wB.KB(b, c, g);
-      b.NC = [];
+      b.position = b.yB.MB(b, c, g);
+      b.RC = [];
     }
     function ac(b, c, g, d, f, h) {
       if (0 > d || 0 > f) throw new G(28);
-      if (null === b.IB) throw new G(8);
+      if (null === b.KB) throw new G(8);
       if (0 === (b.flags & 2097155)) throw new G(8);
       if (16384 === (b.node.mode & 61440)) throw new G(31);
-      if (!b.wB.write) throw new G(28);
+      if (!b.yB.write) throw new G(28);
       b.seekable && b.flags & 1024 && $b(b, 0, 2);
       var k = 'undefined' != typeof f;
       if (!k) f = b.position;
       else if (!b.seekable) throw new G(70);
-      c = b.wB.write(b, c, g, d, f, h);
+      c = b.yB.write(b, c, g, d, f, h);
       k || (b.position += c);
       return c;
     }
@@ -1128,10 +1128,10 @@ var Binaryen = (() => {
         ((G = function (b, c) {
           this.name = 'ErrnoError';
           this.node = c;
-          this.IC = function (g) {
-            this.HB = g;
+          this.MC = function (g) {
+            this.JB = g;
           };
-          this.IC(b);
+          this.MC(b);
           this.message = 'FS error';
         }),
         (G.prototype = Error()),
@@ -1184,8 +1184,8 @@ var Binaryen = (() => {
     function K(b, c, g, d) {
       b = F(('string' == typeof b ? b : Hb(b)) + '/' + c);
       c = yb(!!g, !!d);
-      K.oC || (K.oC = 64);
-      var f = (K.oC++ << 8) | 0;
+      K.qC || (K.qC = 64);
+      var f = (K.qC++ << 8) | 0;
       kb(f, {
         open(h) {
           h.seekable = !1;
@@ -1222,14 +1222,14 @@ var Binaryen = (() => {
       return Tb(b, c, f);
     }
     function fc(b) {
-      if (!(b.FC || b.GC || b.link || b.uB)) {
+      if (!(b.JC || b.KC || b.link || b.wB)) {
         if ('undefined' != typeof XMLHttpRequest)
           throw Error(
             'Lazy loading should have been performed (contents set) in createLazyFile, but it was not. Lazy loading only works in web workers. Use --embed-file or --preload-file in emcc on the main thread.',
           );
         if (ma)
           try {
-            (b.uB = hb(ma(b.url), !0)), (b.yB = b.uB.length);
+            (b.wB = hb(ma(b.url), !0)), (b.AB = b.wB.length);
           } catch (c) {
             throw new G(29);
           }
@@ -1238,19 +1238,19 @@ var Binaryen = (() => {
     }
     function gc(b, c, g, d, f) {
       function h() {
-        this.bC = !1;
-        this.BB = [];
+        this.dC = !1;
+        this.DB = [];
       }
       h.prototype.get = function (r) {
         if (!(r > this.length - 1 || 0 > r)) {
-          var y = r % this.jC;
-          return this.mC((r / this.jC) | 0)[y];
+          var y = r % this.lC;
+          return this.oC((r / this.lC) | 0)[y];
         }
       };
-      h.prototype.ZB = function (r) {
-        this.mC = r;
+      h.prototype.aC = function (r) {
+        this.oC = r;
       };
-      h.prototype.hC = function () {
+      h.prototype.jC = function () {
         var r = new XMLHttpRequest();
         r.open('HEAD', g, !1);
         r.send(null);
@@ -1263,12 +1263,12 @@ var Binaryen = (() => {
         var C = 1048576;
         n || (C = y);
         var A = this;
-        A.ZB((H) => {
+        A.aC((H) => {
           var O = H * C,
             S = (H + 1) * C - 1;
           S = Math.min(S, y - 1);
-          if ('undefined' == typeof A.BB[H]) {
-            var td = A.BB;
+          if ('undefined' == typeof A.DB[H]) {
+            var td = A.DB;
             if (O > S)
               throw Error(
                 'invalid range (' + O + ', ' + S + ') or no bytes requested!',
@@ -1290,18 +1290,18 @@ var Binaryen = (() => {
                 : hb(R.responseText || '', !0);
             td[H] = O;
           }
-          if ('undefined' == typeof A.BB[H]) throw Error('doXHR failed!');
-          return A.BB[H];
+          if ('undefined' == typeof A.DB[H]) throw Error('doXHR failed!');
+          return A.DB[H];
         });
         if (r || !y)
           (C = y = 1),
-            (C = y = this.mC(0).length),
+            (C = y = this.oC(0).length),
             m(
               'LazyFiles on gzip forces download of the whole file when length is accessed',
             );
-        this.yC = y;
-        this.xC = C;
-        this.bC = !0;
+        this.CC = y;
+        this.BC = C;
+        this.dC = !0;
       };
       if ('undefined' != typeof XMLHttpRequest) {
         if (!la)
@@ -1310,31 +1310,31 @@ var Binaryen = (() => {
         Object.defineProperties(k, {
           length: {
             get: function () {
-              this.bC || this.hC();
-              return this.yC;
+              this.dC || this.jC();
+              return this.CC;
             },
           },
-          jC: {
+          lC: {
             get: function () {
-              this.bC || this.hC();
-              return this.xC;
+              this.dC || this.jC();
+              return this.BC;
             },
           },
         });
         var l = void 0;
       } else (l = g), (k = void 0);
       var p = ec(b, c, d, f);
-      k ? (p.uB = k) : l && ((p.uB = null), (p.url = l));
+      k ? (p.wB = k) : l && ((p.wB = null), (p.url = l));
       Object.defineProperties(p, {
-        yB: {
+        AB: {
           get: function () {
-            return this.uB.length;
+            return this.wB.length;
           },
         },
       });
       var t = {};
-      Object.keys(p.wB).forEach((r) => {
-        var y = p.wB[r];
+      Object.keys(p.yB).forEach((r) => {
+        var y = p.yB[r];
         t[r] = function () {
           fc(p);
           return y.apply(null, arguments);
@@ -1342,7 +1342,7 @@ var Binaryen = (() => {
       });
       t.read = (r, y, E, n, C) => {
         fc(p);
-        r = r.node.uB;
+        r = r.node.wB;
         if (C >= r.length) y = 0;
         else {
           n = Math.min(r.length - C, n);
@@ -1352,12 +1352,12 @@ var Binaryen = (() => {
         }
         return y;
       };
-      t.cC = () => {
+      t.eC = () => {
         fc(p);
         q();
         throw new G(48);
       };
-      p.wB = t;
+      p.yB = t;
       return p;
     }
     var hc = {},
@@ -1445,8 +1445,8 @@ var Binaryen = (() => {
           }
         }
         function p(n) {
-          var C = n.LB;
-          for (n = new Date(new Date(n.MB + 1900, 0, 1).getTime()); 0 < C; ) {
+          var C = n.NB;
+          for (n = new Date(new Date(n.OB + 1900, 0, 1).getTime()); 0 < C; ) {
             var A = n.getMonth(),
               H = (oc(n.getFullYear()) ? pc : qc)[A];
             if (C > H - n.getDate())
@@ -1471,17 +1471,17 @@ var Binaryen = (() => {
         }
         var t = x[(d + 40) >> 2];
         d = {
-          LC: w[d >> 2],
-          KC: w[(d + 4) >> 2],
-          WB: w[(d + 8) >> 2],
-          fC: w[(d + 12) >> 2],
-          XB: w[(d + 16) >> 2],
-          MB: w[(d + 20) >> 2],
-          EB: w[(d + 24) >> 2],
-          LB: w[(d + 28) >> 2],
-          iD: w[(d + 32) >> 2],
-          JC: w[(d + 36) >> 2],
-          MC: t ? (t ? z(v, t) : '') : '',
+          PC: w[d >> 2],
+          OC: w[(d + 4) >> 2],
+          YB: w[(d + 8) >> 2],
+          hC: w[(d + 12) >> 2],
+          ZB: w[(d + 16) >> 2],
+          OB: w[(d + 20) >> 2],
+          GB: w[(d + 24) >> 2],
+          NB: w[(d + 28) >> 2],
+          kD: w[(d + 32) >> 2],
+          NC: w[(d + 36) >> 2],
+          QC: t ? (t ? z(v, t) : '') : '',
         };
         g = g ? z(v, g) : '';
         t = {
@@ -1524,57 +1524,57 @@ var Binaryen = (() => {
               ' ',
             );
         t = {
-          '%a': (n) => y[n.EB].substring(0, 3),
-          '%A': (n) => y[n.EB],
-          '%b': (n) => E[n.XB].substring(0, 3),
-          '%B': (n) => E[n.XB],
-          '%C': (n) => h(((n.MB + 1900) / 100) | 0, 2),
-          '%d': (n) => h(n.fC, 2),
-          '%e': (n) => f(n.fC, 2, ' '),
+          '%a': (n) => y[n.GB].substring(0, 3),
+          '%A': (n) => y[n.GB],
+          '%b': (n) => E[n.ZB].substring(0, 3),
+          '%B': (n) => E[n.ZB],
+          '%C': (n) => h(((n.OB + 1900) / 100) | 0, 2),
+          '%d': (n) => h(n.hC, 2),
+          '%e': (n) => f(n.hC, 2, ' '),
           '%g': (n) => p(n).toString().substring(2),
           '%G': (n) => p(n),
-          '%H': (n) => h(n.WB, 2),
+          '%H': (n) => h(n.YB, 2),
           '%I': (n) => {
-            n = n.WB;
+            n = n.YB;
             0 == n ? (n = 12) : 12 < n && (n -= 12);
             return h(n, 2);
           },
           '%j': (n) => {
             for (
               var C = 0, A = 0;
-              A <= n.XB - 1;
-              C += (oc(n.MB + 1900) ? pc : qc)[A++]
+              A <= n.ZB - 1;
+              C += (oc(n.OB + 1900) ? pc : qc)[A++]
             );
-            return h(n.fC + C, 3);
+            return h(n.hC + C, 3);
           },
-          '%m': (n) => h(n.XB + 1, 2),
-          '%M': (n) => h(n.KC, 2),
+          '%m': (n) => h(n.ZB + 1, 2),
+          '%M': (n) => h(n.OC, 2),
           '%n': () => '\n',
-          '%p': (n) => (0 <= n.WB && 12 > n.WB ? 'AM' : 'PM'),
-          '%S': (n) => h(n.LC, 2),
+          '%p': (n) => (0 <= n.YB && 12 > n.YB ? 'AM' : 'PM'),
+          '%S': (n) => h(n.PC, 2),
           '%t': () => '\t',
-          '%u': (n) => n.EB || 7,
-          '%U': (n) => h(Math.floor((n.LB + 7 - n.EB) / 7), 2),
+          '%u': (n) => n.GB || 7,
+          '%U': (n) => h(Math.floor((n.NB + 7 - n.GB) / 7), 2),
           '%V': (n) => {
-            var C = Math.floor((n.LB + 7 - ((n.EB + 6) % 7)) / 7);
-            2 >= (n.EB + 371 - n.LB - 2) % 7 && C++;
+            var C = Math.floor((n.NB + 7 - ((n.GB + 6) % 7)) / 7);
+            2 >= (n.GB + 371 - n.NB - 2) % 7 && C++;
             if (C)
               53 == C &&
-                ((A = (n.EB + 371 - n.LB) % 7),
-                4 == A || (3 == A && oc(n.MB)) || (C = 1));
+                ((A = (n.GB + 371 - n.NB) % 7),
+                4 == A || (3 == A && oc(n.OB)) || (C = 1));
             else {
               C = 52;
-              var A = (n.EB + 7 - n.LB - 1) % 7;
-              (4 == A || (5 == A && oc((n.MB % 400) - 1))) && C++;
+              var A = (n.GB + 7 - n.NB - 1) % 7;
+              (4 == A || (5 == A && oc((n.OB % 400) - 1))) && C++;
             }
             return h(C, 2);
           },
-          '%w': (n) => n.EB,
-          '%W': (n) => h(Math.floor((n.LB + 7 - ((n.EB + 6) % 7)) / 7), 2),
-          '%y': (n) => (n.MB + 1900).toString().substring(2),
-          '%Y': (n) => n.MB + 1900,
+          '%w': (n) => n.GB,
+          '%W': (n) => h(Math.floor((n.NB + 7 - ((n.GB + 6) % 7)) / 7), 2),
+          '%y': (n) => (n.OB + 1900).toString().substring(2),
+          '%Y': (n) => n.OB + 1900,
           '%z': (n) => {
-            n = n.JC;
+            n = n.NC;
             var C = 0 <= n;
             n = Math.abs(n) / 60;
             return (
@@ -1582,7 +1582,7 @@ var Binaryen = (() => {
               String('0000' + ((n / 60) * 100 + (n % 60))).slice(-4)
             );
           },
-          '%Z': (n) => n.MC,
+          '%Z': (n) => n.QC,
           '%%': () => '%',
         };
         g = g.replace(/%%/g, '\x00\x00');
@@ -1610,14 +1610,14 @@ var Binaryen = (() => {
     function Kb(b, c, g, d) {
       b || (b = this);
       this.parent = b;
-      this.FB = b.FB;
-      this.QB = null;
+      this.HB = b.HB;
+      this.SB = null;
       this.id = Cb++;
       this.name = c;
       this.mode = g;
-      this.vB = {};
-      this.wB = {};
-      this.UB = d;
+      this.xB = {};
+      this.yB = {};
+      this.WB = d;
     }
     Object.defineProperties(Kb.prototype, {
       read: {
@@ -1636,12 +1636,12 @@ var Binaryen = (() => {
           b ? (this.mode |= 146) : (this.mode &= -147);
         },
       },
-      GC: {
+      KC: {
         get: function () {
           return 16384 === (this.mode & 61440);
         },
       },
-      FC: {
+      JC: {
         get: function () {
           return 8192 === (this.mode & 61440);
         },
@@ -1678,15 +1678,15 @@ var Binaryen = (() => {
       J('/proc/self/fd');
       Rb(
         {
-          FB() {
+          HB() {
             var c = qb(b, 'fd', 16895, 73);
-            c.vB = {
-              PB(g, d) {
+            c.xB = {
+              RB(g, d) {
                 var f = Ob(+d);
                 g = {
                   parent: null,
-                  FB: { pC: 'fake' },
-                  vB: { RB: () => f.path },
+                  HB: { rC: 'fake' },
+                  xB: { TB: () => f.path },
                 };
                 return (g.parent = g);
               },
@@ -1716,16 +1716,16 @@ var Binaryen = (() => {
         },
         o: (b) => {
           b = new Ua(b);
-          b.PC() || (b.uC(!0), Ta--);
-          b.vC(!1);
+          b.TC() || (b.wC(!0), Ta--);
+          b.xC(!1);
           Sa.push(b);
-          vc(b.OB);
-          return b.QC();
+          vc(b.QB);
+          return b.yC();
         },
         r: () => {
           N(0, 0);
           var b = Sa.pop();
-          wc(b.OB);
+          wc(b.QB);
           D = 0;
         },
         a: () => Ya([]),
@@ -1734,13 +1734,13 @@ var Binaryen = (() => {
         D: () => {
           var b = Sa.pop();
           b || q('no exception to throw');
-          var c = b.OB;
-          b.AC() || (Sa.push(b), b.vC(!0), b.uC(!1), Ta++);
+          var c = b.QB;
+          b.EC() || (Sa.push(b), b.xC(!0), b.wC(!1), Ta++);
           D = c;
           throw D;
         },
         s: (b, c, g) => {
-          new Ua(b).nC(c, g);
+          new Ua(b).pC(c, g);
           D = b;
           Ta++;
           throw D;
@@ -1759,7 +1759,7 @@ var Binaryen = (() => {
                 var f = jc();
                 if (0 > f) return -28;
                 for (; Bb[f]; ) f++;
-                return Pb(d, f).IB;
+                return Pb(d, f).KB;
               case 1:
               case 2:
                 return 0;
@@ -1782,7 +1782,7 @@ var Binaryen = (() => {
             }
           } catch (h) {
             if ('undefined' == typeof hc || 'ErrnoError' !== h.name) throw h;
-            return -h.HB;
+            return -h.JB;
           }
         },
         Ba: function (b, c, g) {
@@ -1791,10 +1791,10 @@ var Binaryen = (() => {
             var d = Ob(b);
             switch (c) {
               case 21509:
-                return d.xB ? 0 : -59;
+                return d.zB ? 0 : -59;
               case 21505:
-                if (!d.xB) return -59;
-                if (d.xB.GB.CC) {
+                if (!d.zB) return -59;
+                if (d.zB.IB.GC) {
                   c = [
                     3, 28, 127, 21, 4, 0, 1, 0, 17, 19, 26, 0, 18, 15, 23, 22,
                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -1810,43 +1810,43 @@ var Binaryen = (() => {
               case 21510:
               case 21511:
               case 21512:
-                return d.xB ? 0 : -59;
+                return d.zB ? 0 : -59;
               case 21506:
               case 21507:
               case 21508:
-                if (!d.xB) return -59;
-                if (d.xB.GB.DC)
+                if (!d.zB) return -59;
+                if (d.zB.IB.HC)
                   for (f = jc(), c = [], h = 0; 32 > h; h++)
                     c.push(u[(f + h + 17) >> 0]);
                 return 0;
               case 21519:
-                if (!d.xB) return -59;
+                if (!d.zB) return -59;
                 f = jc();
                 return (w[f >> 2] = 0);
               case 21520:
-                return d.xB ? -28 : -59;
+                return d.zB ? -28 : -59;
               case 21531:
                 f = jc();
-                if (!d.wB.BC) throw new G(59);
-                return d.wB.BC(d, c, f);
+                if (!d.yB.FC) throw new G(59);
+                return d.yB.FC(d, c, f);
               case 21523:
-                if (!d.xB) return -59;
-                d.xB.GB.EC &&
+                if (!d.zB) return -59;
+                d.zB.IB.IC &&
                   ((h = [24, 80]),
                   (f = jc()),
                   (ta[f >> 1] = h[0]),
                   (ta[(f + 2) >> 1] = h[1]));
                 return 0;
               case 21524:
-                return d.xB ? 0 : -59;
+                return d.zB ? 0 : -59;
               case 21515:
-                return d.xB ? 0 : -59;
+                return d.zB ? 0 : -59;
               default:
                 return -28;
             }
           } catch (k) {
             if ('undefined' == typeof hc || 'ErrnoError' !== k.name) throw k;
-            return -k.HB;
+            return -k.JB;
           }
         },
         Ca: function (b, c, g, d) {
@@ -1861,10 +1861,10 @@ var Binaryen = (() => {
               c = F(h + '/' + f);
             }
             var k = d ? jc() : 0;
-            return Xb(c, g, k).IB;
+            return Xb(c, g, k).KB;
           } catch (l) {
             if ('undefined' == typeof hc || 'ErrnoError' !== l.name) throw l;
-            return -l.HB;
+            return -l.JB;
           }
         },
         Ea: () => !0,
@@ -1928,7 +1928,7 @@ var Binaryen = (() => {
             return 0;
           } catch (g) {
             if ('undefined' == typeof hc || 'ErrnoError' !== g.name) throw g;
-            return g.HB;
+            return g.JB;
           }
         },
         Aa: function (b, c, g, d) {
@@ -1946,14 +1946,14 @@ var Binaryen = (() => {
                   E = h,
                   n = u;
                 if (0 > y || 0 > E) throw new G(28);
-                if (null === t.IB) throw new G(8);
+                if (null === t.KB) throw new G(8);
                 if (1 === (t.flags & 2097155)) throw new G(8);
                 if (16384 === (t.node.mode & 61440)) throw new G(31);
-                if (!t.wB.read) throw new G(28);
+                if (!t.yB.read) throw new G(28);
                 var C = 'undefined' != typeof E;
                 if (!C) E = t.position;
                 else if (!t.seekable) throw new G(70);
-                var A = t.wB.read(t, n, r, y, E);
+                var A = t.yB.read(t, n, r, y, E);
                 C || (t.position += A);
                 var H = A;
                 if (0 > H) {
@@ -1970,7 +1970,7 @@ var Binaryen = (() => {
             return 0;
           } catch (S) {
             if ('undefined' == typeof hc || 'ErrnoError' !== S.name) throw S;
-            return S.HB;
+            return S.JB;
           }
         },
         ta: function (b, c, g, d, f) {
@@ -1993,11 +1993,11 @@ var Binaryen = (() => {
             ];
             w[f >> 2] = Na[0];
             w[(f + 4) >> 2] = Na[1];
-            h.aC && 0 === c && 0 === d && (h.aC = null);
+            h.cC && 0 === c && 0 === d && (h.cC = null);
             return 0;
           } catch (k) {
             if ('undefined' == typeof hc || 'ErrnoError' !== k.name) throw k;
-            return k.HB;
+            return k.JB;
           }
         },
         Ga: function (b, c, g, d) {
@@ -2023,7 +2023,7 @@ var Binaryen = (() => {
             return 0;
           } catch (y) {
             if ('undefined' == typeof hc || 'ErrnoError' !== y.name) throw y;
-            return y.HB;
+            return y.JB;
           }
         },
         y: yc,
@@ -2102,7 +2102,7 @@ var Binaryen = (() => {
           P = g.exports;
           ra = P.Ha;
           ua();
-          tc = P.CA;
+          tc = P.EA;
           wa.unshift(P.Ia);
           Ea('wasm-instantiate');
           return P;
@@ -4102,234 +4102,236 @@ var Binaryen = (() => {
     a._BinaryenTableHasMax = (b) => (a._BinaryenTableHasMax = P.Py)(b);
     a._BinaryenTableGetMax = (b) => (a._BinaryenTableGetMax = P.Qy)(b);
     a._BinaryenTableSetMax = (b, c) => (a._BinaryenTableSetMax = P.Ry)(b, c);
+    a._BinaryenTableGetType = (b) => (a._BinaryenTableGetType = P.Sy)(b);
+    a._BinaryenTableSetType = (b, c) => (a._BinaryenTableSetType = P.Ty)(b, c);
     a._BinaryenElementSegmentGetName = (b) =>
-      (a._BinaryenElementSegmentGetName = P.Sy)(b);
+      (a._BinaryenElementSegmentGetName = P.Uy)(b);
     a._BinaryenElementSegmentSetName = (b, c) =>
-      (a._BinaryenElementSegmentSetName = P.Ty)(b, c);
+      (a._BinaryenElementSegmentSetName = P.Vy)(b, c);
     a._BinaryenElementSegmentGetTable = (b) =>
-      (a._BinaryenElementSegmentGetTable = P.Uy)(b);
+      (a._BinaryenElementSegmentGetTable = P.Wy)(b);
     a._BinaryenElementSegmentSetTable = (b, c) =>
-      (a._BinaryenElementSegmentSetTable = P.Vy)(b, c);
+      (a._BinaryenElementSegmentSetTable = P.Xy)(b, c);
     a._BinaryenElementSegmentIsPassive = (b) =>
-      (a._BinaryenElementSegmentIsPassive = P.Wy)(b);
-    a._BinaryenGlobalGetName = (b) => (a._BinaryenGlobalGetName = P.Xy)(b);
-    a._BinaryenGlobalGetType = (b) => (a._BinaryenGlobalGetType = P.Yy)(b);
-    a._BinaryenGlobalIsMutable = (b) => (a._BinaryenGlobalIsMutable = P.Zy)(b);
+      (a._BinaryenElementSegmentIsPassive = P.Yy)(b);
+    a._BinaryenGlobalGetName = (b) => (a._BinaryenGlobalGetName = P.Zy)(b);
+    a._BinaryenGlobalGetType = (b) => (a._BinaryenGlobalGetType = P._y)(b);
+    a._BinaryenGlobalIsMutable = (b) => (a._BinaryenGlobalIsMutable = P.$y)(b);
     a._BinaryenGlobalGetInitExpr = (b) =>
-      (a._BinaryenGlobalGetInitExpr = P._y)(b);
-    a._BinaryenTagGetName = (b) => (a._BinaryenTagGetName = P.$y)(b);
-    a._BinaryenTagGetParams = (b) => (a._BinaryenTagGetParams = P.az)(b);
-    a._BinaryenTagGetResults = (b) => (a._BinaryenTagGetResults = P.bz)(b);
+      (a._BinaryenGlobalGetInitExpr = P.az)(b);
+    a._BinaryenTagGetName = (b) => (a._BinaryenTagGetName = P.bz)(b);
+    a._BinaryenTagGetParams = (b) => (a._BinaryenTagGetParams = P.cz)(b);
+    a._BinaryenTagGetResults = (b) => (a._BinaryenTagGetResults = P.dz)(b);
     a._BinaryenFunctionImportGetModule = (b) =>
-      (a._BinaryenFunctionImportGetModule = P.cz)(b);
+      (a._BinaryenFunctionImportGetModule = P.ez)(b);
     a._BinaryenTableImportGetModule = (b) =>
-      (a._BinaryenTableImportGetModule = P.dz)(b);
+      (a._BinaryenTableImportGetModule = P.fz)(b);
     a._BinaryenGlobalImportGetModule = (b) =>
-      (a._BinaryenGlobalImportGetModule = P.ez)(b);
+      (a._BinaryenGlobalImportGetModule = P.gz)(b);
     a._BinaryenTagImportGetModule = (b) =>
-      (a._BinaryenTagImportGetModule = P.fz)(b);
+      (a._BinaryenTagImportGetModule = P.hz)(b);
     a._BinaryenFunctionImportGetBase = (b) =>
-      (a._BinaryenFunctionImportGetBase = P.gz)(b);
+      (a._BinaryenFunctionImportGetBase = P.iz)(b);
     a._BinaryenTableImportGetBase = (b) =>
-      (a._BinaryenTableImportGetBase = P.hz)(b);
+      (a._BinaryenTableImportGetBase = P.jz)(b);
     a._BinaryenGlobalImportGetBase = (b) =>
-      (a._BinaryenGlobalImportGetBase = P.iz)(b);
+      (a._BinaryenGlobalImportGetBase = P.kz)(b);
     a._BinaryenTagImportGetBase = (b) =>
-      (a._BinaryenTagImportGetBase = P.jz)(b);
-    a._BinaryenExportGetKind = (b) => (a._BinaryenExportGetKind = P.kz)(b);
-    a._BinaryenExportGetName = (b) => (a._BinaryenExportGetName = P.lz)(b);
-    a._BinaryenExportGetValue = (b) => (a._BinaryenExportGetValue = P.mz)(b);
+      (a._BinaryenTagImportGetBase = P.lz)(b);
+    a._BinaryenExportGetKind = (b) => (a._BinaryenExportGetKind = P.mz)(b);
+    a._BinaryenExportGetName = (b) => (a._BinaryenExportGetName = P.nz)(b);
+    a._BinaryenExportGetValue = (b) => (a._BinaryenExportGetValue = P.oz)(b);
     a._BinaryenAddCustomSection = (b, c, g, d) =>
-      (a._BinaryenAddCustomSection = P.nz)(b, c, g, d);
-    a._BinaryenSideEffectNone = () => (a._BinaryenSideEffectNone = P.oz)();
+      (a._BinaryenAddCustomSection = P.pz)(b, c, g, d);
+    a._BinaryenSideEffectNone = () => (a._BinaryenSideEffectNone = P.qz)();
     a._BinaryenSideEffectBranches = () =>
-      (a._BinaryenSideEffectBranches = P.pz)();
-    a._BinaryenSideEffectCalls = () => (a._BinaryenSideEffectCalls = P.qz)();
+      (a._BinaryenSideEffectBranches = P.rz)();
+    a._BinaryenSideEffectCalls = () => (a._BinaryenSideEffectCalls = P.sz)();
     a._BinaryenSideEffectReadsLocal = () =>
-      (a._BinaryenSideEffectReadsLocal = P.rz)();
+      (a._BinaryenSideEffectReadsLocal = P.tz)();
     a._BinaryenSideEffectWritesLocal = () =>
-      (a._BinaryenSideEffectWritesLocal = P.sz)();
+      (a._BinaryenSideEffectWritesLocal = P.uz)();
     a._BinaryenSideEffectReadsGlobal = () =>
-      (a._BinaryenSideEffectReadsGlobal = P.tz)();
+      (a._BinaryenSideEffectReadsGlobal = P.vz)();
     a._BinaryenSideEffectWritesGlobal = () =>
-      (a._BinaryenSideEffectWritesGlobal = P.uz)();
+      (a._BinaryenSideEffectWritesGlobal = P.wz)();
     a._BinaryenSideEffectReadsMemory = () =>
-      (a._BinaryenSideEffectReadsMemory = P.vz)();
+      (a._BinaryenSideEffectReadsMemory = P.xz)();
     a._BinaryenSideEffectWritesMemory = () =>
-      (a._BinaryenSideEffectWritesMemory = P.wz)();
+      (a._BinaryenSideEffectWritesMemory = P.yz)();
     a._BinaryenSideEffectReadsTable = () =>
-      (a._BinaryenSideEffectReadsTable = P.xz)();
+      (a._BinaryenSideEffectReadsTable = P.zz)();
     a._BinaryenSideEffectWritesTable = () =>
-      (a._BinaryenSideEffectWritesTable = P.yz)();
+      (a._BinaryenSideEffectWritesTable = P.Az)();
     a._BinaryenSideEffectImplicitTrap = () =>
-      (a._BinaryenSideEffectImplicitTrap = P.zz)();
+      (a._BinaryenSideEffectImplicitTrap = P.Bz)();
     a._BinaryenSideEffectTrapsNeverHappen = () =>
-      (a._BinaryenSideEffectTrapsNeverHappen = P.Az)();
+      (a._BinaryenSideEffectTrapsNeverHappen = P.Cz)();
     a._BinaryenSideEffectIsAtomic = () =>
-      (a._BinaryenSideEffectIsAtomic = P.Bz)();
-    a._BinaryenSideEffectThrows = () => (a._BinaryenSideEffectThrows = P.Cz)();
+      (a._BinaryenSideEffectIsAtomic = P.Dz)();
+    a._BinaryenSideEffectThrows = () => (a._BinaryenSideEffectThrows = P.Ez)();
     a._BinaryenSideEffectDanglingPop = () =>
-      (a._BinaryenSideEffectDanglingPop = P.Dz)();
-    a._BinaryenSideEffectAny = () => (a._BinaryenSideEffectAny = P.Ez)();
+      (a._BinaryenSideEffectDanglingPop = P.Fz)();
+    a._BinaryenSideEffectAny = () => (a._BinaryenSideEffectAny = P.Gz)();
     a._BinaryenExpressionGetSideEffects = (b, c) =>
-      (a._BinaryenExpressionGetSideEffects = P.Fz)(b, c);
-    a._RelooperCreate = (b) => (a._RelooperCreate = P.Gz)(b);
-    a._RelooperAddBlock = (b, c) => (a._RelooperAddBlock = P.Hz)(b, c);
+      (a._BinaryenExpressionGetSideEffects = P.Hz)(b, c);
+    a._RelooperCreate = (b) => (a._RelooperCreate = P.Iz)(b);
+    a._RelooperAddBlock = (b, c) => (a._RelooperAddBlock = P.Jz)(b, c);
     a._RelooperAddBranch = (b, c, g, d) =>
-      (a._RelooperAddBranch = P.Iz)(b, c, g, d);
+      (a._RelooperAddBranch = P.Kz)(b, c, g, d);
     a._RelooperAddBlockWithSwitch = (b, c, g) =>
-      (a._RelooperAddBlockWithSwitch = P.Jz)(b, c, g);
+      (a._RelooperAddBlockWithSwitch = P.Lz)(b, c, g);
     a._RelooperAddBranchForSwitch = (b, c, g, d, f) =>
-      (a._RelooperAddBranchForSwitch = P.Kz)(b, c, g, d, f);
+      (a._RelooperAddBranchForSwitch = P.Mz)(b, c, g, d, f);
     a._RelooperRenderAndDispose = (b, c, g) =>
-      (a._RelooperRenderAndDispose = P.Lz)(b, c, g);
+      (a._RelooperRenderAndDispose = P.Nz)(b, c, g);
     a._ExpressionRunnerFlagsDefault = () =>
-      (a._ExpressionRunnerFlagsDefault = P.Mz)();
+      (a._ExpressionRunnerFlagsDefault = P.Oz)();
     a._ExpressionRunnerFlagsPreserveSideeffects = () =>
-      (a._ExpressionRunnerFlagsPreserveSideeffects = P.Nz)();
+      (a._ExpressionRunnerFlagsPreserveSideeffects = P.Pz)();
     a._ExpressionRunnerFlagsTraverseCalls = () =>
-      (a._ExpressionRunnerFlagsTraverseCalls = P.Oz)();
+      (a._ExpressionRunnerFlagsTraverseCalls = P.Qz)();
     a._ExpressionRunnerCreate = (b, c, g, d) =>
-      (a._ExpressionRunnerCreate = P.Pz)(b, c, g, d);
+      (a._ExpressionRunnerCreate = P.Rz)(b, c, g, d);
     a._ExpressionRunnerSetLocalValue = (b, c, g) =>
-      (a._ExpressionRunnerSetLocalValue = P.Qz)(b, c, g);
+      (a._ExpressionRunnerSetLocalValue = P.Sz)(b, c, g);
     a._ExpressionRunnerSetGlobalValue = (b, c, g) =>
-      (a._ExpressionRunnerSetGlobalValue = P.Rz)(b, c, g);
+      (a._ExpressionRunnerSetGlobalValue = P.Tz)(b, c, g);
     a._ExpressionRunnerRunAndDispose = (b, c) =>
-      (a._ExpressionRunnerRunAndDispose = P.Sz)(b, c);
+      (a._ExpressionRunnerRunAndDispose = P.Uz)(b, c);
     a._TypeBuilderErrorReasonSelfSupertype = () =>
-      (a._TypeBuilderErrorReasonSelfSupertype = P.Tz)();
+      (a._TypeBuilderErrorReasonSelfSupertype = P.Vz)();
     a._TypeBuilderErrorReasonInvalidSupertype = () =>
-      (a._TypeBuilderErrorReasonInvalidSupertype = P.Uz)();
+      (a._TypeBuilderErrorReasonInvalidSupertype = P.Wz)();
     a._TypeBuilderErrorReasonForwardSupertypeReference = () =>
-      (a._TypeBuilderErrorReasonForwardSupertypeReference = P.Vz)();
+      (a._TypeBuilderErrorReasonForwardSupertypeReference = P.Xz)();
     a._TypeBuilderErrorReasonForwardChildReference = () =>
-      (a._TypeBuilderErrorReasonForwardChildReference = P.Wz)();
-    a._TypeBuilderCreate = (b) => (a._TypeBuilderCreate = P.Xz)(b);
-    a._TypeBuilderGrow = (b, c) => (a._TypeBuilderGrow = P.Yz)(b, c);
-    a._TypeBuilderGetSize = (b) => (a._TypeBuilderGetSize = P.Zz)(b);
+      (a._TypeBuilderErrorReasonForwardChildReference = P.Yz)();
+    a._TypeBuilderCreate = (b) => (a._TypeBuilderCreate = P.Zz)(b);
+    a._TypeBuilderGrow = (b, c) => (a._TypeBuilderGrow = P._z)(b, c);
+    a._TypeBuilderGetSize = (b) => (a._TypeBuilderGetSize = P.$z)(b);
     a._TypeBuilderSetSignatureType = (b, c, g, d) =>
-      (a._TypeBuilderSetSignatureType = P._z)(b, c, g, d);
+      (a._TypeBuilderSetSignatureType = P.aA)(b, c, g, d);
     a._TypeBuilderSetStructType = (b, c, g, d, f, h) =>
-      (a._TypeBuilderSetStructType = P.$z)(b, c, g, d, f, h);
+      (a._TypeBuilderSetStructType = P.bA)(b, c, g, d, f, h);
     a._TypeBuilderSetArrayType = (b, c, g, d, f) =>
-      (a._TypeBuilderSetArrayType = P.aA)(b, c, g, d, f);
+      (a._TypeBuilderSetArrayType = P.cA)(b, c, g, d, f);
     a._TypeBuilderGetTempHeapType = (b, c) =>
-      (a._TypeBuilderGetTempHeapType = P.bA)(b, c);
+      (a._TypeBuilderGetTempHeapType = P.dA)(b, c);
     a._TypeBuilderGetTempTupleType = (b, c, g) =>
-      (a._TypeBuilderGetTempTupleType = P.cA)(b, c, g);
+      (a._TypeBuilderGetTempTupleType = P.eA)(b, c, g);
     a._TypeBuilderGetTempRefType = (b, c, g) =>
-      (a._TypeBuilderGetTempRefType = P.dA)(b, c, g);
+      (a._TypeBuilderGetTempRefType = P.fA)(b, c, g);
     a._TypeBuilderSetSubType = (b, c, g) =>
-      (a._TypeBuilderSetSubType = P.eA)(b, c, g);
-    a._TypeBuilderSetOpen = (b, c) => (a._TypeBuilderSetOpen = P.fA)(b, c);
+      (a._TypeBuilderSetSubType = P.gA)(b, c, g);
+    a._TypeBuilderSetOpen = (b, c) => (a._TypeBuilderSetOpen = P.hA)(b, c);
     a._TypeBuilderCreateRecGroup = (b, c, g) =>
-      (a._TypeBuilderCreateRecGroup = P.gA)(b, c, g);
+      (a._TypeBuilderCreateRecGroup = P.iA)(b, c, g);
     a._TypeBuilderBuildAndDispose = (b, c, g, d) =>
-      (a._TypeBuilderBuildAndDispose = P.hA)(b, c, g, d);
+      (a._TypeBuilderBuildAndDispose = P.jA)(b, c, g, d);
     a._BinaryenModuleSetTypeName = (b, c, g) =>
-      (a._BinaryenModuleSetTypeName = P.iA)(b, c, g);
+      (a._BinaryenModuleSetTypeName = P.kA)(b, c, g);
     a._BinaryenModuleSetFieldName = (b, c, g, d) =>
-      (a._BinaryenModuleSetFieldName = P.jA)(b, c, g, d);
+      (a._BinaryenModuleSetFieldName = P.lA)(b, c, g, d);
     a._BinaryenSetColorsEnabled = (b) =>
-      (a._BinaryenSetColorsEnabled = P.kA)(b);
-    a._BinaryenAreColorsEnabled = () => (a._BinaryenAreColorsEnabled = P.lA)();
+      (a._BinaryenSetColorsEnabled = P.mA)(b);
+    a._BinaryenAreColorsEnabled = () => (a._BinaryenAreColorsEnabled = P.nA)();
     var Kd = (a._BinaryenSizeofLiteral = () =>
-        (Kd = a._BinaryenSizeofLiteral = P.mA)()),
+        (Kd = a._BinaryenSizeofLiteral = P.oA)()),
       Ld = (a._BinaryenSizeofAllocateAndWriteResult = () =>
-        (Ld = a._BinaryenSizeofAllocateAndWriteResult = P.nA)());
-    a.__i32_store8 = (b, c) => (a.__i32_store8 = P.oA)(b, c);
-    a.__i32_store16 = (b, c) => (a.__i32_store16 = P.pA)(b, c);
-    a.__i32_store = (b, c) => (a.__i32_store = P.qA)(b, c);
-    a.__f32_store = (b, c) => (a.__f32_store = P.rA)(b, c);
-    a.__f64_store = (b, c) => (a.__f64_store = P.sA)(b, c);
-    a.__i32_load8_s = (b) => (a.__i32_load8_s = P.tA)(b);
-    a.__i32_load8_u = (b) => (a.__i32_load8_u = P.uA)(b);
-    a.__i32_load16_s = (b) => (a.__i32_load16_s = P.vA)(b);
-    a.__i32_load16_u = (b) => (a.__i32_load16_u = P.wA)(b);
-    a.__i32_load = (b) => (a.__i32_load = P.xA)(b);
-    a.__f32_load = (b) => (a.__f32_load = P.yA)(b);
-    a.__f64_load = (b) => (a.__f64_load = P.zA)(b);
-    var Md = (a._free = (b) => (Md = a._free = P.AA)(b)),
-      xc = () => (xc = P.BA)(),
-      N = (b, c) => (N = P.DA)(b, c),
-      Wa = (b) => (Wa = P.EA)(b),
-      Q = () => (Q = P.FA)(),
-      T = (b) => (T = P.GA)(b),
-      M = (b) => (M = P.HA)(b),
-      wc = (b) => (wc = P.IA)(b),
-      vc = (b) => (vc = P.JA)(b),
-      Xa = (b, c, g) => (Xa = P.KA)(b, c, g),
-      Va = (b) => (Va = P.LA)(b),
+        (Ld = a._BinaryenSizeofAllocateAndWriteResult = P.pA)());
+    a.__i32_store8 = (b, c) => (a.__i32_store8 = P.qA)(b, c);
+    a.__i32_store16 = (b, c) => (a.__i32_store16 = P.rA)(b, c);
+    a.__i32_store = (b, c) => (a.__i32_store = P.sA)(b, c);
+    a.__f32_store = (b, c) => (a.__f32_store = P.tA)(b, c);
+    a.__f64_store = (b, c) => (a.__f64_store = P.uA)(b, c);
+    a.__i32_load8_s = (b) => (a.__i32_load8_s = P.vA)(b);
+    a.__i32_load8_u = (b) => (a.__i32_load8_u = P.wA)(b);
+    a.__i32_load16_s = (b) => (a.__i32_load16_s = P.xA)(b);
+    a.__i32_load16_u = (b) => (a.__i32_load16_u = P.yA)(b);
+    a.__i32_load = (b) => (a.__i32_load = P.zA)(b);
+    a.__f32_load = (b) => (a.__f32_load = P.AA)(b);
+    a.__f64_load = (b) => (a.__f64_load = P.BA)(b);
+    var Md = (a._free = (b) => (Md = a._free = P.CA)(b)),
+      xc = () => (xc = P.DA)(),
+      N = (b, c) => (N = P.FA)(b, c),
+      Wa = (b) => (Wa = P.GA)(b),
+      Q = () => (Q = P.HA)(),
+      T = (b) => (T = P.IA)(b),
+      M = (b) => (M = P.JA)(b),
+      wc = (b) => (wc = P.KA)(b),
+      vc = (b) => (vc = P.LA)(b),
+      Xa = (b, c, g) => (Xa = P.MA)(b, c, g),
+      Va = (b) => (Va = P.NA)(b),
       Nd = (a.dynCall_viij = (b, c, g, d, f) =>
-        (Nd = a.dynCall_viij = P.MA)(b, c, g, d, f)),
+        (Nd = a.dynCall_viij = P.OA)(b, c, g, d, f)),
       Od = (a.dynCall_iij = (b, c, g, d) =>
-        (Od = a.dynCall_iij = P.NA)(b, c, g, d)),
+        (Od = a.dynCall_iij = P.PA)(b, c, g, d)),
       Pd = (a.dynCall_viiij = (b, c, g, d, f, h) =>
-        (Pd = a.dynCall_viiij = P.OA)(b, c, g, d, f, h)),
+        (Pd = a.dynCall_viiij = P.QA)(b, c, g, d, f, h)),
       Qd = (a.dynCall_iiij = (b, c, g, d, f) =>
-        (Qd = a.dynCall_iiij = P.PA)(b, c, g, d, f)),
+        (Qd = a.dynCall_iiij = P.RA)(b, c, g, d, f)),
       Rd = (a.dynCall_viiji = (b, c, g, d, f, h) =>
-        (Rd = a.dynCall_viiji = P.QA)(b, c, g, d, f, h)),
-      Sd = (a.dynCall_jii = (b, c, g) => (Sd = a.dynCall_jii = P.RA)(b, c, g)),
+        (Rd = a.dynCall_viiji = P.SA)(b, c, g, d, f, h)),
+      Sd = (a.dynCall_jii = (b, c, g) => (Sd = a.dynCall_jii = P.TA)(b, c, g)),
       Td = (a.dynCall_vjii = (b, c, g, d, f) =>
-        (Td = a.dynCall_vjii = P.SA)(b, c, g, d, f)),
+        (Td = a.dynCall_vjii = P.UA)(b, c, g, d, f)),
       Ud = (a.dynCall_vij = (b, c, g, d) =>
-        (Ud = a.dynCall_vij = P.TA)(b, c, g, d)),
+        (Ud = a.dynCall_vij = P.VA)(b, c, g, d)),
       Vd = (a.dynCall_ijiii = (b, c, g, d, f, h) =>
-        (Vd = a.dynCall_ijiii = P.UA)(b, c, g, d, f, h)),
+        (Vd = a.dynCall_ijiii = P.WA)(b, c, g, d, f, h)),
       Wd = (a.dynCall_iji = (b, c, g, d) =>
-        (Wd = a.dynCall_iji = P.VA)(b, c, g, d)),
+        (Wd = a.dynCall_iji = P.XA)(b, c, g, d)),
       Xd = (a.dynCall_iiiiij = (b, c, g, d, f, h, k) =>
-        (Xd = a.dynCall_iiiiij = P.WA)(b, c, g, d, f, h, k)),
+        (Xd = a.dynCall_iiiiij = P.YA)(b, c, g, d, f, h, k)),
       Yd = (a.dynCall_viiiiij = (b, c, g, d, f, h, k, l) =>
-        (Yd = a.dynCall_viiiiij = P.XA)(b, c, g, d, f, h, k, l)),
+        (Yd = a.dynCall_viiiiij = P.ZA)(b, c, g, d, f, h, k, l)),
       Zd = (a.dynCall_iiijii = (b, c, g, d, f, h, k) =>
-        (Zd = a.dynCall_iiijii = P.YA)(b, c, g, d, f, h, k)),
+        (Zd = a.dynCall_iiijii = P._A)(b, c, g, d, f, h, k)),
       $d = (a.dynCall_iijj = (b, c, g, d, f, h) =>
-        ($d = a.dynCall_iijj = P.ZA)(b, c, g, d, f, h)),
-      ae = (a.dynCall_ji = (b, c) => (ae = a.dynCall_ji = P._A)(b, c)),
+        ($d = a.dynCall_iijj = P.$A)(b, c, g, d, f, h)),
+      ae = (a.dynCall_ji = (b, c) => (ae = a.dynCall_ji = P.aB)(b, c)),
       be = (a.dynCall_viijj = (b, c, g, d, f, h, k) =>
-        (be = a.dynCall_viijj = P.$A)(b, c, g, d, f, h, k)),
+        (be = a.dynCall_viijj = P.bB)(b, c, g, d, f, h, k)),
       ce = (a.dynCall_vijji = (b, c, g, d, f, h, k) =>
-        (ce = a.dynCall_vijji = P.aB)(b, c, g, d, f, h, k)),
+        (ce = a.dynCall_vijji = P.cB)(b, c, g, d, f, h, k)),
       de = (a.dynCall_viijiijj = (b, c, g, d, f, h, k, l, p, t, r) =>
-        (de = a.dynCall_viijiijj = P.bB)(b, c, g, d, f, h, k, l, p, t, r)),
+        (de = a.dynCall_viijiijj = P.dB)(b, c, g, d, f, h, k, l, p, t, r)),
       ee = (a.dynCall_vijiijj = (b, c, g, d, f, h, k, l, p, t) =>
-        (ee = a.dynCall_vijiijj = P.cB)(b, c, g, d, f, h, k, l, p, t)),
+        (ee = a.dynCall_vijiijj = P.eB)(b, c, g, d, f, h, k, l, p, t)),
       fe = (a.dynCall_jiiiij = (b, c, g, d, f, h, k) =>
-        (fe = a.dynCall_jiiiij = P.dB)(b, c, g, d, f, h, k)),
+        (fe = a.dynCall_jiiiij = P.fB)(b, c, g, d, f, h, k)),
       ge = (a.dynCall_viji = (b, c, g, d, f) =>
-        (ge = a.dynCall_viji = P.eB)(b, c, g, d, f)),
+        (ge = a.dynCall_viji = P.gB)(b, c, g, d, f)),
       he = (a.dynCall_ijiiii = (b, c, g, d, f, h, k) =>
-        (he = a.dynCall_ijiiii = P.fB)(b, c, g, d, f, h, k)),
+        (he = a.dynCall_ijiiii = P.hB)(b, c, g, d, f, h, k)),
       ie = (a.dynCall_jiii = (b, c, g, d) =>
-        (ie = a.dynCall_jiii = P.gB)(b, c, g, d)),
-      je = (a.dynCall_j = (b) => (je = a.dynCall_j = P.hB)(b)),
+        (ie = a.dynCall_jiii = P.iB)(b, c, g, d)),
+      je = (a.dynCall_j = (b) => (je = a.dynCall_j = P.jB)(b)),
       ke = (a.dynCall_vijii = (b, c, g, d, f, h) =>
-        (ke = a.dynCall_vijii = P.iB)(b, c, g, d, f, h)),
+        (ke = a.dynCall_vijii = P.kB)(b, c, g, d, f, h)),
       le = (a.dynCall_vijiii = (b, c, g, d, f, h, k) =>
-        (le = a.dynCall_vijiii = P.jB)(b, c, g, d, f, h, k)),
+        (le = a.dynCall_vijiii = P.lB)(b, c, g, d, f, h, k)),
       me = (a.dynCall_iiji = (b, c, g, d, f) =>
-        (me = a.dynCall_iiji = P.kB)(b, c, g, d, f)),
+        (me = a.dynCall_iiji = P.mB)(b, c, g, d, f)),
       ne = (a.dynCall_iijiiii = (b, c, g, d, f, h, k, l) =>
-        (ne = a.dynCall_iijiiii = P.lB)(b, c, g, d, f, h, k, l)),
+        (ne = a.dynCall_iijiiii = P.nB)(b, c, g, d, f, h, k, l)),
       oe = (a.dynCall_iijii = (b, c, g, d, f, h) =>
-        (oe = a.dynCall_iijii = P.mB)(b, c, g, d, f, h)),
+        (oe = a.dynCall_iijii = P.oB)(b, c, g, d, f, h)),
       pe = (a.dynCall_viiiij = (b, c, g, d, f, h, k) =>
-        (pe = a.dynCall_viiiij = P.nB)(b, c, g, d, f, h, k)),
+        (pe = a.dynCall_viiiij = P.pB)(b, c, g, d, f, h, k)),
       qe = (a.dynCall_iiiiiiij = (b, c, g, d, f, h, k, l, p) =>
-        (qe = a.dynCall_iiiiiiij = P.oB)(b, c, g, d, f, h, k, l, p)),
+        (qe = a.dynCall_iiiiiiij = P.qB)(b, c, g, d, f, h, k, l, p)),
       re = (a.dynCall_iijiiiij = (b, c, g, d, f, h, k, l, p, t) =>
-        (re = a.dynCall_iijiiiij = P.pB)(b, c, g, d, f, h, k, l, p, t)),
+        (re = a.dynCall_iijiiiij = P.rB)(b, c, g, d, f, h, k, l, p, t)),
       se = (a.dynCall_jiji = (b, c, g, d, f) =>
-        (se = a.dynCall_jiji = P.qB)(b, c, g, d, f)),
+        (se = a.dynCall_jiji = P.sB)(b, c, g, d, f)),
       te = (a.dynCall_iiijj = (b, c, g, d, f, h, k) =>
-        (te = a.dynCall_iiijj = P.rB)(b, c, g, d, f, h, k)),
+        (te = a.dynCall_iiijj = P.tB)(b, c, g, d, f, h, k)),
       ue = (a.dynCall_viiiji = (b, c, g, d, f, h, k) =>
-        (ue = a.dynCall_viiiji = P.sB)(b, c, g, d, f, h, k)),
+        (ue = a.dynCall_viiiji = P.uB)(b, c, g, d, f, h, k)),
       ve = (a.dynCall_viijii = (b, c, g, d, f, h, k) =>
-        (ve = a.dynCall_viijii = P.tB)(b, c, g, d, f, h, k));
+        (ve = a.dynCall_viijii = P.vB)(b, c, g, d, f, h, k));
     function hd(b, c, g) {
       var d = Q();
       try {
@@ -8148,7 +8150,7 @@ var Binaryen = (() => {
       };
     };
     a.emitText = function (b) {
-      if ('object' === typeof b) return b.bD();
+      if ('object' === typeof b) return b.dD();
       const c = m;
       let g = '';
       m = (d) => {
