@@ -34,12 +34,13 @@
     "stylelint-config-standard": "^34.0.0",
     "stylelint-order": "^6.0.3",
     "vite": "^5.0.4",
-    "vite-plugin-pwa": "^0.17.2"
+    "vite-plugin-pwa": "^0.17.2",
+    "capture-website": "^4.0.0",
+    "terminal-image": "^2.0.0"
   },
   "dependencies": {
     "arraybuffer-isbinary": "^1.0.2",
     "browser-fs-access": "^0.35.0",
-    "capture-website": "^4.0.0",
     "pretty-bytes": "^6.1.1"
   },
   "eslintConfig": {
