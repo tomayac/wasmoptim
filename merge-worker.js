@@ -46,10 +46,7 @@ self.addEventListener('message', async (event) => {
     await Promise.all(promises);
 
     const fakeWasmFilesWithNames = wasmFiles
-      .map((wasmFile) => [
-        wasmFile.webkitRelativePath || wasmFile.relativePath || wasmFile.name,
-        wasmFile.name.replace(/\.wasm$/, ''),
-      ])
+      .map((wasmFile) => [wasmFile.name, wasmFile.name.replace(/\.wasm$/, '')])
       .flat();
     const timestamp = Date.now();
     const fakeArgs = [

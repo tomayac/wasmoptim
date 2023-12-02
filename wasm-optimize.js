@@ -166,7 +166,6 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
             file: wasmFileAfter,
             handle: wasmFileBefore.handle,
             savings: deltaSize,
-            lastModified: wasmFileAfter.lastModified,
           });
 
           const savingsArray = [];

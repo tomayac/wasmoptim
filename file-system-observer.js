@@ -45,7 +45,7 @@ const fileSystemChangeCallback = async (changes) => {
         wasmFilesBefore.push(...entries);
         const existingUuids = Array.from(uuidToFile.keys());
         const existingFilesLastModifieds = Array.from(uuidToFile.values()).map(
-          (value) => value.lastModified,
+          (value) => value.file.lastModified,
         );
         const promises = wasmFilesBefore.map(async (wasmFileBefore) => {
           return supportsGetUniqueId
