@@ -2,19 +2,19 @@ import { statsFiles, statsSize, statsPercent } from './dom.js';
 import prettyBytes from 'pretty-bytes';
 
 const STATS_ENDPOINT = 'https://wasmoptim-stats.glitch.me';
+const headers = {
+  'Content-Type': 'application/json',
+};
 
 const sendStats = async (beforeSize, afterSize) => {
-  const headers = {
-    'Content-Type': 'application/json',
-  };
-  const body = JSON.stringify({ beforeSize, afterSize });
   try {
-    const saveResponse = await fetch(`${STATS_ENDPOINT}/saved-bytes`, {
+    const body = JSON.stringify({ beforeSize, afterSize });
+    const response = await fetch(`${STATS_ENDPOINT}/saved-bytes`, {
       method: 'POST',
       headers,
       body,
     });
-    await saveResponse.json();
+    await response.json();
   } catch (error) {
     if (location.hostname === 'localhost') {
       return;
@@ -24,16 +24,11 @@ const sendStats = async (beforeSize, afterSize) => {
 };
 
 const getStats = async () => {
-  const headers = {
-    'Content-Type': 'application/json',
-  };
   try {
-    const statsResponse = await fetch(`${STATS_ENDPOINT}/saved-bytes`, {
-      method: 'GET',
+    const response = await fetch(`${STATS_ENDPOINT}/saved-bytes`, {
       headers,
     });
-
-    const stats = await statsResponse.json();
+    const stats = await response.json();
     statsFiles.textContent = `${new Intl.NumberFormat().format(
       stats.entryCount,
     )} ${stats.entryCount === 1 ? 'file' : 'files'}`;
@@ -46,6 +41,7 @@ const getStats = async () => {
     console.error(error.name, error.message);
   }
 };
+
 getStats();
 
 export { sendStats, getStats };

@@ -18,12 +18,12 @@ import { optimizeWasmFiles } from './wasm-optimize.js';
         keys.filter((key) => key.startsWith('media'))[0],
       );
       const wasmResponse = await mediaCache.match('shared-wasm-file');
-      await mediaCache.delete('shared-wasm-file');
       const wasmBlob = await wasmResponse.blob();
       const wasmFileBefore = new File([wasmBlob], fileName, {
         type: 'application/wasm',
       });
       wasmFileBefore.handle = false;
+      await mediaCache.delete('shared-wasm-file');
       await optimizeWasmFiles([wasmFileBefore]);
     } catch (error) {
       console.error(error.name, error.message);

@@ -1,4 +1,4 @@
-import { checkForAndPossiblyAskForPermissions } from './file-system.js';
+import { checkAndPossiblyAskForPermissions } from './file-system.js';
 import { overwriteCheckbox } from './dom.js';
 import { supported as supportsFileSystemAccess } from 'browser-fs-access';
 import { optimizeWasmFiles } from './wasm-optimize.js';
@@ -7,6 +7,7 @@ launchQueue.setConsumer(async (launchParams) => {
   if (!launchParams.files.length) {
     return;
   }
+
   const wasmFilesBefore = [];
   for (const handle of launchParams.files) {
     const file = await handle.getFile();
@@ -20,7 +21,7 @@ launchQueue.setConsumer(async (launchParams) => {
     wasmFilesBefore.push(file);
   }
   if (supportsFileSystemAccess && overwriteCheckbox.checked) {
-    await checkForAndPossiblyAskForPermissions(wasmFilesBefore);
+    await checkAndPossiblyAskForPermissions(wasmFilesBefore);
   }
   await optimizeWasmFiles(wasmFilesBefore);
 });

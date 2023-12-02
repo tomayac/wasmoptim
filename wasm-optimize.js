@@ -1,11 +1,8 @@
 import prettyBytes from 'pretty-bytes';
 import spinner from '/spinner.svg';
-import {
-  supportsFileHandleDragAndDrop,
-  supportsFileSystemObserver,
-} from './main.js';
+import { supportsFileSystemObserver } from './main.js';
 import { supported as supportsFileSystemAccess } from 'browser-fs-access';
-import { supportsGetUniqueId, uuidToFile } from './file-system.js';
+import { supportsGetUniqueId } from './main.js';
 import {
   statsTemplate,
   statsHeader,
@@ -19,31 +16,39 @@ import { MERGE_FILE_UUID } from './wasm-merge.js';
 import { limit } from './util.js';
 import { sendStats, getStats } from './stats.js';
 
+const uuidToFile = new Map();
+
 const supportsBadging = 'setAppBadge' in navigator;
 
 let currentlyProcessing = 0;
 
-const optimizeWasmFiles = async (wasmFilesBefore, isMergedFile = false) => {
+const optimizeWasmFiles = async (wasmFilesBefore) => {
   statsHeader.hidden = false;
   resultsArea.closest('table').hidden = false;
+
   const tasks = [];
 
   for (const wasmFileBefore of wasmFilesBefore) {
     const uniqueId =
       supportsGetUniqueId && wasmFileBefore.handle
         ? await wasmFileBefore.handle.getUniqueId()
-        : wasmFileBefore.name;
+        : wasmFileBefore.webkitRelativePath
+          ? wasmFileBefore.webkitRelativePath
+          : wasmFileBefore.relativePath
+            ? wasmFileBefore.relativePath
+            : wasmFileBefore.name;
+
     let fileNameLabel;
     let beforeSizeLabel;
     let afterSizeLabel;
     let deltaSizeLabel;
     let spinnerImg;
     let mergeCheckbox;
-    const existingFileName = resultsArea.querySelector(
+    const possiblyExistingFileName = resultsArea.querySelector(
       `[data-uuid="${uniqueId}"]`,
     );
-    if (existingFileName) {
-      const statsRow = existingFileName.closest('tr');
+    if (possiblyExistingFileName) {
+      const statsRow = possiblyExistingFileName.closest('tr');
       fileNameLabel = statsRow.querySelector('.file-name');
       beforeSizeLabel = statsRow.querySelector('.before-size');
       afterSizeLabel = statsRow.querySelector('.after-size');
@@ -67,16 +72,24 @@ const optimizeWasmFiles = async (wasmFilesBefore, isMergedFile = false) => {
         input.closest('td').style.display = twoFilesOrMore ? '' : 'none';
       });
     }
+
     spinnerImg.src = spinner;
+    fileNameLabel.querySelector('code').textContent = wasmFileBefore.name;
     deltaSizeLabel.textContent = 'Optimizing…';
+    beforeSizeLabel.textContent = prettyBytes(wasmFileBefore.size);
+
+    fileNameLabel.dataset.uuid = uniqueId;
+    mergeCheckbox.disabled = true;
+
     deltaSizeLabel.classList.remove('size-smaller');
     deltaSizeLabel.classList.remove('size-larger');
     deltaSizeLabel.classList.remove('error');
     afterSizeLabel.classList.remove('error');
-    fileNameLabel.querySelector('code').textContent = wasmFileBefore.name;
+    mergeCheckbox.classList.remove('error');
+    fileNameLabel.classList.remove('error');
+
     fileNameLabel.classList.add('processing');
     mergeCheckbox.classList.add('processing');
-    mergeCheckbox.disabled = true;
 
     if (supportsBadging) {
       try {
@@ -86,9 +99,6 @@ const optimizeWasmFiles = async (wasmFilesBefore, isMergedFile = false) => {
       }
     }
 
-    beforeSizeLabel.textContent = prettyBytes(wasmFileBefore.size);
-    fileNameLabel.dataset.uuid = uniqueId;
-
     tasks.push(() => {
       return new Promise((resolve, reject) => {
         const worker = new Worker(
@@ -96,10 +106,12 @@ const optimizeWasmFiles = async (wasmFilesBefore, isMergedFile = false) => {
         );
         worker.addEventListener('message', async (event) => {
           worker.terminate();
+
           spinnerImg.removeAttribute('src');
           fileNameLabel.classList.remove('processing');
           mergeCheckbox.classList.remove('processing');
           mergeCheckbox.disabled = false;
+
           if (supportsBadging) {
             --currentlyProcessing;
             try {
@@ -112,7 +124,9 @@ const optimizeWasmFiles = async (wasmFilesBefore, isMergedFile = false) => {
               console.error(error.name, error.message);
             }
           }
+
           const { wasmFileAfter, error } = event.data;
+
           if (error) {
             const errorObject = new Error(error);
             fileNameLabel.classList.add('error');
@@ -125,6 +139,7 @@ const optimizeWasmFiles = async (wasmFilesBefore, isMergedFile = false) => {
             reject(errorObject);
             return;
           }
+
           afterSizeLabel.textContent = prettyBytes(wasmFileAfter.size);
           const deltaSize = wasmFileAfter.size - wasmFileBefore.size;
           console.log(
@@ -146,12 +161,14 @@ const optimizeWasmFiles = async (wasmFilesBefore, isMergedFile = false) => {
                 ? 'size-smaller'
                 : 'size-larger',
           );
+
           uuidToFile.set(uniqueId, {
             file: wasmFileAfter,
             handle: wasmFileBefore.handle,
             savings: deltaSize,
             lastModified: wasmFileAfter.lastModified,
           });
+
           const savingsArray = [];
           for (const [uuid, { savings }] of uuidToFile.entries()) {
             if (uuid === MERGE_FILE_UUID) {
@@ -169,12 +186,13 @@ const optimizeWasmFiles = async (wasmFilesBefore, isMergedFile = false) => {
           )} in total and ${prettyBytes(
             Math.abs(averageSavings),
           )} per file on average`;
+
           if (deltaSize < 0) {
             sendStats(wasmFileBefore.size, wasmFileAfter.size).then(() =>
               getStats(),
             );
+
             if (
-              supportsFileHandleDragAndDrop &&
               supportsFileSystemAccess &&
               overwriteCheckbox.checked &&
               wasmFileBefore.handle
@@ -188,6 +206,7 @@ const optimizeWasmFiles = async (wasmFilesBefore, isMergedFile = false) => {
               }
             }
           }
+
           if (
             supportsFileSystemObserver &&
             observeFileChangesCheckbox.checked &&
@@ -206,6 +225,7 @@ const optimizeWasmFiles = async (wasmFilesBefore, isMergedFile = false) => {
       });
     });
   }
+
   await limit(
     tasks,
     'hardwareConcurrency' in navigator
@@ -214,4 +234,4 @@ const optimizeWasmFiles = async (wasmFilesBefore, isMergedFile = false) => {
   );
 };
 
-export { optimizeWasmFiles };
+export { optimizeWasmFiles, uuidToFile };

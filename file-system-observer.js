@@ -2,13 +2,12 @@ import {
   observeFileChangesCheckbox,
   observeDirectoryChangesCheckbox,
 } from './dom.js';
-import { optimizeWasmFiles } from './wasm-optimize.js';
+import { optimizeWasmFiles, uuidToFile } from './wasm-optimize.js';
 import {
   readDirectory,
-  uuidToFile,
-  checkForAndPossiblyAskForPermissions,
-  supportsGetUniqueId,
+  checkAndPossiblyAskForPermissions,
 } from './file-system.js';
+import { supportsGetUniqueId } from './main.js';
 import { debounce } from './util.js';
 import { MERGE_FILE_UUID } from './wasm-merge.js';
 
@@ -23,6 +22,7 @@ const fileSystemChangeCallback = async (changes) => {
       .join(', ')}`.trim(),
   );
   let wasmFilesBefore = [];
+
   for (const change of changes) {
     if (change.type === 'modified') {
       if (change.changedHandle instanceof FileSystemFileHandle) {
@@ -50,7 +50,11 @@ const fileSystemChangeCallback = async (changes) => {
         const promises = wasmFilesBefore.map(async (wasmFileBefore) => {
           return supportsGetUniqueId
             ? await wasmFileBefore.handle.getUniqueId()
-            : wasmFileBefore.name;
+            : wasmFileBefore.webkitRelativePath
+              ? wasmFileBefore.webkitRelativePath
+              : wasmFileBefore.relativePath
+                ? wasmFileBefore.relativePath
+                : wasmFileBefore.name;
         });
         const toBeCheckedUuids = await Promise.all(promises);
         wasmFilesBefore = wasmFilesBefore.filter((wasmFileBefore, i) => {
@@ -65,7 +69,7 @@ const fileSystemChangeCallback = async (changes) => {
     }
   }
   wasmFilesBefore = [...new Set(wasmFilesBefore)];
-  await checkForAndPossiblyAskForPermissions(wasmFilesBefore);
+  await checkAndPossiblyAskForPermissions(wasmFilesBefore);
   await optimizeWasmFiles(wasmFilesBefore);
 };
 
@@ -110,6 +114,7 @@ observeFileChangesCheckbox.addEventListener('change', () => {
     }
     return;
   }
+
   if (fileSystemChangeObserver) {
     for (const [uuid, { handle }] of uuidToFile.entries()) {
       if (uuid === MERGE_FILE_UUID || !handle) {

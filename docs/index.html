@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/wasmoptim/icon.png" />
-    <link rel="preload" href="data:application/javascript;base64,aW1wb3J0ICcuL3VpLmpzJzsKaW1wb3J0ICcuL3dhc20tb3B0aW1pemUuanMnOwppbXBvcnQgJy4vd2FzbS1tZXJnZS5qcyc7CmltcG9ydCAnLi9zdGF0cy5qcyc7Cgpjb25zdCBzdXBwb3J0c0ZpbGVIYW5kbGVEcmFnQW5kRHJvcCA9CiAgJ2dldEFzRmlsZVN5c3RlbUhhbmRsZScgaW4gRGF0YVRyYW5zZmVySXRlbS5wcm90b3R5cGU7CmNvbnN0IHN1cHBvcnRzRmlsZVN5c3RlbU9ic2VydmVyID0gJ0ZpbGVTeXN0ZW1PYnNlcnZlcicgaW4gd2luZG93OwoKKGFzeW5jICgpID0+IHsKICBpZiAoc3VwcG9ydHNGaWxlU3lzdGVtT2JzZXJ2ZXIpIHsKICAgIGltcG9ydCgnLi9maWxlLXN5c3RlbS1vYnNlcnZlci5qcycpOwogIH0KCiAgaWYgKCdsYXVuY2hRdWV1ZScgaW4gd2luZG93ICYmICdmaWxlcycgaW4gTGF1bmNoUGFyYW1zLnByb3RvdHlwZSkgewogICAgaW1wb3J0KCcuL2ZpbGUtaGFuZGxpbmcuanMnKTsKICB9CgogIGlmICgnc2VydmljZVdvcmtlcicgaW4gbmF2aWdhdG9yKSB7CiAgICBjb25zdCB7IHJlZ2lzdGVyU1cgfSA9IGF3YWl0IGltcG9ydCgndmlydHVhbDpwd2EtcmVnaXN0ZXInKTsKICAgIGNvbnN0IHVwZGF0ZVNXID0gcmVnaXN0ZXJTVyh7CiAgICAgIG9uT2ZmbGluZVJlYWR5KCkge30sCiAgICAgIG9uTmVlZFJlZnJlc2goKSB7CiAgICAgICAgbG9jYXRpb24ucmVsb2FkKCk7CiAgICAgIH0sCiAgICB9KTsKICAgIHVwZGF0ZVNXKCk7CgogICAgaWYgKCdzaGFyZScgaW4gbmF2aWdhdG9yKSB7CiAgICAgIGltcG9ydCgnLi93ZWItc2hhcmUtdGFyZ2V0LmpzJyk7CiAgICB9CiAgfQp9KSgpOwoKZXhwb3J0IHsgc3VwcG9ydHNGaWxlSGFuZGxlRHJhZ0FuZERyb3AsIHN1cHBvcnRzRmlsZVN5c3RlbU9ic2VydmVyIH07Cg==" as="script" crossorigin />
+    <link rel="preload" href="data:application/javascript;base64,aW1wb3J0ICcuL3VpLWV4YW1wbGVzLmpzJzsKaW1wb3J0ICcuL3VpLWxvYWQuanMnOwppbXBvcnQgJy4vdWktY2xpcGJvYXJkLmpzJzsKaW1wb3J0ICcuL3VpLWRyYWctZHJvcC5qcyc7CmltcG9ydCAnLi91aS1vcHRpbWl6ZS5qcyc7CmltcG9ydCAnLi91aS1tZXJnZS5qcyc7CmltcG9ydCAnLi91aS1vdGhlci5qcyc7CmltcG9ydCAnLi93YXNtLW9wdGltaXplLmpzJzsKaW1wb3J0ICcuL3dhc20tbWVyZ2UuanMnOwppbXBvcnQgJy4vc3RhdHMuanMnOwppbXBvcnQgeyBzdXBwb3J0ZWQgYXMgc3VwcG9ydHNGaWxlU3lzdGVtQWNjZXNzIH0gZnJvbSAnYnJvd3Nlci1mcy1hY2Nlc3MnOwoKY29uc3Qgc3VwcG9ydHNGaWxlSGFuZGxlRHJhZ0FuZERyb3AgPQogICdnZXRBc0ZpbGVTeXN0ZW1IYW5kbGUnIGluIERhdGFUcmFuc2Zlckl0ZW0ucHJvdG90eXBlOwpjb25zdCBzdXBwb3J0c0ZpbGVTeXN0ZW1PYnNlcnZlciA9ICdGaWxlU3lzdGVtT2JzZXJ2ZXInIGluIHdpbmRvdzsKY29uc3Qgc3VwcG9ydHNHZXRVbmlxdWVJZCA9CiAgJ0ZpbGVTeXN0ZW1IYW5kbGUnIGluIHdpbmRvdyAmJiAnZ2V0VW5pcXVlSWQnIGluIEZpbGVTeXN0ZW1IYW5kbGUucHJvdG90eXBlOwoKKGFzeW5jICgpID0+IHsKICBpZiAoc3VwcG9ydHNGaWxlU3lzdGVtQWNjZXNzKSB7CiAgICBpbXBvcnQoJy4vZmlsZS1zeXN0ZW0uanMnKTsKICB9CgogIGlmIChzdXBwb3J0c0ZpbGVTeXN0ZW1PYnNlcnZlcikgewogICAgaW1wb3J0KCcuL2ZpbGUtc3lzdGVtLW9ic2VydmVyLmpzJyk7CiAgfQoKICBpZiAoJ2xhdW5jaFF1ZXVlJyBpbiB3aW5kb3cgJiYgJ2ZpbGVzJyBpbiBMYXVuY2hQYXJhbXMucHJvdG90eXBlKSB7CiAgICBpbXBvcnQoJy4vZmlsZS1oYW5kbGluZy5qcycpOwogIH0KCiAgaWYgKCdzZXJ2aWNlV29ya2VyJyBpbiBuYXZpZ2F0b3IpIHsKICAgIGNvbnN0IHsgcmVnaXN0ZXJTVyB9ID0gYXdhaXQgaW1wb3J0KCd2aXJ0dWFsOnB3YS1yZWdpc3RlcicpOwogICAgY29uc3QgdXBkYXRlU1cgPSByZWdpc3RlclNXKHsKICAgICAgb25PZmZsaW5lUmVhZHkoKSB7CiAgICAgICAgY29uc29sZS5sb2coJ1JlYWR5IHRvIHdvcmsgb2ZmbGluZScpOwogICAgICB9LAogICAgICBvbk5lZWRSZWZyZXNoKCkgewogICAgICAgIGxvY2F0aW9uLnJlbG9hZCgpOwogICAgICB9LAogICAgfSk7CiAgICB1cGRhdGVTVygpOwoKICAgIGlmICgnc2hhcmUnIGluIG5hdmlnYXRvcikgewogICAgICBpbXBvcnQoJy4vd2ViLXNoYXJlLXRhcmdldC5qcycpOwogICAgfQogIH0KfSkoKTsKCmV4cG9ydCB7CiAgc3VwcG9ydHNGaWxlSGFuZGxlRHJhZ0FuZERyb3AsCiAgc3VwcG9ydHNGaWxlU3lzdGVtT2JzZXJ2ZXIsCiAgc3VwcG9ydHNHZXRVbmlxdWVJZCwKfTsK" as="script" crossorigin />
     <link
       rel="preload"
       href="/wasmoptim/assets/binaryen_wasm-oRR6JeeR.js"
@@ -69,7 +69,7 @@
     <meta name="twitter:url" content="https://tomayac.github.io/wasmoptim/" />
 
     <title>WasmOptim</title>
-    <script type="module" crossorigin src="/wasmoptim/assets/index-heTWHEn9.js"></script>
+    <script type="module" crossorigin src="/wasmoptim/assets/index-xR7Oa9Oq.js"></script>
     <link rel="stylesheet" crossorigin href="/wasmoptim/assets/index-SwBDhlE-.css">
   <link rel="manifest" href="/wasmoptim/manifest.webmanifest"></head>
   <body>
@@ -86,9 +86,9 @@
 
       <h1><a href=".">WasmOptim</a></h1>
 
-      <h2>Optimize your <code>.wasm</code> files for size.</h2>
+      <h2>Optimize your <code>.wasm</code> files for size</h2>
 
-      <div>
+      <section>
         <button id="load-wasm" type="button">
           Open <code>.wasm</code> file(s)
         </button>
@@ -102,23 +102,23 @@
           >
           or <kbd>Ctrl</kbd>+<kbd>v</kbd>
         </p>
-      </div>
+      </section>
 
-      <div id="drop-area">
+      <section id="drop-area">
         <p>
           …or drop <code>.wasm</code> file(s) or folder(s) with
           <code>.wasm</code> files anywhere on the page
         </p>
-      </div>
+      </section>
 
-      <div>
+      <section>
         <p>…or try one of the examples</p>
         <ul id="examples-list"></ul>
-      </div>
+      </section>
 
-      <div>
+      <section>
         <p>(Psst, <code>.wat</code> files work, too!)</p>
-      </div>
+      </section>
 
       <details>
         <summary>Settings</summary>

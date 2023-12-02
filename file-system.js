@@ -1,40 +1,37 @@
-const uuidToFile = new Map();
+import { MERGE_FILE_UUID } from './wasm-merge.js';
+import { overwriteCheckbox } from './dom.js';
+import { supported as supportsFileSystemAccess } from 'browser-fs-access';
 
-const supportsGetUniqueId =
-  'FileSystemHandle' in window && 'getUniqueId' in FileSystemHandle.prototype;
+if (supportsFileSystemAccess) {
+  overwriteCheckbox.parentNode.hidden = false;
+  overwriteCheckbox.addEventListener('change', async () => {
+    localStorage.setItem('overwrite-original-files', overwriteCheckbox.checked);
+    const files = [];
+    if (overwriteCheckbox.checked) {
+      for (const [uuid, { file }] of uuidToFile.entries()) {
+        if (uuid === MERGE_FILE_UUID || !file.handle) {
+          continue;
+        }
+        files.push(file);
+      }
+      await checkAndPossiblyAskForPermissions(files);
+    }
+  });
+}
 
-const checkForAndPossiblyAskForPermissions = async (wasmFilesBefore) => {
+if (localStorage.getItem('overwrite-original-files') !== 'true') {
+  overwriteCheckbox.checked = false;
+} else {
+  overwriteCheckbox.checked = true;
+}
+
+const checkAndPossiblyAskForPermissions = async (wasmFilesBefore) => {
   const promises = wasmFilesBefore.map((wasmFileBefore) =>
     wasmFileBefore.handle.requestPermission({
       mode: 'readwrite',
     }),
   );
   await Promise.all(promises);
-};
-
-const readDirectoryLegacy = async (directoryEntry) => {
-  const files = [];
-
-  const readEntries = async (directoryReader) => {
-    const entries = await new Promise((resolve) =>
-      directoryReader.readEntries(resolve),
-    );
-
-    await Promise.all(
-      entries.map(async (entry) => {
-        if (entry.isDirectory) {
-          await readEntries(entry.createReader());
-        } else {
-          files.push(entry);
-        }
-      }),
-    );
-  };
-
-  const directoryReader = directoryEntry.createReader();
-  await readEntries(directoryReader);
-
-  return files;
 };
 
 const readDirectory = async (
@@ -66,10 +63,4 @@ const readDirectory = async (
   return [...(await Promise.all(dirs)).flat(), ...(await Promise.all(files))];
 };
 
-export {
-  readDirectory,
-  readDirectoryLegacy,
-  checkForAndPossiblyAskForPermissions,
-  uuidToFile,
-  supportsGetUniqueId,
-};
+export { readDirectory, checkAndPossiblyAskForPermissions };

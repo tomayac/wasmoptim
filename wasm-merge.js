@@ -1,6 +1,6 @@
 import spinner from '/spinner.svg';
-import { mergeButton, mergeArea, resultsArea } from './dom';
-import { uuidToFile } from './file-system';
+import { mergeButton, mergeArea, resultsArea } from './dom.js';
+import { uuidToFile } from './wasm-optimize.js';
 import prettyBytes from 'pretty-bytes';
 
 const MERGE_FILE_UUID = crypto.randomUUID();
@@ -16,21 +16,25 @@ mergeButton.addEventListener('click', async () => {
   fileNameLabel.dataset.uuid = MERGE_FILE_UUID;
   mergeArea.hidden = false;
   spinnerImg.src = spinner;
-  afterSizeLabel.classList.remove('error');
   afterSizeLabel.textContent = '';
   deltaSizeLabel.textContent = 'Merging…';
   deltaSizeLabel.classList.remove('size-smaller');
   deltaSizeLabel.classList.remove('size-larger');
   deltaSizeLabel.classList.remove('error');
+  afterSizeLabel.classList.remove('error');
 
   const wasmFiles = [];
   const uuids = [];
-  resultsArea.querySelectorAll('input:checked').forEach((input) => {
-    const uuid = input.closest('tr').querySelector('[data-uuid]').dataset.uuid;
-    const { file } = uuidToFile.get(uuid);
-    wasmFiles.push(file);
-    uuids.push(uuid);
-  });
+  resultsArea
+    .querySelectorAll('input:checked:not(:disabled)')
+    .forEach((input) => {
+      const uuid = input.closest('tr').querySelector('[data-uuid]')
+        .dataset.uuid;
+      const { file } = uuidToFile.get(uuid);
+      wasmFiles.push(file);
+      uuids.push(uuid);
+    });
+
   const wasmFileSizes = wasmFiles.reduce(
     (acc, wasmFile) => acc + wasmFile.size,
     0,
@@ -46,9 +50,13 @@ mergeButton.addEventListener('click', async () => {
       deltaSizeLabel.textContent = 'Optimizing…';
       return;
     }
+
     worker.terminate();
-    const { file, error } = event.data;
+
     spinnerImg.removeAttribute('src');
+
+    const { file, error } = event.data;
+
     if (error) {
       const errorObject = new Error(error);
       afterSizeLabel.classList.add('error');
@@ -57,6 +65,7 @@ mergeButton.addEventListener('click', async () => {
       deltaSizeLabel.textContent = errorObject.message;
       return;
     }
+
     fileNameLabel.hidden = false;
     fileNameLabel.querySelector('code').textContent = file.name;
     afterSizeLabel.textContent = prettyBytes(file.size);
