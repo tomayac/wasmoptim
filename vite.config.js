@@ -26,7 +26,6 @@ export default defineConfig({
       },
     }),
   ],
-  base: '/wasmoptim/',
   build: {
     assetsInlineLimit: 0,
     outDir: 'docs',
