@@ -18,9 +18,7 @@ const observeDirectoryChangesCheckbox = document.querySelector(
 );
 const examplesList = document.querySelector('#examples-list');
 const metaThemeColor = document.querySelector('meta[name=theme-color]');
-const statsFiles = document.querySelector('#stats-files');
-const statsSize = document.querySelector('#stats-size');
-const statsPercent = document.querySelector('#stats-percent');
+const globalStats = document.querySelector('#global-stats');
 
 export {
   loadWasmButton,
@@ -39,7 +37,5 @@ export {
   observeDirectoryChangesCheckbox,
   examplesList,
   metaThemeColor,
-  statsFiles,
-  statsSize,
-  statsPercent,
+  globalStats,
 };

@@ -69,8 +69,8 @@
     <meta name="twitter:url" content="https://tomayac.github.io/wasmoptim/" />
 
     <title>WasmOptim</title>
-    <script type="module" crossorigin src="/assets/index-z6KrwQyJ.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-PevHlk2u.css">
+    <script type="module" crossorigin src="/assets/index-gSuK2z1G.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-ht4ICRrT.css">
   <link rel="manifest" href="/manifest.webmanifest"></head>
   <body>
     <div id="titlebar"></div>
@@ -147,44 +147,46 @@
         </div>
       </details>
 
-      <table hidden>
-        <thead id="stats-header" hidden>
-          <tr>
-            <th>
-              <label aria-label="Select all for merging"
-                ><input type="checkbox" id="select-all-checkbox" /> Select
-                all</label
-              >
-            </th>
-            <th>File</th>
-            <th>Before</th>
-            <th>After</th>
-            <th>Savings</th>
-          </tr>
-        </thead>
-        <tbody id="results-area"></tbody>
-        <tfoot>
-          <tr>
-            <th>
-              <button id="merge-button" type="button">Merge selected</button>
-            </th>
-            <th scope="row">Savings Statistics</th>
-            <td colspan="3" id="total-delta-size"></td>
-          </tr>
-          <tr id="merge-area" hidden>
-            <td></td>
-            <td>
-              <a hidden href="#" class="file-name"><code></code></a>
-            </td>
-            <td class="before-size"></td>
-            <td class="after-size"></td>
-            <td class="delta">
-              <span class="delta-size"></span>
-              <img class="spinner" alt="" />
-            </td>
-          </tr>
-        </tfoot>
-      </table>
+      <div class="table-wrapper">
+        <table hidden>
+          <thead id="stats-header" hidden>
+            <tr>
+              <th>
+                <label aria-label="Select all for merging"
+                  ><input type="checkbox" id="select-all-checkbox" /> Select
+                  all</label
+                >
+              </th>
+              <th>File</th>
+              <th>Before</th>
+              <th>After</th>
+              <th>Savings</th>
+            </tr>
+          </thead>
+          <tbody id="results-area"></tbody>
+          <tfoot>
+            <tr>
+              <th>
+                <button id="merge-button" type="button">Merge selected</button>
+              </th>
+              <th scope="row">Savings Statistics</th>
+              <td colspan="3" id="total-delta-size"></td>
+            </tr>
+            <tr id="merge-area" hidden>
+              <td></td>
+              <td>
+                <a hidden href="#" class="file-name"><code></code></a>
+              </td>
+              <td class="before-size"></td>
+              <td class="after-size"></td>
+              <td class="delta">
+                <span class="delta-size"></span>
+                <img class="spinner" alt="" />
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
     </main>
 
     <footer>
@@ -193,12 +195,11 @@
         <a href="https://github.com/WebAssembly/binaryen">binaryen</a>.
         Developed by <a href="https://blog.tomayac.com/">Thomas Steiner</a>.
       </p>
-      <p>
+      <p id="global-stats" hidden>
         WasmOptim has so far optimized
-        <span class="stats" id="stats-files">0 files</span>, saving a total of
-        <span class="stats" id="stats-size">0 bytes</span> with a file size
-        reduction of <span class="stats" id="stats-percent">0</span>% on
-        average.
+        <span class="global-stats-files"></span>, saving a total of
+        <span class="global-stats-size"></span> with a file size reduction of
+        <span class="global-stats-percent"></span>% on average.
       </p>
     </footer>
 

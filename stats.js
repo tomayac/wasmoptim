@@ -1,4 +1,4 @@
-import { statsFiles, statsSize, statsPercent } from './dom.js';
+import { globalStats } from './dom.js';
 import prettyBytes from 'pretty-bytes';
 
 const STATS_ENDPOINT = 'https://wasmoptim-stats.glitch.me';
@@ -29,10 +29,17 @@ const getStats = async () => {
       headers,
     });
     const stats = await response.json();
+    globalStats.hidden = false;
+    const statsFiles = globalStats.querySelector('.stats-files');
+    const statsSize = globalStats.querySelector('.stats-size');
+    const statsPercent = globalStats.querySelector('.stats-percent');
     statsFiles.textContent = `${new Intl.NumberFormat().format(
       stats.entryCount,
-    )} ${stats.entryCount === 1 ? 'file' : 'files'}`;
-    statsSize.textContent = prettyBytes(stats.totalBytesSaved);
+    )}&nbsp;${stats.entryCount === 1 ? 'file' : 'files'}`;
+    statsSize.textContent = prettyBytes(stats.totalBytesSaved).replace(
+      ' ',
+      ' ',
+    );
     statsPercent.textContent = Number(stats.averagePercentageSaved).toFixed(2);
   } catch (error) {
     if (location.hostname === 'localhost') {

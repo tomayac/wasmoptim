@@ -73,7 +73,7 @@ body {
 
 main {
   margin-block-start: max(0px, calc(env(titlebar-area-height, 0px) + 1rem));
-  max-width: 50rem;
+  max-width: min(50rem, 100%);
 }
 
 h1 {
@@ -136,6 +136,7 @@ button:hover {
 
 code {
   font-family: ui-monospace, monospace;
+  word-break: break-word;
 }
 
 a code {
@@ -186,6 +187,10 @@ summary::marker {
 
 summary:hover::marker {
   color: var(--deepest-pink);
+}
+
+.table-wrapper {
+  overflow-x: auto;
 }
 
 table {

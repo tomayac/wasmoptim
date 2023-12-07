@@ -76,7 +76,10 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
     spinnerImg.src = spinner;
     fileNameLabel.querySelector('code').textContent = wasmFileBefore.name;
     deltaSizeLabel.textContent = 'Optimizing…';
-    beforeSizeLabel.textContent = prettyBytes(wasmFileBefore.size);
+    beforeSizeLabel.textContent = prettyBytes(wasmFileBefore.size).replace(
+      ' ',
+      ' ',
+    );
 
     fileNameLabel.dataset.uuid = uniqueId;
     mergeCheckbox.disabled = true;
@@ -140,7 +143,10 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
             return;
           }
 
-          afterSizeLabel.textContent = prettyBytes(wasmFileAfter.size);
+          afterSizeLabel.textContent = prettyBytes(wasmFileAfter.size).replace(
+            ' ',
+            ' ',
+          );
           const deltaSize = wasmFileAfter.size - wasmFileBefore.size;
           console.log(
             `File ${wasmFileBefore.name} processed → Before: ${wasmFileBefore.size} After: ${wasmFileAfter.size} Delta: ${deltaSize}`,
@@ -153,7 +159,7 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
               ? 'no change'
               : `${deltaSizePercent}% ${
                   deltaSize < 0 ? 'smaller' : 'larger'
-                } (${prettyBytes(Math.abs(deltaSize))})`;
+                } (${prettyBytes(Math.abs(deltaSize)).replace(' ', ' ')})`;
           deltaSizeLabel.classList.add(
             Number(deltaSizePercent) === 0
               ? 'size-larger'
@@ -182,9 +188,9 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
           const averageSavings = totalSavings / uuidToFile.size;
           totalSavingsSize.textContent = `Saved ${prettyBytes(
             Math.abs(totalSavings),
-          )} in total and ${prettyBytes(
+          ).replace(' ', ' ')} in total and ${prettyBytes(
             Math.abs(averageSavings),
-          )} per file on average`;
+          ).replace(' ', ' ')} per file on average`;
 
           if (deltaSize < 0) {
             sendStats(wasmFileBefore.size, wasmFileAfter.size).then(() =>

@@ -39,7 +39,12 @@ mergeButton.addEventListener('click', async () => {
     (acc, wasmFile) => acc + wasmFile.size,
     0,
   );
-  beforeSizeLabel.textContent = `Σ ${prettyBytes(wasmFileSizes)}`;
+
+  // eslint-disable-next-line no-irregular-whitespace
+  beforeSizeLabel.textContent = `Σ ${prettyBytes(wasmFileSizes).replace(
+    ' ',
+    ' ',
+  )}`;
 
   const worker = new Worker(new URL('./merge-worker.js', import.meta.url), {
     type: 'module',
@@ -68,7 +73,7 @@ mergeButton.addEventListener('click', async () => {
 
     fileNameLabel.hidden = false;
     fileNameLabel.querySelector('code').textContent = file.name;
-    afterSizeLabel.textContent = prettyBytes(file.size);
+    afterSizeLabel.textContent = prettyBytes(file.size).replace(' ', ' ');
     const deltaSize = file.size - wasmFileSizes;
     console.log(
       `Files ${new Intl.ListFormat('en', {
@@ -88,7 +93,7 @@ mergeButton.addEventListener('click', async () => {
         ? 'no change'
         : `${deltaSizePercent}% ${
             deltaSize < 0 ? 'smaller' : 'larger'
-          } (${prettyBytes(Math.abs(deltaSize))})`;
+          } (${prettyBytes(Math.abs(deltaSize)).replace(' ', ' ')})`;
     deltaSizeLabel.classList.add(
       Number(deltaSizePercent) === 0
         ? 'size-larger'
