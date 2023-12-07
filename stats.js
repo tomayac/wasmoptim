@@ -35,7 +35,8 @@ const getStats = async () => {
     const statsPercent = globalStats.querySelector('.global-stats-percent');
     statsFiles.textContent = `${new Intl.NumberFormat().format(
       stats.entryCount,
-    )}&nbsp;${stats.entryCount === 1 ? 'file' : 'files'}`;
+      // eslint-disable-next-line no-irregular-whitespace
+    )} ${stats.entryCount === 1 ? 'file' : 'files'}`;
     statsSize.textContent = prettyBytes(stats.totalBytesSaved).replace(
       ' ',
       ' ',
