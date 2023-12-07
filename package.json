@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npm run dev",
     "dev": "vite",
-    "build": "vite build && touch docs/.nojekyll && git add docs/ -f",
+    "build": "vite build && touch docs/.nojekyll && shx echo \"wasmoptim.com\" > docs/CNAME && git add docs/ -f",
     "install": "napa",
     "binaryen": "shx cp -r node_modules/googletest node_modules/binaryen/third_party && cd node_modules/binaryen && shx rm -f bin/* && emcmake cmake -DBUILD_FOR_BROWSER=ON . && emmake make -j2 binaryen_wasm && emmake make -j2 wasm-merge && shx cp bin/*.wasm ../../third-party && shx cp bin/*.js ../../third-party",
     "preview": "vite preview",
