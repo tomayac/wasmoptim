@@ -30,9 +30,9 @@ const getStats = async () => {
     });
     const stats = await response.json();
     globalStats.hidden = false;
-    const statsFiles = globalStats.querySelector('.stats-files');
-    const statsSize = globalStats.querySelector('.stats-size');
-    const statsPercent = globalStats.querySelector('.stats-percent');
+    const statsFiles = globalStats.querySelector('.global-stats-files');
+    const statsSize = globalStats.querySelector('.global-stats-size');
+    const statsPercent = globalStats.querySelector('.global-stats-percent');
     statsFiles.textContent = `${new Intl.NumberFormat().format(
       stats.entryCount,
     )}&nbsp;${stats.entryCount === 1 ? 'file' : 'files'}`;
