@@ -6,8 +6,8 @@ import {
 import {
   supportsFileHandleDragAndDrop,
   supportsFileSystemObserver,
+  supportsFileSystemAccess,
 } from './main.js';
-import { supported as supportsFileSystemAccess } from 'browser-fs-access';
 import { optimizeWasmFiles } from './wasm-optimize.js';
 
 let readDirectory;
@@ -21,6 +21,7 @@ let readDirectory;
 
 document.addEventListener('dragover', (e) => {
   e.preventDefault();
+  dropArea.classList.add('drag-hover');
 });
 
 document.addEventListener('dragenter', (e) => {
@@ -30,9 +31,6 @@ document.addEventListener('dragenter', (e) => {
 
 document.addEventListener('dragleave', (e) => {
   e.preventDefault();
-  if (e.target !== document.documentElement) {
-    return;
-  }
   dropArea.classList.remove('drag-hover');
 });
 
@@ -125,6 +123,9 @@ document.addEventListener('drop', async (e) => {
       './file-system.js'
     );
     await checkAndPossiblyAskForPermissions(wasmFilesBefore);
+  }
+  if (wasmFilesBefore.length === 0) {
+    return;
   }
   await optimizeWasmFiles(wasmFilesBefore);
 });

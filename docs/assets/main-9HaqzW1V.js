@@ -15,6 +15,7 @@ const supportsFileHandleDragAndDrop =
 const supportsFileSystemObserver = 'FileSystemObserver' in window;
 const supportsGetUniqueId =
   'FileSystemHandle' in window && 'getUniqueId' in FileSystemHandle.prototype;
+const supportsBadging = 'setAppBadge' in navigator;
 
 (async () => {
   if (supportsFileSystemAccess) {
@@ -49,6 +50,8 @@ const supportsGetUniqueId =
 
 export {
   supportsFileHandleDragAndDrop,
+  supportsFileSystemAccess,
   supportsFileSystemObserver,
   supportsGetUniqueId,
+  supportsBadging,
 };

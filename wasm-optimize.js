@@ -1,8 +1,11 @@
 import prettyBytes from 'pretty-bytes';
 import spinner from '/spinner.svg';
 import { supportsFileSystemObserver } from './main.js';
-import { supported as supportsFileSystemAccess } from 'browser-fs-access';
-import { supportsGetUniqueId } from './main.js';
+import {
+  supportsGetUniqueId,
+  supportsBadging,
+  supportsFileSystemAccess,
+} from './main.js';
 import {
   statsTemplate,
   statsHeader,
@@ -17,8 +20,6 @@ import { limit } from './util.js';
 import { sendStats, getStats } from './stats.js';
 
 const uuidToFile = new Map();
-
-const supportsBadging = 'setAppBadge' in navigator;
 
 let currentlyProcessing = 0;
 

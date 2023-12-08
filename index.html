@@ -35,9 +35,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" />
     <meta name="color-scheme" content="dark light" />
+    <meta name="description" content="Optimize .wasm files for size." />
 
     <meta name="og:title" content="WasmOptim" />
-    <meta name="og:description" content="Optimize your .wasm files for size." />
+    <meta name="og:description" content="Optimize .wasm files for size." />
     <meta
       name="og:image"
       content="https://tomayac.github.io/wasmoptim/icon.png"
@@ -55,10 +56,7 @@
     <meta name="twitter:site" content="@tomayac" />
     <meta name="twitter:creator" content="@tomayac" />
     <meta name="twitter:title" content="WasmOptim" />
-    <meta
-      name="twitter:description"
-      content="Optimize your .wasm files for size."
-    />
+    <meta name="twitter:description" content="Optimize .wasm files for size." />
     <meta
       name="twitter:image"
       content="https://tomayac.github.io/wasmoptim/icon.png"
@@ -75,17 +73,19 @@
     <div id="titlebar"></div>
 
     <main>
-      <img
-        src="/icon.png"
-        alt="WasmOptim logo consisting of a clamp that compresses the WebAssembly icon."
-        class="logo"
-        width="160"
-        height="160"
-      />
+      <a href=".">
+        <img
+          src="/icon.png"
+          alt="WasmOptim logo consisting of a clamp that compresses the WebAssembly icon."
+          class="logo"
+          width="80"
+          height="80"
+        />
+      </a>
 
       <h1><a href=".">WasmOptim</a></h1>
 
-      <h2>Optimize your <code>.wasm</code> files for size</h2>
+      <h2>Optimize <code>.wasm</code> files for size</h2>
 
       <section>
         <button id="load-wasm" type="button">
@@ -96,10 +96,9 @@
           Open directory with <code>.wasm</code> files
         </button>
         <p>
-          …or paste <code>.wasm</code> file(s) by pressing <kbd>Cmd ⌘</kbd>+<kbd
-            >v</kbd
-          >
-          or <kbd>Ctrl</kbd>+<kbd>v</kbd>
+          …or paste <code>.wasm</code> file(s) by pressing
+          <nobr><kbd>Cmd ⌘</kbd>+<kbd>v</kbd></nobr> or
+          <nobr><kbd>Ctrl</kbd>+<kbd>v</kbd></nobr>
         </p>
       </section>
 

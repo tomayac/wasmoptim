@@ -73,11 +73,16 @@ body {
 
 main {
   margin-block-start: max(0px, calc(env(titlebar-area-height, 0px) + 1rem));
-  max-width: min(50rem, 100%);
+}
+
+main,
+footer {
+  width: min(50rem, 100%);
 }
 
 h1 {
   font-size: 1.5rem;
+  margin-block-start: 0;
 }
 
 h1 > a {
@@ -88,19 +93,30 @@ h1 > a {
 h2 {
   font-size: 1.25rem;
   text-wrap: pretty;
+  margin-block-start: 0;
+}
+
+@media screen and (width <= 375px) {
+  h1 {
+    font-size: 1.4rem;
+  }
+
+  h2 {
+    font-size: 1.1rem;
+  }
 }
 
 .logo {
-  float: right;
+  float: left;
+  margin-inline-end: 0.5rem;
+  margin-block-start: 0.25rem;
 }
 
 footer {
   margin-block-start: 2rem;
-  border-top: solid 0.1rem var(--blue);
+  border-top: solid 0.25rem var(--blue);
   font-size: 0.75rem;
   padding: 0.5rem;
-  width: 100%;
-  max-width: 50rem;
 }
 
 footer a {
