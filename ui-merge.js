@@ -9,16 +9,18 @@ import { fileSave } from 'browser-fs-access';
 
 const showOrHideMergeButton = () => {
   const numInputsChecked = resultsArea.querySelectorAll(
-    'input:checked:not(:disabled)',
+    'input.merge-checkbox:checked:not(:disabled)',
   ).length;
   mergeButton.style.display = numInputsChecked < 2 ? 'none' : '';
 };
 showOrHideMergeButton();
 
 selectAllCheckbox.addEventListener('click', () => {
-  resultsArea.querySelectorAll('input:not(:disabled)').forEach((input) => {
-    input.checked = selectAllCheckbox.checked;
-  });
+  resultsArea
+    .querySelectorAll('input.merge-checkbox:not(:disabled)')
+    .forEach((input) => {
+      input.checked = selectAllCheckbox.checked;
+    });
   showOrHideMergeButton();
 });
 

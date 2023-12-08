@@ -160,6 +160,7 @@
               <th>Before</th>
               <th>After</th>
               <th>Savings</th>
+              <th>Pin</th>
             </tr>
           </thead>
           <tbody id="results-area"></tbody>
@@ -172,8 +173,7 @@
               <td colspan="3" id="total-delta-size"></td>
             </tr>
             <tr id="merge-area" hidden>
-              <td></td>
-              <td>
+              <td colspan="2">
                 <a hidden href="#" class="file-name"><code></code></a>
               </td>
               <td class="before-size"></td>
@@ -217,6 +217,11 @@
         <td class="delta">
           <span class="delta-size"></span>
           <img class="spinner" alt="" />
+        </td>
+        <td>
+          <label aria-label="Pin file"
+            ><input class="pin-checkbox" type="checkbox"
+          /></label>
         </td>
       </tr>
     </template>

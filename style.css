@@ -256,11 +256,8 @@ tfoot tr:nth-child(even) {
   background-color: var(--table-row-odd-background-color);
 }
 
-tfoot tr:nth-child(even) td:first-child {
-  background-color: var(--canvas-color);
-}
-
-tbody tr:hover {
+tbody tr:hover,
+tfoot tr:not(:first-of-type):hover {
   outline: var(--blue) solid 0.1rem;
   outline-offset: -0.1rem;
 }

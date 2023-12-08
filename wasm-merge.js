@@ -26,7 +26,7 @@ mergeButton.addEventListener('click', async () => {
   const wasmFiles = [];
   const uuids = [];
   resultsArea
-    .querySelectorAll('input:checked:not(:disabled)')
+    .querySelectorAll('input.merge-checkbox:checked:not(:disabled)')
     .forEach((input) => {
       const uuid = input.closest('tr').querySelector('[data-uuid]')
         .dataset.uuid;

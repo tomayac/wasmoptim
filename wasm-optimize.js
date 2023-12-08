@@ -68,7 +68,7 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
       selectAllCheckbox.closest('th').style.display = twoFilesOrMore
         ? ''
         : 'none';
-      resultsArea.querySelectorAll('input').forEach((input) => {
+      resultsArea.querySelectorAll('input.merge-checkbox').forEach((input) => {
         input.closest('td').style.display = twoFilesOrMore ? '' : 'none';
       });
     }

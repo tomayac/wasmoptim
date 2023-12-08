@@ -69,8 +69,8 @@
     <meta name="twitter:url" content="https://tomayac.github.io/wasmoptim/" />
 
     <title>WasmOptim</title>
-    <script type="module" crossorigin src="/assets/index-0uOc0ZdF.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-ht4ICRrT.css">
+    <script type="module" crossorigin src="/assets/index-Q8cJoy3P.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-TZXhtMxH.css">
   <link rel="manifest" href="/manifest.webmanifest"></head>
   <body>
     <div id="titlebar"></div>
@@ -161,6 +161,7 @@
               <th>Before</th>
               <th>After</th>
               <th>Savings</th>
+              <th>Pin</th>
             </tr>
           </thead>
           <tbody id="results-area"></tbody>
@@ -173,8 +174,7 @@
               <td colspan="3" id="total-delta-size"></td>
             </tr>
             <tr id="merge-area" hidden>
-              <td></td>
-              <td>
+              <td colspan="2">
                 <a hidden href="#" class="file-name"><code></code></a>
               </td>
               <td class="before-size"></td>
@@ -218,6 +218,11 @@
         <td class="delta">
           <span class="delta-size"></span>
           <img class="spinner" alt="" />
+        </td>
+        <td>
+          <label aria-label="Pin file"
+            ><input class="pin-checkbox" type="checkbox"
+          /></label>
         </td>
       </tr>
     </template>
