@@ -159,7 +159,7 @@
               <th>Before</th>
               <th>After</th>
               <th>Savings</th>
-              <th>Pin</th>
+              <th hidden>Pin</th>
             </tr>
           </thead>
           <tbody id="results-area"></tbody>
@@ -169,15 +169,15 @@
                 <button id="merge-button" type="button">Merge selected</button>
               </th>
               <th scope="row">Savings Statistics</th>
-              <td colspan="4" id="total-delta-size"></td>
+              <td colspan="3" id="total-delta-size"></td>
             </tr>
             <tr id="merge-area" hidden>
               <td colspan="2">
-                <a hidden href="#" class="file-name"><code></code></a>
+                <a href="#" class="file-name"><code></code></a>
               </td>
               <td class="before-size"></td>
               <td class="after-size"></td>
-              <td colspan="2" class="delta">
+              <td colspan="1" class="delta">
                 <span class="delta-size"></span>
                 <img class="spinner" alt="" />
               </td>
@@ -190,8 +190,10 @@
     <footer>
       <p>
         Powered by
-        <a href="https://github.com/WebAssembly/binaryen">binaryen</a>.
-        Developed by <a href="https://blog.tomayac.com/">Thomas Steiner</a>.
+        <a href="https://github.com/WebAssembly/binaryen" target="_blank"
+          >binaryen</a
+        >. Developed by
+        <a href="https://blog.tomayac.com/" target="_blank">Thomas Steiner</a>.
       </p>
       <p id="global-stats" hidden>
         WasmOptim has so far optimized
@@ -217,7 +219,7 @@
           <span class="delta-size"></span>
           <img class="spinner" alt="" />
         </td>
-        <td>
+        <td hidden>
           <label aria-label="Pin file"
             ><input class="pin-checkbox" type="checkbox"
           /></label>

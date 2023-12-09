@@ -1,3 +1,4 @@
+import { supported as supportsFileSystemAccess } from 'browser-fs-access';
 import './ui-examples.js';
 import './ui-load.js';
 import './ui-clipboard.js';
@@ -8,7 +9,6 @@ import './ui-other.js';
 import './wasm-optimize.js';
 import './wasm-merge.js';
 import './stats.js';
-import { supported as supportsFileSystemAccess } from 'browser-fs-access';
 
 const supportsFileHandleDragAndDrop =
   'getAsFileSystemHandle' in DataTransferItem.prototype;

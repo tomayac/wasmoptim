@@ -11,8 +11,10 @@ const limit = async (tasks, concurrency) => {
     }
   };
 
-  const workers = new Array(concurrency).fill(tasks.entries()).map(runTasks);
-  await Promise.allSettled(workers);
+  const taskRunners = new Array(concurrency)
+    .fill(tasks.entries())
+    .map(runTasks);
+  await Promise.allSettled(taskRunners);
 
   return results;
 };

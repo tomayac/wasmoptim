@@ -1,7 +1,7 @@
 import prettyBytes from 'pretty-bytes';
 import spinner from '/spinner.svg';
-import { supportsFileSystemObserver } from './main.js';
 import {
+  supportsFileSystemObserver,
   supportsGetUniqueId,
   supportsBadging,
   supportsFileSystemAccess,
@@ -20,11 +20,20 @@ import { limit } from './util.js';
 import { sendStats, getStats } from './stats.js';
 
 const uuidToFile = new Map();
+if (supportsFileSystemAccess) {
+  totalSavingsSize.colSpan += 1;
+}
 
 let currentlyProcessing = 0;
 
 const optimizeWasmFiles = async (wasmFilesBefore) => {
   statsHeader.hidden = false;
+  if (supportsFileSystemAccess) {
+    const th = statsHeader.querySelector('th[hidden]');
+    if (th) {
+      th.hidden = false;
+    }
+  }
   resultsArea.closest('table').hidden = false;
 
   const tasks = [];
@@ -45,6 +54,7 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
     let deltaSizeLabel;
     let spinnerImg;
     let mergeCheckbox;
+    let pinCheckbox;
     const possiblyExistingFileName = resultsArea.querySelector(
       `[data-uuid="${uniqueId}"]`,
     );
@@ -56,6 +66,7 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
       deltaSizeLabel = statsRow.querySelector('.delta-size');
       spinnerImg = statsRow.querySelector('.spinner');
       mergeCheckbox = statsRow.querySelector('.merge-checkbox');
+      pinCheckbox = statsRow.querySelector('.pin-checkbox');
     } else {
       const stats = statsTemplate.content.cloneNode(true);
       fileNameLabel = stats.querySelector('.file-name');
@@ -64,6 +75,8 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
       deltaSizeLabel = stats.querySelector('.delta-size');
       spinnerImg = stats.querySelector('.spinner');
       mergeCheckbox = stats.querySelector('.merge-checkbox');
+      pinCheckbox = stats.querySelector('.pin-checkbox');
+      pinCheckbox.closest('td').hidden = !supportsFileSystemAccess;
       resultsArea.append(stats);
       const twoFilesOrMore = resultsArea.querySelectorAll('tr').length > 1;
       selectAllCheckbox.closest('th').style.display = twoFilesOrMore
@@ -105,11 +118,11 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
 
     tasks.push(() => {
       return new Promise((resolve, reject) => {
-        const worker = new Worker(
+        const binaryenWorker = new Worker(
           new URL('./binaryen-worker.js', import.meta.url),
         );
-        worker.addEventListener('message', async (event) => {
-          worker.terminate();
+        binaryenWorker.addEventListener('message', async (event) => {
+          binaryenWorker.terminate();
 
           spinnerImg.removeAttribute('src');
           fileNameLabel.classList.remove('processing');
@@ -227,7 +240,7 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
           }
           resolve();
         });
-        worker.postMessage({ wasmFileBefore });
+        binaryenWorker.postMessage({ wasmFileBefore });
       });
     });
   }

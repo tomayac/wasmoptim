@@ -1,9 +1,15 @@
 import spinner from '/spinner.svg';
 import { mergeButton, mergeArea, resultsArea } from './dom.js';
+import { supportsFileSystemAccess } from './main.js';
 import { uuidToFile } from './wasm-optimize.js';
 import prettyBytes from 'pretty-bytes';
 
 const MERGE_FILE_UUID = crypto.randomUUID();
+const MERGED_FILE_NAME = 'merged.wasm';
+
+if (supportsFileSystemAccess) {
+  mergeArea.querySelector('.delta').colSpan += 1;
+}
 
 mergeButton.addEventListener('click', async () => {
   const fileNameLabel = mergeArea.querySelector('.file-name');
@@ -12,14 +18,16 @@ mergeButton.addEventListener('click', async () => {
   const deltaSizeLabel = mergeArea.querySelector('.delta-size');
   const spinnerImg = mergeArea.querySelector('.spinner');
 
-  fileNameLabel.hidden = true;
+  fileNameLabel.querySelector('code').textContent = MERGED_FILE_NAME;
   fileNameLabel.dataset.uuid = MERGE_FILE_UUID;
+  fileNameLabel.classList.add('processing');
   mergeArea.hidden = false;
   spinnerImg.src = spinner;
   afterSizeLabel.textContent = '';
   deltaSizeLabel.textContent = 'Merging…';
   deltaSizeLabel.classList.remove('size-smaller');
   deltaSizeLabel.classList.remove('size-larger');
+  fileNameLabel.classList.remove('error');
   deltaSizeLabel.classList.remove('error');
   afterSizeLabel.classList.remove('error');
 
@@ -46,19 +54,23 @@ mergeButton.addEventListener('click', async () => {
     ' ',
   )}`;
 
-  const worker = new Worker(new URL('./merge-worker.js', import.meta.url), {
-    type: 'module',
-  });
+  const mergeWorker = new Worker(
+    new URL('./merge-worker.js', import.meta.url),
+    {
+      type: 'module',
+    },
+  );
 
-  worker.addEventListener('message', async (event) => {
+  mergeWorker.addEventListener('message', async (event) => {
     if (event.data.status) {
       deltaSizeLabel.textContent = 'Optimizing…';
       return;
     }
 
-    worker.terminate();
+    mergeWorker.terminate();
 
     spinnerImg.removeAttribute('src');
+    fileNameLabel.classList.remove('processing');
 
     const { file, error } = event.data;
 
@@ -71,8 +83,6 @@ mergeButton.addEventListener('click', async () => {
       return;
     }
 
-    fileNameLabel.hidden = false;
-    fileNameLabel.querySelector('code').textContent = file.name;
     afterSizeLabel.textContent = prettyBytes(file.size).replace(' ', ' ');
     const deltaSize = file.size - wasmFileSizes;
     console.log(
@@ -104,7 +114,7 @@ mergeButton.addEventListener('click', async () => {
     uuidToFile.set(MERGE_FILE_UUID, { file });
   });
 
-  worker.postMessage({ wasmFiles, uuids });
+  mergeWorker.postMessage({ wasmFiles, uuids, fileName: MERGED_FILE_NAME });
 });
 
 export { MERGE_FILE_UUID };

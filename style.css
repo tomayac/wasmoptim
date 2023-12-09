@@ -344,7 +344,8 @@ li {
   cursor: not-allowed;
 }
 
-#results-area .processing:hover {
+#results-area .processing:hover,
+#merge-area .processing:hover {
   cursor: wait;
 }
 
