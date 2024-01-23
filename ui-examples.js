@@ -7,8 +7,9 @@ const EXAMPLE_URLS = [
   'https://unpkg.com/zxing-wasm@1.0.0-rc.4/dist/full/zxing_full.wasm',
   'https://unpkg.com/@sqlite.org/sqlite-wasm@3.44.0-build1/sqlite-wasm/jswasm/sqlite3.wasm',
   // 'https://unpkg.com/@tensorflow/tfjs-backend-wasm@4.13.0/wasm-out/tfjs-backend-wasm.wasm',
-  '/third-party/wasm-opt.wasm',
-  '/third-party/wasm-merge.wasm',
+  ...Array.from(
+    document.head.querySelectorAll('link[rel=preload][href$=".wasm"]'),
+  ).map((link) => link.href),
 ];
 
 const SEMVER_REGEX =
