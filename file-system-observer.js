@@ -2,7 +2,7 @@ import {
   observeFileChangesCheckbox,
   observeDirectoryChangesCheckbox,
 } from './dom.js';
-import { optimizeWasmFiles, uuidToFile } from './wasm-optimize.js';
+import { optimizeWasmFiles, uuidToFile } from './wasm-opt.js';
 import {
   readDirectory,
   checkAndPossiblyAskForPermissions,

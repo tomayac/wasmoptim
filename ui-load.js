@@ -1,4 +1,4 @@
-import { optimizeWasmFiles } from './wasm-optimize.js';
+import { optimizeWasmFiles } from './wasm-opt.js';
 import {
   fileOpen,
   directoryOpen,

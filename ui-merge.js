@@ -4,7 +4,7 @@ import {
   resultsArea,
   selectAllCheckbox,
 } from './dom.js';
-import { uuidToFile } from './wasm-optimize.js';
+import { uuidToFile } from './wasm-opt.js';
 import { fileSave } from 'browser-fs-access';
 
 const showOrHideMergeButton = () => {

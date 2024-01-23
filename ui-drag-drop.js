@@ -8,7 +8,7 @@ import {
   supportsFileSystemObserver,
   supportsFileSystemAccess,
 } from './main.js';
-import { optimizeWasmFiles } from './wasm-optimize.js';
+import { optimizeWasmFiles } from './wasm-opt.js';
 
 let readDirectory;
 (async () => {

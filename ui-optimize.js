@@ -1,5 +1,5 @@
 import { fileSave } from 'browser-fs-access';
-import { uuidToFile } from './wasm-optimize.js';
+import { uuidToFile } from './wasm-opt.js';
 import { showOrHideMergeButton } from './ui-merge.js';
 import { resultsArea, selectAllCheckbox } from './dom.js';
 

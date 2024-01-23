@@ -1,12 +1,14 @@
 import spinner from '/spinner.svg';
 import { examplesList, exampleTemplate } from './dom.js';
-import { optimizeWasmFiles } from './wasm-optimize.js';
+import { optimizeWasmFiles } from './wasm-opt.js';
 
 const EXAMPLE_URLS = [
-  'https://unpkg.com/canvaskit-wasm@0.39.1/bin/canvaskit.wasm',
+  // 'https://unpkg.com/canvaskit-wasm@0.39.1/bin/canvaskit.wasm',
   'https://unpkg.com/zxing-wasm@1.0.0-rc.4/dist/full/zxing_full.wasm',
   'https://unpkg.com/@sqlite.org/sqlite-wasm@3.44.0-build1/sqlite-wasm/jswasm/sqlite3.wasm',
-  'https://unpkg.com/@tensorflow/tfjs-backend-wasm@4.13.0/wasm-out/tfjs-backend-wasm.wasm',
+  // 'https://unpkg.com/@tensorflow/tfjs-backend-wasm@4.13.0/wasm-out/tfjs-backend-wasm.wasm',
+  '/third-party/wasm-opt.wasm',
+  '/third-party/wasm-merge.wasm',
 ];
 
 const SEMVER_REGEX =

@@ -1,4 +1,4 @@
-import { optimizeWasmFiles } from './wasm-optimize.js';
+import { optimizeWasmFiles } from './wasm-opt.js';
 
 document.addEventListener('paste', async (e) => {
   try {

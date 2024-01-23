@@ -1,7 +1,7 @@
 import { checkAndPossiblyAskForPermissions } from './file-system.js';
 import { overwriteCheckbox } from './dom.js';
 import { supportsFileSystemAccess } from './main.js';
-import { optimizeWasmFiles } from './wasm-optimize.js';
+import { optimizeWasmFiles } from './wasm-opt.js';
 
 launchQueue.setConsumer(async (launchParams) => {
   if (!launchParams.files.length) {

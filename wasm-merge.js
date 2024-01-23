@@ -1,7 +1,7 @@
 import spinner from '/spinner.svg';
 import { mergeButton, mergeArea, resultsArea } from './dom.js';
 import { supportsFileSystemAccess } from './main.js';
-import { uuidToFile } from './wasm-optimize.js';
+import { uuidToFile } from './wasm-opt.js';
 import prettyBytes from 'pretty-bytes';
 
 const MERGE_FILE_UUID = crypto.randomUUID();
@@ -54,20 +54,20 @@ mergeButton.addEventListener('click', async () => {
     ' ',
   )}`;
 
-  const mergeWorker = new Worker(
-    new URL('./merge-worker.js', import.meta.url),
+  const wasmMergeWorker = new Worker(
+    new URL('./wasm-merge-worker.js', import.meta.url),
     {
       type: 'module',
     },
   );
 
-  mergeWorker.addEventListener('message', async (event) => {
+  wasmMergeWorker.addEventListener('message', async (event) => {
     if (event.data.status) {
       deltaSizeLabel.textContent = 'Optimizing…';
       return;
     }
 
-    mergeWorker.terminate();
+    wasmMergeWorker.terminate();
 
     spinnerImg.removeAttribute('src');
     fileNameLabel.classList.remove('processing');
@@ -114,7 +114,7 @@ mergeButton.addEventListener('click', async () => {
     uuidToFile.set(MERGE_FILE_UUID, { file });
   });
 
-  mergeWorker.postMessage({ wasmFiles, uuids, fileName: MERGED_FILE_NAME });
+  wasmMergeWorker.postMessage({ wasmFiles, uuids, fileName: MERGED_FILE_NAME });
 });
 
 export { MERGE_FILE_UUID };

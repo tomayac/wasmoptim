@@ -6,7 +6,7 @@ import './ui-drag-drop.js';
 import './ui-optimize.js';
 import './ui-merge.js';
 import './ui-other.js';
-import './wasm-optimize.js';
+import './wasm-opt.js';
 import './wasm-merge.js';
 import './stats.js';
 
