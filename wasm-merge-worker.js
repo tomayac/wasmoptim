@@ -61,7 +61,7 @@ self.addEventListener('message', async (event) => {
       '--enable-multimemory',
       '--enable-reference-types',
       '-o',
-      fileName + timestamp,
+      fileName,
     ];
     console.log(`Running wasm-merge ${fakeArgs.join(' ')}`);
 
