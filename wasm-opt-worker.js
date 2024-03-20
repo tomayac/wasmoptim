@@ -26,7 +26,7 @@ self.addEventListener('message', async (event) => {
       '--always-inline-max-function-size',
       '--enable-reference-types',
       '--enable-multimemory',
-      '--converge',
+      // '--converge', TODO: Add this flag again.
     ];
     const fakeArgs = [
       wasmFileBefore.name,
@@ -36,7 +36,7 @@ self.addEventListener('message', async (event) => {
       '--always-inline-max-function-size',
       '--enable-reference-types',
       '--enable-multimemory',
-      '--converge',
+      '⚠️ (Removed) --converge',
     ];
     console.log(`Running wasm-opt ${fakeArgs.join(' ')}`);
     wasmOpt.callMain(args);

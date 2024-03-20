@@ -33,8 +33,8 @@
     "stylelint": "^16.2.1",
     "stylelint-config-standard": "^36.0.0",
     "stylelint-order": "^6.0.4",
-    "vite": "^5.1.3",
-    "vite-plugin-pwa": "^0.18.2",
+    "vite": "^5.2.2",
+    "vite-plugin-pwa": "^0.19.5",
     "capture-website": "^4.1.0",
     "terminal-image": "^2.0.0"
   },

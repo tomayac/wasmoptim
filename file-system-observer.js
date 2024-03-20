@@ -24,7 +24,7 @@ const fileSystemChangeCallback = async (changes) => {
   let wasmFilesBefore = [];
 
   for (const change of changes) {
-    if (change.type === 'modified') {
+    if (change.type === 'modified' || change.type === 'unsupported') {
       if (change.changedHandle instanceof FileSystemFileHandle) {
         const changedFile = await change.changedHandle.getFile();
         console.log(`File ${changedFile.name} modified → Re-optimizing`);

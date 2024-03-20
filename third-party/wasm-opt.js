@@ -37,13 +37,13 @@ var Module = (() => {
       if (_scriptDir) {
         scriptDirectory = _scriptDir;
       }
-      if (scriptDirectory.indexOf('blob:') !== 0) {
+      if (scriptDirectory.startsWith('blob:')) {
+        scriptDirectory = '';
+      } else {
         scriptDirectory = scriptDirectory.substr(
           0,
           scriptDirectory.replace(/[?#].*/, '').lastIndexOf('/') + 1,
         );
-      } else {
-        scriptDirectory = '';
       }
       {
         read_ = (url) => {
@@ -93,11 +93,6 @@ var Module = (() => {
     var wasmMemory;
     var ABORT = false;
     var EXITSTATUS;
-    function assert(condition, text) {
-      if (!condition) {
-        abort(text);
-      }
-    }
     var HEAP8, HEAPU8, HEAP16, HEAPU16, HEAP32, HEAPU32, HEAPF32, HEAPF64;
     function updateMemoryViews() {
       var b = wasmMemory.buffer;
@@ -162,15 +157,11 @@ var Module = (() => {
     }
     function addRunDependency(id) {
       runDependencies++;
-      if (Module['monitorRunDependencies']) {
-        Module['monitorRunDependencies'](runDependencies);
-      }
+      Module['monitorRunDependencies']?.(runDependencies);
     }
     function removeRunDependency(id) {
       runDependencies--;
-      if (Module['monitorRunDependencies']) {
-        Module['monitorRunDependencies'](runDependencies);
-      }
+      Module['monitorRunDependencies']?.(runDependencies);
       if (runDependencies == 0) {
         if (runDependencyWatcher !== null) {
           clearInterval(runDependencyWatcher);
@@ -184,9 +175,7 @@ var Module = (() => {
       }
     }
     function abort(what) {
-      if (Module['onAbort']) {
-        Module['onAbort'](what);
-      }
+      Module['onAbort']?.(what);
       what = 'Aborted(' + what + ')';
       err(what);
       ABORT = true;
@@ -222,7 +211,7 @@ var Module = (() => {
           return fetch(binaryFile, { credentials: 'same-origin' })
             .then((response) => {
               if (!response['ok']) {
-                throw "failed to load wasm binary file at '" + binaryFile + "'";
+                throw `failed to load wasm binary file at '${binaryFile}'`;
               }
               return response['arrayBuffer']();
             })
@@ -234,7 +223,6 @@ var Module = (() => {
     function instantiateArrayBuffer(binaryFile, imports, receiver) {
       return getBinaryPromise(binaryFile)
         .then((binary) => WebAssembly.instantiate(binary, imports))
-        .then((instance) => instance)
         .then(receiver, (reason) => {
           err(`failed to asynchronously prepare wasm: ${reason}`);
           abort(reason);
@@ -264,10 +252,10 @@ var Module = (() => {
       var info = { a: wasmImports };
       function receiveInstance(instance, module) {
         wasmExports = instance.exports;
-        wasmMemory = wasmExports['Ua'];
+        wasmMemory = wasmExports['Va'];
         updateMemoryViews();
         wasmTable = wasmExports['Ya'];
-        addOnInit(wasmExports['Va']);
+        addOnInit(wasmExports['Wa']);
         removeRunDependency('wasm-instantiate');
         return wasmExports;
       }
@@ -376,47 +364,49 @@ var Module = (() => {
       ___cxa_decrement_exception_refcount(info.excPtr);
       exceptionLast = 0;
     };
-    function ExceptionInfo(excPtr) {
-      this.excPtr = excPtr;
-      this.ptr = excPtr - 24;
-      this.set_type = function (type) {
+    class ExceptionInfo {
+      constructor(excPtr) {
+        this.excPtr = excPtr;
+        this.ptr = excPtr - 24;
+      }
+      set_type(type) {
         HEAPU32[(this.ptr + 4) >> 2] = type;
-      };
-      this.get_type = function () {
+      }
+      get_type() {
         return HEAPU32[(this.ptr + 4) >> 2];
-      };
-      this.set_destructor = function (destructor) {
+      }
+      set_destructor(destructor) {
         HEAPU32[(this.ptr + 8) >> 2] = destructor;
-      };
-      this.get_destructor = function () {
+      }
+      get_destructor() {
         return HEAPU32[(this.ptr + 8) >> 2];
-      };
-      this.set_caught = function (caught) {
+      }
+      set_caught(caught) {
         caught = caught ? 1 : 0;
-        HEAP8[(this.ptr + 12) >> 0] = caught;
-      };
-      this.get_caught = function () {
-        return HEAP8[(this.ptr + 12) >> 0] != 0;
-      };
-      this.set_rethrown = function (rethrown) {
+        HEAP8[this.ptr + 12] = caught;
+      }
+      get_caught() {
+        return HEAP8[this.ptr + 12] != 0;
+      }
+      set_rethrown(rethrown) {
         rethrown = rethrown ? 1 : 0;
-        HEAP8[(this.ptr + 13) >> 0] = rethrown;
-      };
-      this.get_rethrown = function () {
-        return HEAP8[(this.ptr + 13) >> 0] != 0;
-      };
-      this.init = function (type, destructor) {
+        HEAP8[this.ptr + 13] = rethrown;
+      }
+      get_rethrown() {
+        return HEAP8[this.ptr + 13] != 0;
+      }
+      init(type, destructor) {
         this.set_adjusted_ptr(0);
         this.set_type(type);
         this.set_destructor(destructor);
-      };
-      this.set_adjusted_ptr = function (adjustedPtr) {
+      }
+      set_adjusted_ptr(adjustedPtr) {
         HEAPU32[(this.ptr + 16) >> 2] = adjustedPtr;
-      };
-      this.get_adjusted_ptr = function () {
+      }
+      get_adjusted_ptr() {
         return HEAPU32[(this.ptr + 16) >> 2];
-      };
-      this.get_exception_ptr = function () {
+      }
+      get_exception_ptr() {
         var isPointer = ___cxa_is_pointer_type(this.get_type());
         if (isPointer) {
           return HEAPU32[this.excPtr >> 2];
@@ -424,7 +414,7 @@ var Module = (() => {
         var adjusted = this.get_adjusted_ptr();
         if (adjusted !== 0) return adjusted;
         return this.excPtr;
-      };
+      }
     }
     var ___resumeException = (ptr) => {
       if (!exceptionLast) {
@@ -488,10 +478,6 @@ var Module = (() => {
       throw exceptionLast;
     };
     var ___cxa_uncaught_exceptions = () => uncaughtExceptionCount;
-    var setErrNo = (value) => {
-      HEAP32[___errno_location() >> 2] = value;
-      return value;
-    };
     var PATH = {
       isAbs: (path) => path.charAt(0) === '/',
       splitPath: (filename) => {
@@ -555,10 +541,7 @@ var Module = (() => {
         if (lastSlash === -1) return path;
         return path.substr(lastSlash + 1);
       },
-      join: function () {
-        var paths = Array.prototype.slice.call(arguments);
-        return PATH.normalize(paths.join('/'));
-      },
+      join: (...paths) => PATH.normalize(paths.join('/')),
       join2: (l, r) => PATH.normalize(l + '/' + r),
     };
     var initRandomFill = () => {
@@ -571,11 +554,11 @@ var Module = (() => {
     };
     var randomFill = (view) => (randomFill = initRandomFill())(view);
     var PATH_FS = {
-      resolve: function () {
+      resolve: (...args) => {
         var resolvedPath = '',
           resolvedAbsolute = false;
-        for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
-          var path = i >= 0 ? arguments[i] : FS.cwd();
+        for (var i = args.length - 1; i >= -1 && !resolvedAbsolute; i--) {
+          var path = i >= 0 ? args[i] : FS.cwd();
           if (typeof path != 'string') {
             throw new TypeError('Arguments to path.resolve must be strings');
           } else if (!path) {
@@ -840,53 +823,51 @@ var Module = (() => {
         if (FS.isBlkdev(mode) || FS.isFIFO(mode)) {
           throw new FS.ErrnoError(63);
         }
-        if (!MEMFS.ops_table) {
-          MEMFS.ops_table = {
-            dir: {
-              node: {
-                getattr: MEMFS.node_ops.getattr,
-                setattr: MEMFS.node_ops.setattr,
-                lookup: MEMFS.node_ops.lookup,
-                mknod: MEMFS.node_ops.mknod,
-                rename: MEMFS.node_ops.rename,
-                unlink: MEMFS.node_ops.unlink,
-                rmdir: MEMFS.node_ops.rmdir,
-                readdir: MEMFS.node_ops.readdir,
-                symlink: MEMFS.node_ops.symlink,
-              },
-              stream: { llseek: MEMFS.stream_ops.llseek },
+        MEMFS.ops_table ||= {
+          dir: {
+            node: {
+              getattr: MEMFS.node_ops.getattr,
+              setattr: MEMFS.node_ops.setattr,
+              lookup: MEMFS.node_ops.lookup,
+              mknod: MEMFS.node_ops.mknod,
+              rename: MEMFS.node_ops.rename,
+              unlink: MEMFS.node_ops.unlink,
+              rmdir: MEMFS.node_ops.rmdir,
+              readdir: MEMFS.node_ops.readdir,
+              symlink: MEMFS.node_ops.symlink,
             },
-            file: {
-              node: {
-                getattr: MEMFS.node_ops.getattr,
-                setattr: MEMFS.node_ops.setattr,
-              },
-              stream: {
-                llseek: MEMFS.stream_ops.llseek,
-                read: MEMFS.stream_ops.read,
-                write: MEMFS.stream_ops.write,
-                allocate: MEMFS.stream_ops.allocate,
-                mmap: MEMFS.stream_ops.mmap,
-                msync: MEMFS.stream_ops.msync,
-              },
+            stream: { llseek: MEMFS.stream_ops.llseek },
+          },
+          file: {
+            node: {
+              getattr: MEMFS.node_ops.getattr,
+              setattr: MEMFS.node_ops.setattr,
             },
-            link: {
-              node: {
-                getattr: MEMFS.node_ops.getattr,
-                setattr: MEMFS.node_ops.setattr,
-                readlink: MEMFS.node_ops.readlink,
-              },
-              stream: {},
+            stream: {
+              llseek: MEMFS.stream_ops.llseek,
+              read: MEMFS.stream_ops.read,
+              write: MEMFS.stream_ops.write,
+              allocate: MEMFS.stream_ops.allocate,
+              mmap: MEMFS.stream_ops.mmap,
+              msync: MEMFS.stream_ops.msync,
             },
-            chrdev: {
-              node: {
-                getattr: MEMFS.node_ops.getattr,
-                setattr: MEMFS.node_ops.setattr,
-              },
-              stream: FS.chrdev_stream_ops,
+          },
+          link: {
+            node: {
+              getattr: MEMFS.node_ops.getattr,
+              setattr: MEMFS.node_ops.setattr,
+              readlink: MEMFS.node_ops.readlink,
             },
-          };
-        }
+            stream: {},
+          },
+          chrdev: {
+            node: {
+              getattr: MEMFS.node_ops.getattr,
+              setattr: MEMFS.node_ops.setattr,
+            },
+            stream: FS.chrdev_stream_ops,
+          },
+        };
         var node = FS.createNode(parent, name, mode, dev);
         if (FS.isDir(node.mode)) {
           node.node_ops = MEMFS.ops_table.dir.node;
@@ -1025,10 +1006,7 @@ var Module = (() => {
         },
         readdir(node) {
           var entries = ['.', '..'];
-          for (var key in node.contents) {
-            if (!node.contents.hasOwnProperty(key)) {
-              continue;
-            }
+          for (var key of Object.keys(node.contents)) {
             entries.push(key);
           }
           return entries;
@@ -1159,10 +1137,6 @@ var Module = (() => {
       readAsync(
         url,
         (arrayBuffer) => {
-          assert(
-            arrayBuffer,
-            `Loading data file "${url}" failed (no arrayBuffer).`,
-          );
           onload(new Uint8Array(arrayBuffer));
           if (dep) removeRunDependency(dep);
         },
@@ -1215,7 +1189,7 @@ var Module = (() => {
       var dep = getUniqueRunDependency(`cp ${fullname}`);
       function processData(byteArray) {
         function finish(byteArray) {
-          if (preFinish) preFinish();
+          preFinish?.();
           if (!dontCreateFile) {
             FS_createDataFile(
               parent,
@@ -1226,12 +1200,12 @@ var Module = (() => {
               canOwn,
             );
           }
-          if (onload) onload();
+          onload?.();
           removeRunDependency(dep);
         }
         if (
           FS_handledByPreloadPlugin(byteArray, fullname, finish, () => {
-            if (onerror) onerror();
+            onerror?.();
             removeRunDependency(dep);
           })
         ) {
@@ -1241,7 +1215,7 @@ var Module = (() => {
       }
       addRunDependency(dep);
       if (typeof url == 'string') {
-        asyncLoad(url, (byteArray) => processData(byteArray), onerror);
+        asyncLoad(url, processData, onerror);
       } else {
         processData(url);
       }
@@ -1277,10 +1251,83 @@ var Module = (() => {
       currentPath: '/',
       initialized: false,
       ignorePermissions: true,
-      ErrnoError: null,
+      ErrnoError: class {
+        constructor(errno) {
+          this.name = 'ErrnoError';
+          this.errno = errno;
+        }
+      },
       genericErrors: {},
       filesystems: null,
       syncFSRequests: 0,
+      FSStream: class {
+        constructor() {
+          this.shared = {};
+        }
+        get object() {
+          return this.node;
+        }
+        set object(val) {
+          this.node = val;
+        }
+        get isRead() {
+          return (this.flags & 2097155) !== 1;
+        }
+        get isWrite() {
+          return (this.flags & 2097155) !== 0;
+        }
+        get isAppend() {
+          return this.flags & 1024;
+        }
+        get flags() {
+          return this.shared.flags;
+        }
+        set flags(val) {
+          this.shared.flags = val;
+        }
+        get position() {
+          return this.shared.position;
+        }
+        set position(val) {
+          this.shared.position = val;
+        }
+      },
+      FSNode: class {
+        constructor(parent, name, mode, rdev) {
+          if (!parent) {
+            parent = this;
+          }
+          this.parent = parent;
+          this.mount = parent.mount;
+          this.mounted = null;
+          this.id = FS.nextInode++;
+          this.name = name;
+          this.mode = mode;
+          this.node_ops = {};
+          this.stream_ops = {};
+          this.rdev = rdev;
+          this.readMode = 292 | 73;
+          this.writeMode = 146;
+        }
+        get read() {
+          return (this.mode & this.readMode) === this.readMode;
+        }
+        set read(val) {
+          val ? (this.mode |= this.readMode) : (this.mode &= ~this.readMode);
+        }
+        get write() {
+          return (this.mode & this.writeMode) === this.writeMode;
+        }
+        set write(val) {
+          val ? (this.mode |= this.writeMode) : (this.mode &= ~this.writeMode);
+        }
+        get isFolder() {
+          return FS.isDir(this.mode);
+        }
+        get isDevice() {
+          return FS.isChrdev(this.mode);
+        }
+      },
       lookupPath(path, opts = {}) {
         path = PATH_FS.resolve(path);
         if (!path) return { path: '', node: null };
@@ -1365,7 +1412,7 @@ var Module = (() => {
       lookupNode(parent, name) {
         var errCode = FS.mayLookup(parent);
         if (errCode) {
-          throw new FS.ErrnoError(errCode, parent);
+          throw new FS.ErrnoError(errCode);
         }
         var hash = FS.hashName(parent.id, name);
         for (var node = FS.nameTable[hash]; node; node = node.name_next) {
@@ -1432,6 +1479,7 @@ var Module = (() => {
         return 0;
       },
       mayLookup(dir) {
+        if (!FS.isDir(dir.mode)) return 54;
         var errCode = FS.nodePermissions(dir, 'x');
         if (errCode) return errCode;
         if (!dir.node_ops.lookup) return 2;
@@ -1500,53 +1548,6 @@ var Module = (() => {
       },
       getStream: (fd) => FS.streams[fd],
       createStream(stream, fd = -1) {
-        if (!FS.FSStream) {
-          FS.FSStream = function () {
-            this.shared = {};
-          };
-          FS.FSStream.prototype = {};
-          Object.defineProperties(FS.FSStream.prototype, {
-            object: {
-              get() {
-                return this.node;
-              },
-              set(val) {
-                this.node = val;
-              },
-            },
-            isRead: {
-              get() {
-                return (this.flags & 2097155) !== 1;
-              },
-            },
-            isWrite: {
-              get() {
-                return (this.flags & 2097155) !== 0;
-              },
-            },
-            isAppend: {
-              get() {
-                return this.flags & 1024;
-              },
-            },
-            flags: {
-              get() {
-                return this.shared.flags;
-              },
-              set(val) {
-                this.shared.flags = val;
-              },
-            },
-            position: {
-              get() {
-                return this.shared.position;
-              },
-              set(val) {
-                this.shared.position = val;
-              },
-            },
-          });
-        }
         stream = Object.assign(new FS.FSStream(), stream);
         if (fd == -1) {
           fd = FS.nextfd();
@@ -1558,13 +1559,16 @@ var Module = (() => {
       closeStream(fd) {
         FS.streams[fd] = null;
       },
+      dupStream(origStream, fd = -1) {
+        var stream = FS.createStream(origStream, fd);
+        stream.stream_ops?.dup?.(stream);
+        return stream;
+      },
       chrdev_stream_ops: {
         open(stream) {
           var device = FS.getDevice(stream.node.rdev);
           stream.stream_ops = device.stream_ops;
-          if (stream.stream_ops.open) {
-            stream.stream_ops.open(stream);
-          }
+          stream.stream_ops.open?.(stream);
         },
         llseek() {
           throw new FS.ErrnoError(70);
@@ -1583,7 +1587,7 @@ var Module = (() => {
         while (check.length) {
           var m = check.pop();
           mounts.push(m);
-          check.push.apply(check, m.mounts);
+          check.push(...m.mounts);
         }
         return mounts;
       },
@@ -2192,7 +2196,6 @@ var Module = (() => {
           mmapFlags,
         );
       },
-      munmap: (stream) => 0,
       ioctl(stream, cmd, arg) {
         if (!stream.stream_ops.ioctl) {
           throw new FS.ErrnoError(59);
@@ -2325,26 +2328,11 @@ var Module = (() => {
         var stdout = FS.open('/dev/stdout', 1);
         var stderr = FS.open('/dev/stderr', 1);
       },
-      ensureErrnoError() {
-        if (FS.ErrnoError) return;
-        FS.ErrnoError = function ErrnoError(errno, node) {
-          this.name = 'ErrnoError';
-          this.node = node;
-          this.setErrno = function (errno) {
-            this.errno = errno;
-          };
-          this.setErrno(errno);
-          this.message = 'FS error';
-        };
-        FS.ErrnoError.prototype = new Error();
-        FS.ErrnoError.prototype.constructor = FS.ErrnoError;
+      staticInit() {
         [44].forEach((code) => {
           FS.genericErrors[code] = new FS.ErrnoError(code);
           FS.genericErrors[code].stack = '<generic error, no stack>';
         });
-      },
-      staticInit() {
-        FS.ensureErrnoError();
         FS.nameTable = new Array(4096);
         FS.mount(MEMFS, {}, '/');
         FS.createDefaultDirectories();
@@ -2354,7 +2342,6 @@ var Module = (() => {
       },
       init(input, output, error) {
         FS.init.initialized = true;
-        FS.ensureErrnoError();
         Module['stdin'] = input || Module['stdin'];
         Module['stdout'] = output || Module['stdout'];
         Module['stderr'] = error || Module['stderr'];
@@ -2467,7 +2454,7 @@ var Module = (() => {
             stream.seekable = false;
           },
           close(stream) {
-            if (output && output.buffer && output.buffer.length) {
+            if (output?.buffer?.length) {
               output(10);
             }
           },
@@ -2527,24 +2514,23 @@ var Module = (() => {
         }
       },
       createLazyFile(parent, name, url, canRead, canWrite) {
-        function LazyUint8Array() {
-          this.lengthKnown = false;
-          this.chunks = [];
-        }
-        LazyUint8Array.prototype.get = function LazyUint8Array_get(idx) {
-          if (idx > this.length - 1 || idx < 0) {
-            return undefined;
+        class LazyUint8Array {
+          constructor() {
+            this.lengthKnown = false;
+            this.chunks = [];
           }
-          var chunkOffset = idx % this.chunkSize;
-          var chunkNum = (idx / this.chunkSize) | 0;
-          return this.getter(chunkNum)[chunkOffset];
-        };
-        LazyUint8Array.prototype.setDataGetter =
-          function LazyUint8Array_setDataGetter(getter) {
+          get(idx) {
+            if (idx > this.length - 1 || idx < 0) {
+              return undefined;
+            }
+            var chunkOffset = idx % this.chunkSize;
+            var chunkNum = (idx / this.chunkSize) | 0;
+            return this.getter(chunkNum)[chunkOffset];
+          }
+          setDataGetter(getter) {
             this.getter = getter;
-          };
-        LazyUint8Array.prototype.cacheLength =
-          function LazyUint8Array_cacheLength() {
+          }
+          cacheLength() {
             var xhr = new XMLHttpRequest();
             xhr.open('HEAD', url, false);
             xhr.send(null);
@@ -2620,29 +2606,24 @@ var Module = (() => {
             this._length = datalength;
             this._chunkSize = chunkSize;
             this.lengthKnown = true;
-          };
+          }
+          get length() {
+            if (!this.lengthKnown) {
+              this.cacheLength();
+            }
+            return this._length;
+          }
+          get chunkSize() {
+            if (!this.lengthKnown) {
+              this.cacheLength();
+            }
+            return this._chunkSize;
+          }
+        }
         if (typeof XMLHttpRequest != 'undefined') {
           if (!ENVIRONMENT_IS_WORKER)
             throw 'Cannot do synchronous binary XHRs outside webworkers in modern browsers. Use --embed-file or --preload-file in emcc';
           var lazyArray = new LazyUint8Array();
-          Object.defineProperties(lazyArray, {
-            length: {
-              get: function () {
-                if (!this.lengthKnown) {
-                  this.cacheLength();
-                }
-                return this._length;
-              },
-            },
-            chunkSize: {
-              get: function () {
-                if (!this.lengthKnown) {
-                  this.cacheLength();
-                }
-                return this._chunkSize;
-              },
-            },
-          });
           var properties = { isDevice: false, contents: lazyArray };
         } else {
           var properties = { isDevice: false, url: url };
@@ -2665,9 +2646,9 @@ var Module = (() => {
         var keys = Object.keys(node.stream_ops);
         keys.forEach((key) => {
           var fn = node.stream_ops[key];
-          stream_ops[key] = function forceLoadLazyFile() {
+          stream_ops[key] = (...args) => {
             FS.forceLoadFile(node);
-            return fn.apply(null, arguments);
+            return fn(...args);
           };
         });
         function writeChunks(stream, buffer, offset, length, position) {
@@ -2724,18 +2705,7 @@ var Module = (() => {
         return PATH.join2(dir, path);
       },
       doStat(func, path, buf) {
-        try {
-          var stat = func(path);
-        } catch (e) {
-          if (
-            e &&
-            e.node &&
-            PATH.normalize(path) !== PATH.normalize(FS.getPath(e.node))
-          ) {
-            return -54;
-          }
-          throw e;
-        }
+        var stat = func(path);
         HEAP32[buf >> 2] = stat.dev;
         HEAP32[(buf + 4) >> 2] = stat.mode;
         HEAPU32[(buf + 8) >> 2] = stat.nlink;
@@ -2859,7 +2829,7 @@ var Module = (() => {
               arg++;
             }
             var newStream;
-            newStream = FS.createStream(stream, arg);
+            newStream = FS.dupStream(stream, arg);
             return newStream.fd;
           }
           case 1:
@@ -2872,25 +2842,17 @@ var Module = (() => {
             stream.flags |= arg;
             return 0;
           }
-          case 5: {
+          case 12: {
             var arg = SYSCALLS.getp();
             var offset = 0;
             HEAP16[(arg + offset) >> 1] = 2;
             return 0;
           }
-          case 6:
-          case 7:
+          case 13:
+          case 14:
             return 0;
-          case 16:
-          case 8:
-            return -28;
-          case 9:
-            setErrNo(28);
-            return -1;
-          default: {
-            return -28;
-          }
         }
+        return -28;
       } catch (e) {
         if (typeof FS == 'undefined' || !(e.name === 'ErrnoError')) throw e;
         return -e.errno;
@@ -2915,7 +2877,7 @@ var Module = (() => {
               HEAP32[(argp + 8) >> 2] = termios.c_cflag || 0;
               HEAP32[(argp + 12) >> 2] = termios.c_lflag || 0;
               for (var i = 0; i < 32; i++) {
-                HEAP8[(argp + i + 17) >> 0] = termios.c_cc[i] || 0;
+                HEAP8[argp + i + 17] = termios.c_cc[i] || 0;
               }
               return 0;
             }
@@ -2939,7 +2901,7 @@ var Module = (() => {
               var c_lflag = HEAP32[(argp + 12) >> 2];
               var c_cc = [];
               for (var i = 0; i < 32; i++) {
-                c_cc.push(HEAP8[(argp + i + 17) >> 0]);
+                c_cc.push(HEAP8[argp + i + 17]);
               }
               return stream.tty.ops.ioctl_tcsets(stream.tty, op, {
                 c_iflag: c_iflag,
@@ -3003,7 +2965,7 @@ var Module = (() => {
         return -e.errno;
       }
     }
-    var nowIsMonotonic = true;
+    var nowIsMonotonic = 1;
     var __emscripten_get_now_is_monotonic = () => nowIsMonotonic;
     var _abort = () => {
       abort('');
@@ -3082,9 +3044,9 @@ var Module = (() => {
     };
     var stringToAscii = (str, buffer) => {
       for (var i = 0; i < str.length; ++i) {
-        HEAP8[buffer++ >> 0] = str.charCodeAt(i);
+        HEAP8[buffer++] = str.charCodeAt(i);
       }
-      HEAP8[buffer >> 0] = 0;
+      HEAP8[buffer] = 0;
     };
     var _environ_get = (__environ, environ_buf) => {
       var bufSize = 0;
@@ -3109,7 +3071,7 @@ var Module = (() => {
     var _proc_exit = (code) => {
       EXITSTATUS = code;
       if (!keepRuntimeAlive()) {
-        if (Module['onExit']) Module['onExit'](code);
+        Module['onExit']?.(code);
         ABORT = true;
       }
       quit_(code, new ExitStatus(code));
@@ -3394,7 +3356,7 @@ var Module = (() => {
         '%d': (date) => leadingNulls(date.tm_mday, 2),
         '%e': (date) => leadingSomething(date.tm_mday, 2, ' '),
         '%g': (date) => getWeekBasedYear(date).toString().substring(2),
-        '%G': (date) => getWeekBasedYear(date),
+        '%G': getWeekBasedYear,
         '%H': (date) => leadingNulls(date.tm_hour, 2),
         '%I': (date) => {
           var twelveHour = date.tm_hour;
@@ -3512,51 +3474,6 @@ var Module = (() => {
       }
       return func;
     };
-    var FSNode = function (parent, name, mode, rdev) {
-      if (!parent) {
-        parent = this;
-      }
-      this.parent = parent;
-      this.mount = parent.mount;
-      this.mounted = null;
-      this.id = FS.nextInode++;
-      this.name = name;
-      this.mode = mode;
-      this.node_ops = {};
-      this.stream_ops = {};
-      this.rdev = rdev;
-    };
-    var readMode = 292 | 73;
-    var writeMode = 146;
-    Object.defineProperties(FSNode.prototype, {
-      read: {
-        get: function () {
-          return (this.mode & readMode) === readMode;
-        },
-        set: function (val) {
-          val ? (this.mode |= readMode) : (this.mode &= ~readMode);
-        },
-      },
-      write: {
-        get: function () {
-          return (this.mode & writeMode) === writeMode;
-        },
-        set: function (val) {
-          val ? (this.mode |= writeMode) : (this.mode &= ~writeMode);
-        },
-      },
-      isFolder: {
-        get: function () {
-          return FS.isDir(this.mode);
-        },
-      },
-      isDevice: {
-        get: function () {
-          return FS.isChrdev(this.mode);
-        },
-      },
-    });
-    FS.FSNode = FSNode;
     FS.createPreloadedFile = FS_createPreloadedFile;
     FS.staticInit();
     Module['FS_createPath'] = FS.createPath;
@@ -3567,22 +3484,22 @@ var Module = (() => {
     Module['FS_createDevice'] = FS.createDevice;
     var wasmImports = {
       b: ___assert_fail,
-      p: ___cxa_begin_catch,
+      q: ___cxa_begin_catch,
       u: ___cxa_end_catch,
       a: ___cxa_find_matching_catch_2,
-      k: ___cxa_find_matching_catch_3,
+      l: ___cxa_find_matching_catch_3,
       s: ___cxa_find_matching_catch_4,
       t: ___cxa_find_matching_catch_5,
       H: ___cxa_rethrow,
       v: ___cxa_throw,
       Pa: ___cxa_uncaught_exceptions,
-      h: ___resumeException,
+      i: ___resumeException,
       K: ___syscall_fcntl64,
       Na: ___syscall_ioctl,
       Oa: ___syscall_openat,
       Qa: __emscripten_get_now_is_monotonic,
-      r: _abort,
-      Ta: _emscripten_get_now,
+      p: _abort,
+      Ua: _emscripten_get_now,
       Sa: _emscripten_memcpy_js,
       Ra: _emscripten_resize_heap,
       V: _environ_get,
@@ -3596,10 +3513,10 @@ var Module = (() => {
       f: invoke_ii,
       Ia: invoke_iid,
       c: invoke_iii,
-      g: invoke_iiii,
+      h: invoke_iiii,
       m: invoke_iiiii,
       Ga: invoke_iiiiid,
-      q: invoke_iiiiii,
+      r: invoke_iiiiii,
       x: invoke_iiiiiii,
       D: invoke_iiiiiiii,
       o: invoke_iiiiiiiii,
@@ -3611,71 +3528,69 @@ var Module = (() => {
       Ba: invoke_iiiij,
       Ca: invoke_iiij,
       X: invoke_iiiji,
-      S: invoke_iiijii,
-      ia: invoke_iiijj,
+      R: invoke_iiijii,
+      ja: invoke_iiijj,
       ua: invoke_iij,
-      ma: invoke_iiji,
-      da: invoke_iijii,
+      na: invoke_iiji,
+      fa: invoke_iijii,
+      ha: invoke_iijiii,
       Aa: invoke_iijiiii,
-      R: invoke_iijiiiiii,
+      Q: invoke_iijiiiiii,
       _: invoke_iijiiiij,
-      za: invoke_iijj,
-      T: invoke_iji,
+      S: invoke_iji,
       Da: invoke_ijiii,
       ga: invoke_ijiiii,
-      M: invoke_j,
-      ka: invoke_ji,
+      L: invoke_j,
+      la: invoke_ji,
       ba: invoke_jii,
-      L: invoke_jiii,
-      na: invoke_jiiiij,
-      la: invoke_jiji,
+      Ta: invoke_jiii,
+      oa: invoke_jiiiij,
+      ma: invoke_jiji,
       j: invoke_v,
-      l: invoke_vi,
+      k: invoke_vi,
       Ha: invoke_vid,
       I: invoke_vidi,
       d: invoke_vii,
       e: invoke_viii,
-      i: invoke_viiii,
+      g: invoke_viiii,
       n: invoke_viiiii,
       z: invoke_viiiiii,
       w: invoke_viiiiiii,
       Ja: invoke_viiiiiiii,
       A: invoke_viiiiiiiiii,
       C: invoke_viiiiiiiiiiiiiii,
-      W: invoke_viiiiij,
-      P: invoke_viiiiijii,
+      U: invoke_viiiiij,
+      O: invoke_viiiiijii,
       xa: invoke_viiiij,
       ya: invoke_viiij,
-      sa: invoke_viiiji,
+      ta: invoke_viiiji,
+      P: invoke_viiijii,
       aa: invoke_viiijiiii,
       va: invoke_viij,
       wa: invoke_viiji,
-      ra: invoke_viijii,
-      O: invoke_viijiii,
+      sa: invoke_viijii,
+      M: invoke_viijiii,
       N: invoke_viijiiii,
-      qa: invoke_viijiijj,
-      fa: invoke_viijj,
-      Q: invoke_viijji,
+      ra: invoke_viijiijj,
+      da: invoke_viijj,
+      W: invoke_viijji,
       Z: invoke_vij,
-      ja: invoke_viji,
+      ka: invoke_viji,
       Ea: invoke_vijii,
-      ha: invoke_vijiii,
-      oa: invoke_vijiijj,
-      ta: invoke_vijji,
-      U: invoke_vjii,
+      ia: invoke_vijiiii,
+      qa: invoke_vijiijj,
+      za: invoke_vijji,
+      T: invoke_vjii,
       y: _llvm_eh_typeid_for,
       pa: _proc_exit,
       Ka: _strftime_l,
     };
     var wasmExports = createWasm();
-    var ___wasm_call_ctors = () => (___wasm_call_ctors = wasmExports['Va'])();
+    var ___wasm_call_ctors = () => (___wasm_call_ctors = wasmExports['Wa'])();
     var ___cxa_free_exception = (a0) =>
       (___cxa_free_exception = wasmExports['__cxa_free_exception'])(a0);
-    var _free = (a0) => (_free = wasmExports['free'])(a0);
     var _main = (Module['_main'] = (a0, a1) =>
-      (_main = Module['_main'] = wasmExports['Wa'])(a0, a1));
-    var ___errno_location = () => (___errno_location = wasmExports['Xa'])();
-    var _malloc = (a0) => (_malloc = wasmExports['malloc'])(a0);
+      (_main = Module['_main'] = wasmExports['Xa'])(a0, a1));
     var _setThrew = (a0, a1) => (_setThrew = wasmExports['Za'])(a0, a1);
     var setTempRet0 = (a0) => (setTempRet0 = wasmExports['_a'])(a0);
     var stackSave = () => (stackSave = wasmExports['$a'])();
@@ -3748,14 +3663,23 @@ var Module = (() => {
         a4,
         a5,
       ));
-    var dynCall_iijj = (Module['dynCall_iijj'] = (a0, a1, a2, a3, a4, a5) =>
-      (dynCall_iijj = Module['dynCall_iijj'] = wasmExports['nb'])(
+    var dynCall_vijji = (Module['dynCall_vijji'] = (
+      a0,
+      a1,
+      a2,
+      a3,
+      a4,
+      a5,
+      a6,
+    ) =>
+      (dynCall_vijji = Module['dynCall_vijji'] = wasmExports['nb'])(
         a0,
         a1,
         a2,
         a3,
         a4,
         a5,
+        a6,
       ));
     var dynCall_iijiiii = (Module['dynCall_iijiiii'] = (
       a0,
@@ -3777,7 +3701,7 @@ var Module = (() => {
         a6,
         a7,
       ));
-    var dynCall_viijj = (Module['dynCall_viijj'] = (
+    var dynCall_viijji = (Module['dynCall_viijji'] = (
       a0,
       a1,
       a2,
@@ -3785,8 +3709,9 @@ var Module = (() => {
       a4,
       a5,
       a6,
+      a7,
     ) =>
-      (dynCall_viijj = Module['dynCall_viijj'] = wasmExports['pb'])(
+      (dynCall_viijji = Module['dynCall_viijji'] = wasmExports['pb'])(
         a0,
         a1,
         a2,
@@ -3794,6 +3719,7 @@ var Module = (() => {
         a4,
         a5,
         a6,
+        a7,
       ));
     var dynCall_viiiij = (Module['dynCall_viiiij'] = (
       a0,
@@ -3840,24 +3766,6 @@ var Module = (() => {
         a5,
         a6,
       ));
-    var dynCall_vijji = (Module['dynCall_vijji'] = (
-      a0,
-      a1,
-      a2,
-      a3,
-      a4,
-      a5,
-      a6,
-    ) =>
-      (dynCall_vijji = Module['dynCall_vijji'] = wasmExports['tb'])(
-        a0,
-        a1,
-        a2,
-        a3,
-        a4,
-        a5,
-        a6,
-      ));
     var dynCall_viijiijj = (Module['dynCall_viijiijj'] = (
       a0,
       a1,
@@ -3871,7 +3779,7 @@ var Module = (() => {
       a9,
       a10,
     ) =>
-      (dynCall_viijiijj = Module['dynCall_viijiijj'] = wasmExports['ub'])(
+      (dynCall_viijiijj = Module['dynCall_viijiijj'] = wasmExports['tb'])(
         a0,
         a1,
         a2,
@@ -3896,7 +3804,7 @@ var Module = (() => {
       a8,
       a9,
     ) =>
-      (dynCall_vijiijj = Module['dynCall_vijiijj'] = wasmExports['vb'])(
+      (dynCall_vijiijj = Module['dynCall_vijiijj'] = wasmExports['ub'])(
         a0,
         a1,
         a2,
@@ -3917,7 +3825,7 @@ var Module = (() => {
       a5,
       a6,
     ) =>
-      (dynCall_jiiiij = Module['dynCall_jiiiij'] = wasmExports['wb'])(
+      (dynCall_jiiiij = Module['dynCall_jiiiij'] = wasmExports['vb'])(
         a0,
         a1,
         a2,
@@ -3927,9 +3835,9 @@ var Module = (() => {
         a6,
       ));
     var dynCall_ji = (Module['dynCall_ji'] = (a0, a1) =>
-      (dynCall_ji = Module['dynCall_ji'] = wasmExports['xb'])(a0, a1));
+      (dynCall_ji = Module['dynCall_ji'] = wasmExports['wb'])(a0, a1));
     var dynCall_viji = (Module['dynCall_viji'] = (a0, a1, a2, a3, a4) =>
-      (dynCall_viji = Module['dynCall_viji'] = wasmExports['yb'])(
+      (dynCall_viji = Module['dynCall_viji'] = wasmExports['xb'])(
         a0,
         a1,
         a2,
@@ -3945,7 +3853,7 @@ var Module = (() => {
       a5,
       a6,
     ) =>
-      (dynCall_iiiiij = Module['dynCall_iiiiij'] = wasmExports['zb'])(
+      (dynCall_iiiiij = Module['dynCall_iiiiij'] = wasmExports['yb'])(
         a0,
         a1,
         a2,
@@ -3955,8 +3863,28 @@ var Module = (() => {
         a6,
       ));
     var dynCall_j = (Module['dynCall_j'] = (a0) =>
-      (dynCall_j = Module['dynCall_j'] = wasmExports['Ab'])(a0));
-    var dynCall_vijiii = (Module['dynCall_vijiii'] = (
+      (dynCall_j = Module['dynCall_j'] = wasmExports['zb'])(a0));
+    var dynCall_vijiiii = (Module['dynCall_vijiiii'] = (
+      a0,
+      a1,
+      a2,
+      a3,
+      a4,
+      a5,
+      a6,
+      a7,
+    ) =>
+      (dynCall_vijiiii = Module['dynCall_vijiiii'] = wasmExports['Ab'])(
+        a0,
+        a1,
+        a2,
+        a3,
+        a4,
+        a5,
+        a6,
+        a7,
+      ));
+    var dynCall_iijiii = (Module['dynCall_iijiii'] = (
       a0,
       a1,
       a2,
@@ -3965,7 +3893,7 @@ var Module = (() => {
       a5,
       a6,
     ) =>
-      (dynCall_vijiii = Module['dynCall_vijiii'] = wasmExports['Bb'])(
+      (dynCall_iijiii = Module['dynCall_iijiii'] = wasmExports['Bb'])(
         a0,
         a1,
         a2,
@@ -4016,6 +3944,24 @@ var Module = (() => {
         a4,
         a5,
       ));
+    var dynCall_viijj = (Module['dynCall_viijj'] = (
+      a0,
+      a1,
+      a2,
+      a3,
+      a4,
+      a5,
+      a6,
+    ) =>
+      (dynCall_viijj = Module['dynCall_viijj'] = wasmExports['Gb'])(
+        a0,
+        a1,
+        a2,
+        a3,
+        a4,
+        a5,
+        a6,
+      ));
     var dynCall_viiiiij = (Module['dynCall_viiiiij'] = (
       a0,
       a1,
@@ -4026,7 +3972,7 @@ var Module = (() => {
       a6,
       a7,
     ) =>
-      (dynCall_viiiiij = Module['dynCall_viiiiij'] = wasmExports['Gb'])(
+      (dynCall_viiiiij = Module['dynCall_viiiiij'] = wasmExports['Hb'])(
         a0,
         a1,
         a2,
@@ -4037,16 +3983,16 @@ var Module = (() => {
         a7,
       ));
     var dynCall_jii = (Module['dynCall_jii'] = (a0, a1, a2) =>
-      (dynCall_jii = Module['dynCall_jii'] = wasmExports['Hb'])(a0, a1, a2));
+      (dynCall_jii = Module['dynCall_jii'] = wasmExports['Ib'])(a0, a1, a2));
     var dynCall_jiii = (Module['dynCall_jiii'] = (a0, a1, a2, a3) =>
-      (dynCall_jiii = Module['dynCall_jiii'] = wasmExports['Ib'])(
+      (dynCall_jiii = Module['dynCall_jiii'] = wasmExports['Jb'])(
         a0,
         a1,
         a2,
         a3,
       ));
     var dynCall_vjii = (Module['dynCall_vjii'] = (a0, a1, a2, a3, a4) =>
-      (dynCall_vjii = Module['dynCall_vjii'] = wasmExports['Jb'])(
+      (dynCall_vjii = Module['dynCall_vjii'] = wasmExports['Kb'])(
         a0,
         a1,
         a2,
@@ -4065,7 +4011,7 @@ var Module = (() => {
       a8,
       a9,
     ) =>
-      (dynCall_viiijiiii = Module['dynCall_viiijiiii'] = wasmExports['Kb'])(
+      (dynCall_viiijiiii = Module['dynCall_viiijiiii'] = wasmExports['Lb'])(
         a0,
         a1,
         a2,
@@ -4088,7 +4034,7 @@ var Module = (() => {
       a7,
       a8,
     ) =>
-      (dynCall_iiiiiiij = Module['dynCall_iiiiiiij'] = wasmExports['Lb'])(
+      (dynCall_iiiiiiij = Module['dynCall_iiiiiiij'] = wasmExports['Mb'])(
         a0,
         a1,
         a2,
@@ -4111,7 +4057,7 @@ var Module = (() => {
       a8,
       a9,
     ) =>
-      (dynCall_iijiiiij = Module['dynCall_iijiiiij'] = wasmExports['Mb'])(
+      (dynCall_iijiiiij = Module['dynCall_iijiiiij'] = wasmExports['Nb'])(
         a0,
         a1,
         a2,
@@ -4133,7 +4079,7 @@ var Module = (() => {
       a6,
       a7,
     ) =>
-      (dynCall_iiiiiij = Module['dynCall_iiiiiij'] = wasmExports['Nb'])(
+      (dynCall_iiiiiij = Module['dynCall_iiiiiij'] = wasmExports['Ob'])(
         a0,
         a1,
         a2,
@@ -4144,7 +4090,7 @@ var Module = (() => {
         a7,
       ));
     var dynCall_iiiji = (Module['dynCall_iiiji'] = (a0, a1, a2, a3, a4, a5) =>
-      (dynCall_iiiji = Module['dynCall_iiiji'] = wasmExports['Ob'])(
+      (dynCall_iiiji = Module['dynCall_iiiji'] = wasmExports['Pb'])(
         a0,
         a1,
         a2,
@@ -4164,7 +4110,7 @@ var Module = (() => {
       a8,
       a9,
     ) =>
-      (dynCall_iijiiiiii = Module['dynCall_iijiiiiii'] = wasmExports['Pb'])(
+      (dynCall_iijiiiiii = Module['dynCall_iijiiiiii'] = wasmExports['Qb'])(
         a0,
         a1,
         a2,
@@ -4177,31 +4123,11 @@ var Module = (() => {
         a9,
       ));
     var dynCall_iji = (Module['dynCall_iji'] = (a0, a1, a2, a3) =>
-      (dynCall_iji = Module['dynCall_iji'] = wasmExports['Qb'])(
+      (dynCall_iji = Module['dynCall_iji'] = wasmExports['Rb'])(
         a0,
         a1,
         a2,
         a3,
-      ));
-    var dynCall_viijiii = (Module['dynCall_viijiii'] = (
-      a0,
-      a1,
-      a2,
-      a3,
-      a4,
-      a5,
-      a6,
-      a7,
-    ) =>
-      (dynCall_viijiii = Module['dynCall_viijiii'] = wasmExports['Rb'])(
-        a0,
-        a1,
-        a2,
-        a3,
-        a4,
-        a5,
-        a6,
-        a7,
       ));
     var dynCall_viijiiii = (Module['dynCall_viijiiii'] = (
       a0,
@@ -4225,7 +4151,7 @@ var Module = (() => {
         a7,
         a8,
       ));
-    var dynCall_viijji = (Module['dynCall_viijji'] = (
+    var dynCall_viijiii = (Module['dynCall_viijiii'] = (
       a0,
       a1,
       a2,
@@ -4235,7 +4161,7 @@ var Module = (() => {
       a6,
       a7,
     ) =>
-      (dynCall_viijji = Module['dynCall_viijji'] = wasmExports['Tb'])(
+      (dynCall_viijiii = Module['dynCall_viijiii'] = wasmExports['Tb'])(
         a0,
         a1,
         a2,
@@ -4245,7 +4171,7 @@ var Module = (() => {
         a6,
         a7,
       ));
-    var dynCall_viijii = (Module['dynCall_viijii'] = (
+    var dynCall_viiijii = (Module['dynCall_viiijii'] = (
       a0,
       a1,
       a2,
@@ -4253,8 +4179,9 @@ var Module = (() => {
       a4,
       a5,
       a6,
+      a7,
     ) =>
-      (dynCall_viijii = Module['dynCall_viijii'] = wasmExports['Ub'])(
+      (dynCall_viiijii = Module['dynCall_viiijii'] = wasmExports['Ub'])(
         a0,
         a1,
         a2,
@@ -4262,6 +4189,7 @@ var Module = (() => {
         a4,
         a5,
         a6,
+        a7,
       ));
     var dynCall_viiiiijii = (Module['dynCall_viiiiijii'] = (
       a0,
@@ -4323,6 +4251,24 @@ var Module = (() => {
       a6,
     ) =>
       (dynCall_viiiji = Module['dynCall_viiiji'] = wasmExports['Yb'])(
+        a0,
+        a1,
+        a2,
+        a3,
+        a4,
+        a5,
+        a6,
+      ));
+    var dynCall_viijii = (Module['dynCall_viijii'] = (
+      a0,
+      a1,
+      a2,
+      a3,
+      a4,
+      a5,
+      a6,
+    ) =>
+      (dynCall_viijii = Module['dynCall_viijii'] = wasmExports['Zb'])(
         a0,
         a1,
         a2,
@@ -4711,10 +4657,10 @@ var Module = (() => {
         _setThrew(1, 0);
       }
     }
-    function invoke_iijj(index, a1, a2, a3, a4, a5) {
+    function invoke_vijji(index, a1, a2, a3, a4, a5, a6) {
       var sp = stackSave();
       try {
-        return dynCall_iijj(index, a1, a2, a3, a4, a5);
+        dynCall_vijji(index, a1, a2, a3, a4, a5, a6);
       } catch (e) {
         stackRestore(sp);
         if (e !== e + 0) throw e;
@@ -4765,16 +4711,6 @@ var Module = (() => {
       var sp = stackSave();
       try {
         return dynCall_iij(index, a1, a2, a3);
-      } catch (e) {
-        stackRestore(sp);
-        if (e !== e + 0) throw e;
-        _setThrew(1, 0);
-      }
-    }
-    function invoke_vijji(index, a1, a2, a3, a4, a5, a6) {
-      var sp = stackSave();
-      try {
-        dynCall_vijji(index, a1, a2, a3, a4, a5, a6);
       } catch (e) {
         stackRestore(sp);
         if (e !== e + 0) throw e;
@@ -4881,10 +4817,20 @@ var Module = (() => {
         _setThrew(1, 0);
       }
     }
-    function invoke_vijiii(index, a1, a2, a3, a4, a5, a6) {
+    function invoke_vijiiii(index, a1, a2, a3, a4, a5, a6, a7) {
       var sp = stackSave();
       try {
-        dynCall_vijiii(index, a1, a2, a3, a4, a5, a6);
+        dynCall_vijiiii(index, a1, a2, a3, a4, a5, a6, a7);
+      } catch (e) {
+        stackRestore(sp);
+        if (e !== e + 0) throw e;
+        _setThrew(1, 0);
+      }
+    }
+    function invoke_iijiii(index, a1, a2, a3, a4, a5, a6) {
+      var sp = stackSave();
+      try {
+        return dynCall_iijiii(index, a1, a2, a3, a4, a5, a6);
       } catch (e) {
         stackRestore(sp);
         if (e !== e + 0) throw e;
@@ -4901,20 +4847,20 @@ var Module = (() => {
         _setThrew(1, 0);
       }
     }
-    function invoke_viijj(index, a1, a2, a3, a4, a5, a6) {
+    function invoke_iijii(index, a1, a2, a3, a4, a5) {
       var sp = stackSave();
       try {
-        dynCall_viijj(index, a1, a2, a3, a4, a5, a6);
+        return dynCall_iijii(index, a1, a2, a3, a4, a5);
       } catch (e) {
         stackRestore(sp);
         if (e !== e + 0) throw e;
         _setThrew(1, 0);
       }
     }
-    function invoke_iijii(index, a1, a2, a3, a4, a5) {
+    function invoke_viijj(index, a1, a2, a3, a4, a5, a6) {
       var sp = stackSave();
       try {
-        return dynCall_iijii(index, a1, a2, a3, a4, a5);
+        dynCall_viijj(index, a1, a2, a3, a4, a5, a6);
       } catch (e) {
         stackRestore(sp);
         if (e !== e + 0) throw e;
@@ -5001,6 +4947,16 @@ var Module = (() => {
         _setThrew(1, 0);
       }
     }
+    function invoke_viijji(index, a1, a2, a3, a4, a5, a6, a7) {
+      var sp = stackSave();
+      try {
+        dynCall_viijji(index, a1, a2, a3, a4, a5, a6, a7);
+      } catch (e) {
+        stackRestore(sp);
+        if (e !== e + 0) throw e;
+        _setThrew(1, 0);
+      }
+    }
     function invoke_viiiiij(index, a1, a2, a3, a4, a5, a6, a7) {
       var sp = stackSave();
       try {
@@ -5051,10 +5007,10 @@ var Module = (() => {
         _setThrew(1, 0);
       }
     }
-    function invoke_viijji(index, a1, a2, a3, a4, a5, a6, a7) {
+    function invoke_viiijii(index, a1, a2, a3, a4, a5, a6, a7) {
       var sp = stackSave();
       try {
-        dynCall_viijji(index, a1, a2, a3, a4, a5, a6, a7);
+        dynCall_viiijii(index, a1, a2, a3, a4, a5, a6, a7);
       } catch (e) {
         stackRestore(sp);
         if (e !== e + 0) throw e;
@@ -5071,20 +5027,20 @@ var Module = (() => {
         _setThrew(1, 0);
       }
     }
-    function invoke_viijiii(index, a1, a2, a3, a4, a5, a6, a7) {
+    function invoke_viijiiii(index, a1, a2, a3, a4, a5, a6, a7, a8) {
       var sp = stackSave();
       try {
-        dynCall_viijiii(index, a1, a2, a3, a4, a5, a6, a7);
+        dynCall_viijiiii(index, a1, a2, a3, a4, a5, a6, a7, a8);
       } catch (e) {
         stackRestore(sp);
         if (e !== e + 0) throw e;
         _setThrew(1, 0);
       }
     }
-    function invoke_viijiiii(index, a1, a2, a3, a4, a5, a6, a7, a8) {
+    function invoke_viijiii(index, a1, a2, a3, a4, a5, a6, a7) {
       var sp = stackSave();
       try {
-        dynCall_viijiiii(index, a1, a2, a3, a4, a5, a6, a7, a8);
+        dynCall_viijiii(index, a1, a2, a3, a4, a5, a6, a7);
       } catch (e) {
         stackRestore(sp);
         if (e !== e + 0) throw e;
