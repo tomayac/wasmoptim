@@ -17,7 +17,6 @@ import {
 } from './dom.js';
 import { MERGE_FILE_UUID } from './wasm-merge.js';
 import { limit } from './util.js';
-import { sendStats, getStats } from './stats.js';
 
 const uuidToFile = new Map();
 if (supportsFileSystemAccess) {
@@ -207,10 +206,6 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
           ).replace(' ', ' ')} per file on average`;
 
           if (deltaSize < 0) {
-            sendStats(wasmFileBefore.size, wasmFileAfter.size).then(() =>
-              getStats(),
-            );
-
             if (
               supportsFileSystemAccess &&
               overwriteCheckbox.checked &&
