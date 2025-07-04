@@ -8,7 +8,6 @@ import './ui-merge.js';
 import './ui-other.js';
 import './wasm-opt.js';
 import './wasm-merge.js';
-import './stats.js';
 
 const supportsFileHandleDragAndDrop =
   'getAsFileSystemHandle' in DataTransferItem.prototype;
