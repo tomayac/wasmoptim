@@ -26,6 +26,10 @@ self.addEventListener('message', async (event) => {
       '--always-inline-max-function-size',
       '--enable-reference-types',
       '--enable-multimemory',
+      '--enable-bulk-memory',
+      '--enable-nontrapping-float-to-int',
+      '--enable-sign-ext',
+      '--enable-mutable-globals',
       // '--converge', TODO: Add this flag again.
     ];
     const fakeArgs = [
@@ -36,6 +40,10 @@ self.addEventListener('message', async (event) => {
       '--always-inline-max-function-size',
       '--enable-reference-types',
       '--enable-multimemory',
+      '--enable-bulk-memory',
+      '--enable-nontrapping-float-to-int',
+      '--enable-sign-ext',
+      '--enable-mutable-globals',
       '⚠️ (Removed) --converge',
     ];
     console.log(`Running wasm-opt ${fakeArgs.join(' ')}`);

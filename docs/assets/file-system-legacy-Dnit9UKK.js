@@ -1,0 +1,1 @@
+var e=async e=>{let t=[],n=async e=>{let r=await new Promise(t=>e.readEntries(t));await Promise.all(r.map(async e=>{e.isDirectory?await n(e.createReader()):t.push(e)}))};return await n(e.createReader()),t};export{e as readDirectory};
