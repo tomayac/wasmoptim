@@ -65,6 +65,7 @@ body {
   position: fixed;
 }
 
+/* stylelint-disable-next-line media-feature-name-value-no-unknown */
 @media (display-mode: window-controls-overlay) {
   #titlebar {
     display: block;
@@ -152,6 +153,7 @@ button:hover {
 
 code {
   font-family: ui-monospace, monospace;
+  /* stylelint-disable-next-line declaration-property-value-keyword-no-deprecated */
   word-break: break-word;
 }
 
@@ -331,6 +333,7 @@ li {
 .error {
   font-family: ui-monospace, monospace;
   color: red;
+  /* stylelint-disable-next-line declaration-property-value-keyword-no-deprecated */
   word-break: break-word;
 }
 

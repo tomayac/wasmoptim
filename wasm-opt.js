@@ -226,9 +226,8 @@ const optimizeWasmFiles = async (wasmFilesBefore) => {
             observeFileChangesCheckbox.checked &&
             wasmFileBefore.handle
           ) {
-            const { getFileSystemChangeObserver } = await import(
-              './file-system-observer.js'
-            );
+            const { getFileSystemChangeObserver } =
+              await import('./file-system-observer.js');
             const fileSystemChangeObserver = getFileSystemChangeObserver();
             fileSystemChangeObserver.observe(wasmFileBefore.handle);
             console.log(`File ${wasmFileBefore.name} → Observing changes`);

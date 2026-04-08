@@ -34,9 +34,8 @@ loadDirectoryButton.addEventListener('click', async () => {
         directoryHandles.push(file.directoryHandle);
       }
       directoryHandles = [...new Set(directoryHandles)];
-      const { getFileSystemChangeObserver, observedDirectories } = await import(
-        './file-system-observer.js'
-      );
+      const { getFileSystemChangeObserver, observedDirectories } =
+        await import('./file-system-observer.js');
       const fileSystemChangeObserver = getFileSystemChangeObserver();
       directoryHandles.forEach((directoryHandle) => {
         fileSystemChangeObserver.observe(directoryHandle, { recursive: true });

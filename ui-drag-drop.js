@@ -49,9 +49,8 @@ document.addEventListener('drop', async (e) => {
   let getFileSystemChangeObserver;
   let observedDirectories;
   if (supportsFileSystemObserver) {
-    ({ getFileSystemChangeObserver, observedDirectories } = await import(
-      './file-system-observer.js'
-    ));
+    ({ getFileSystemChangeObserver, observedDirectories } =
+      await import('./file-system-observer.js'));
   }
   for await (const handle of fileHandlesPromises) {
     if (handle.kind === 'directory') {
@@ -119,9 +118,8 @@ document.addEventListener('drop', async (e) => {
     wasmFilesBefore.push(file);
   }
   if (supportsFileSystemAccess && overwriteCheckbox.checked) {
-    const { checkAndPossiblyAskForPermissions } = await import(
-      './file-system.js'
-    );
+    const { checkAndPossiblyAskForPermissions } =
+      await import('./file-system.js');
     await checkAndPossiblyAskForPermissions(wasmFilesBefore);
   }
   if (wasmFilesBefore.length === 0) {
